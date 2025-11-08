@@ -57,18 +57,18 @@ output/neo4j_import/*.csv
 test_*.py
 *_test.py
 
-# Temporary cleaning scripts (keep only core ones)
-clean_neo4j_database.py
-clean_special_chars.py
-deep_clean_and_reimport.py
-final_ultra_strict_clean.py
-ultra_clean_database.py
-verify_final_database.py
-run_from_cleaning.py
+# 归档目录（保留历史记录，但不在git中跟踪）
+archive/
 
-# Documentation reports (keep only main ones)
+# 临时脚本（已归档到 archive/scripts/）
+# 这些脚本用于数据清理和修复，任务已完成
+
+# 文档报告（保留主要文档）
 output/*.md
 !output/README.md
 
 # PDF files (literature)
 文献/
+
+# 归档目录（保留历史记录）
+# archive/

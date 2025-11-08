@@ -71,23 +71,19 @@ python main.py
 ### 导入 Neo4j
 
 ```bash
-# 方法一：使用修正后的数据导入（推荐）
-# 1. 修正数据质量
-python fix_and_import.py
-
-# 2. 导入到 Neo4j
+# 直接导入数据到 Neo4j
 python import_fixed_data.py
-
-# 方法二：直接导入原始数据
-python output/neo4j_import/import_to_neo4j.py
 ```
 
 导入完成后访问：http://localhost:7474
 
 **当前数据状态**：
-- 节点数: 37
-- 关系数: 46
+- 节点数: 44
+- 关系数: 43
 - 数据质量: 100/100 ⭐⭐⭐⭐⭐
+- 核心疾病: 松材线虫病（1个）
+- 实体类型: 8种（Host, Symptom, ControlMeasure, EnvironmentalFactor, Region, Vector, Disease, Pathogen）
+- 关系类型: 7种（hasHost, hasSymptom, controlledBy, affectedBy, hasVector, occursIn, hasPathogen）
 
 ---
 
@@ -163,17 +159,7 @@ python output/neo4j_import/import_to_neo4j.py
            └──────────┬────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────────────┐
-│  第 3 步：数据修正                                            │
-│  python fix_and_import.py                                   │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-           ┌──────────────────────────┐
-           │  output/entities_fixed.csv │ (修正后，完整字段)
-           │  output/relations_fixed.csv│ (修正后，完整字段)
-           └──────────┬────────────────┘
-                      ↓
-┌─────────────────────────────────────────────────────────────┐
-│  第 4 步：转换为 Neo4j 格式                                   │
+│  第 3 步：转换为 Neo4j 格式（在 main.py 中自动完成）          │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
            ┌────────────────────────────────┐
@@ -182,7 +168,7 @@ python output/neo4j_import/import_to_neo4j.py
            └──────────┬─────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────────────┐
-│  第 5 步：导入到 Neo4j                                        │
+│  第 4 步：导入到 Neo4j                                        │
 │  python import_fixed_data.py                                │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
@@ -200,10 +186,9 @@ python output/neo4j_import/import_to_neo4j.py
 | `output/relations.csv` | 原始提取的关系 | 备份 |
 | `output/entities_clean.csv` | 清洗后的实体 | 备份 |
 | `output/relations_clean.csv` | 清洗后的关系 | 备份 |
-| `output/entities_fixed.csv` | 修正后的实体（完整字段） | 数据分析 |
-| `output/relations_fixed.csv` | 修正后的关系（完整字段） | 数据分析 |
-| `output/neo4j_import/nodes.csv` | Neo4j 节点文件 | **导入 Neo4j** |
-| `output/neo4j_import/relations.csv` | Neo4j 关系文件 | **导入 Neo4j** |
+| `output/neo4j_import/nodes.csv` | Neo4j 节点文件（44个节点） | **导入 Neo4j** |
+| `output/neo4j_import/relations.csv` | Neo4j 关系文件（43条关系） | **导入 Neo4j** |
+| `output/neo4j_import/queries.cypher` | Cypher 查询示例 | 参考查询 |
 
 ---
 
@@ -402,10 +387,10 @@ pdf:
 
 ### 典型数据量
 
-- **原始实体**：~1000 条 → 清洗后 ~300 条
-- **原始关系**：~500 条 → 清洗后 ~200 条
-- **最终实体**：~250 条（启用实体链接）
-- **最终关系**：~150 条（高质量）
+- **原始实体**：~1,071 条 → 清洗后 ~1,021 条
+- **原始关系**：~1,502 条 → 清洗后 ~401 条
+- **最终实体**：44 条（高质量，无孤立节点）
+- **最终关系**：43 条（高质量，所有关系都连接到核心疾病）
 
 ---
 
