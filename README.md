@@ -78,12 +78,13 @@ python import_fixed_data.py
 导入完成后访问：http://localhost:7474
 
 **当前数据状态**：
+
 - 节点数: 44
 - 关系数: 43
 - 数据质量: 100/100 ⭐⭐⭐⭐⭐
-- 核心疾病: 松材线虫病（1个）
-- 实体类型: 8种（Host, Symptom, ControlMeasure, EnvironmentalFactor, Region, Vector, Disease, Pathogen）
-- 关系类型: 7种（hasHost, hasSymptom, controlledBy, affectedBy, hasVector, occursIn, hasPathogen）
+- 核心疾病: 松材线虫病（1 个）
+- 实体类型: 8 种（Host, Symptom, ControlMeasure, EnvironmentalFactor, Region, Vector, Disease, Pathogen）
+- 关系类型: 7 种（hasHost, hasSymptom, controlledBy, affectedBy, hasVector, occursIn, hasPathogen）
 
 ---
 
@@ -180,15 +181,42 @@ python import_fixed_data.py
 
 ### 文件说明
 
-| 文件 | 说明 | 用途 |
-|------|------|------|
-| `output/entities.csv` | 原始提取的实体 | 备份 |
-| `output/relations.csv` | 原始提取的关系 | 备份 |
-| `output/entities_clean.csv` | 清洗后的实体 | 备份 |
-| `output/relations_clean.csv` | 清洗后的关系 | 备份 |
-| `output/neo4j_import/nodes.csv` | Neo4j 节点文件（44个节点） | **导入 Neo4j** |
-| `output/neo4j_import/relations.csv` | Neo4j 关系文件（43条关系） | **导入 Neo4j** |
-| `output/neo4j_import/queries.cypher` | Cypher 查询示例 | 参考查询 |
+| 文件                                 | 说明                        | 用途           |
+| ------------------------------------ | --------------------------- | -------------- |
+| `output/entities.csv`                | 原始提取的实体              | 备份           |
+| `output/relations.csv`               | 原始提取的关系              | 备份           |
+| `output/entities_clean.csv`          | 清洗后的实体                | 备份           |
+| `output/relations_clean.csv`         | 清洗后的关系                | 备份           |
+| `output/neo4j_import/nodes.csv`      | Neo4j 节点文件（44 个节点） | **导入 Neo4j** |
+| `output/neo4j_import/relations.csv`  | Neo4j 关系文件（43 条关系） | **导入 Neo4j** |
+| `output/neo4j_import/queries.cypher` | Cypher 查询示例             | 参考查询       |
+
+### 项目结构
+
+```
+PWD/
+├── main.py                    # 主程序入口
+├── pdf_extractor.py           # PDF 文本提取
+├── entity_recognizer.py      # 实体识别
+├── relation_extractor.py     # 关系抽取
+├── data_cleaner.py           # 数据清洗
+├── neo4j_generator.py        # Neo4j 文件生成
+├── import_fixed_data.py      # Neo4j 数据导入
+├── config/                   # 配置文件目录
+│   ├── config.yaml          # 主配置文件
+│   └── domain_dict.json     # 领域词典
+├── output/                   # 输出目录
+│   └── neo4j_import/        # Neo4j 导入文件
+│       ├── nodes.csv        # 节点文件（44个）
+│       ├── relations.csv    # 关系文件（43条）
+│       └── queries.cypher   # 查询示例
+├── archive/                  # 归档目录（历史脚本和文档）
+│   ├── scripts/             # 临时脚本（28个）
+│   └── docs/                # 过时文档（4个）
+└── 文献/                    # PDF 文献目录
+```
+
+**注意**：`archive/` 目录包含项目开发过程中的临时脚本和过时文档，已归档不再使用，但保留作为历史记录。
 
 ---
 
@@ -260,9 +288,9 @@ MATCH (d:Disease {name: '松材线虫病'})-[:hasPathogen]->(p:Pathogen)
 MATCH (d)-[:hasVector]->(v:Vector)
 MATCH (d)-[:hasHost]->(h:Host)
 MATCH (d)-[:hasSymptom]->(s:Symptom)
-RETURN d.name AS 疾病, 
-       p.name AS 病原体, 
-       collect(v.name) AS 媒介, 
+RETURN d.name AS 疾病,
+       p.name AS 病原体,
+       collect(v.name) AS 媒介,
        collect(h.name) AS 宿主,
        s.name AS 症状;
 ```
@@ -392,6 +420,14 @@ pdf:
 - **最终实体**：44 条（高质量，无孤立节点）
 - **最终关系**：43 条（高质量，所有关系都连接到核心疾病）
 
+### 数据质量指标
+
+- ✅ **无孤立节点**：所有节点都通过关系连接到核心疾病"松材线虫病"
+- ✅ **无自环关系**：所有关系都是有效的实体间连接
+- ✅ **无重复关系**：每条关系都是唯一的
+- ✅ **关系类型正确**：所有关系类型符合数据模型定义
+- ✅ **实体类型完整**：包含 8 种实体类型，覆盖疾病知识图谱的核心要素
+
 ---
 
 ## 🔧 技术栈
@@ -410,6 +446,7 @@ pdf:
 2. **准确率**：自动提取的准确率约 70-80%，建议人工审核关键数据
 3. **内存需求**：大规模处理（>50 个 PDF）需要 4GB+ 内存
 4. **置信度阈值**：系统生成的关系置信度最高为 0.72，阈值不应超过此值
+5. **项目归档**：临时脚本和过时文档已归档到 `archive/` 目录，不影响核心功能使用
 
 ---
 
