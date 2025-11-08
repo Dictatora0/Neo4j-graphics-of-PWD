@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+output/cache/
+output/extracted_texts/
+*.log
+*.pkl
+
+# Neo4j data (keep structure, ignore large files)
+output/neo4j_import/*.csv
+!output/neo4j_import/nodes.csv
+!output/neo4j_import/relations.csv
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+
+# Test files
+test_*.py
+*_test.py
+
+# Temporary cleaning scripts (keep only core ones)
+clean_neo4j_database.py
+clean_special_chars.py
+deep_clean_and_reimport.py
+final_ultra_strict_clean.py
+ultra_clean_database.py
+verify_final_database.py
+run_from_cleaning.py
+
+# Documentation reports (keep only main ones)
+output/*.md
+!output/README.md
+
+# PDF files (literature)
+文献/
