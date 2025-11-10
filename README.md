@@ -2,10 +2,12 @@
 
 <div align="center">
 
-**基于 PDF 文献自动构建专业领域知识图谱**
+**知识工程第二组 - 基于文献的松材线虫病知识图谱项目**
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org)
 [![Neo4j](https://img.shields.io/badge/Neo4j-4.x%20%7C%205.x-green.svg)](https://neo4j.com)
+
+**GitHub 仓库**：[https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git](https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git)
 
 </div>
 
@@ -13,7 +15,7 @@
 
 ## 📋 项目简介
 
-本系统从松材线虫病（Pine Wilt Disease，PWD）相关的 PDF 学术论文中自动提取知识实体和关系，构建可导入 Neo4j 的知识图谱。采用多策略实体识别、规则与统计结合的关系抽取方法，实现从文献到知识图谱的端到端自动化处理。
+本项目是知识工程课程第二组的实验项目，从松材线虫病（Pine Wilt Disease，PWD）相关的 PDF 学术论文中自动提取知识实体和关系，构建可导入 Neo4j 的知识图谱。采用多策略实体识别、规则与统计结合的关系抽取方法，实现从文献到知识图谱的端到端自动化处理。
 
 ### 核心功能
 
@@ -81,7 +83,7 @@ python import_fixed_data.py
 
 - 节点数: 44
 - 关系数: 43
-- 数据质量: 100/100 ⭐⭐⭐⭐⭐
+- 数据质量: 优秀
 - 核心疾病: 松材线虫病（1 个）
 - 实体类型: 8 种（Host, Symptom, ControlMeasure, EnvironmentalFactor, Region, Vector, Disease, Pathogen）
 - 关系类型: 7 种（hasHost, hasSymptom, controlledBy, affectedBy, hasVector, occursIn, hasPathogen）
@@ -404,14 +406,11 @@ pdf:
 
 ## 📈 性能指标
 
-### 典型处理速度（10 个 PDF，约 50MB）
+### 典型处理速度（14 个 PDF，约 50MB）
 
-| 指标                | 首次运行 | 缓存后重运行 | 增量更新（2 个新 PDF） |
-| ------------------- | -------- | ------------ | ---------------------- |
-| 处理时间            | 4-8 分钟 | 30-60 秒     | 1-2 分钟               |
-| 实体准确率          | ~82%     | -            | -                      |
-| 关系准确率          | ~76%     | -            | -                      |
-| 噪声减少（vs v1.0） | -35%     | -            | -                      |
+| 指标     | 首次运行 | 缓存后重运行 |
+| -------- | -------- | ------------ |
+| 处理时间 | 4-8 分钟 | 30-60 秒     |
 
 ### 典型数据量
 
@@ -450,6 +449,15 @@ pdf:
 
 ---
 
+## 👥 项目信息
+
+- **课程**：知识工程
+- **小组**：第二组
+- **项目主题**：基于文献的松材线虫病知识图谱构建
+- **GitHub 仓库**：[https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git](https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git)
+
+---
+
 ## 📚 扩展功能
 
 ### 增量更新
@@ -478,8 +486,6 @@ pdf:
 
 <div align="center">
 
-**如有问题或建议，请提交 Issue**
-
-Made with ❤️ for Pine Wilt Disease Research
+**知识工程第二组 - 基于文献的松材线虫病知识图谱项目**
 
 </div>
