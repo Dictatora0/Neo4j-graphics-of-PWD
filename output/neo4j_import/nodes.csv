@@ -1,123 +1,116 @@
 ﻿id,name,label
-@risk,@risk,concept
-altitude,altitude,concept
-area,area,concept
-b.xylophilus,b.xylophilus,concept
+,,concept
+\u4e2d\u9001\u7af6\u99bb\u540d,\u4e2d\u9001\u7af6\u99bb\u540d,concept
+\u533a\u54c1\u56e0\u8fd3\u9f3c\u7af6,\u533a\u54c1\u56e0\u8fd3\u9f3c\u7af6,concept
+\u533a\u54c1\u5ba4\u4f5c\u5368,\u533a\u54c1\u5ba4\u4f5c\u5368,concept
+\u5f72\u5ddd\u7af6\u99bb\u540d,\u5f72\u5ddd\u7af6\u99bb\u540d,concept
+\u67d0\u52a0\u8fb9\u4eba,\u67d0\u52a0\u8fb9\u4eba,concept
+\u8d77\u7531\u5f20\u6b22,\u8d77\u7531\u5f20\u6b22,concept
+\u8d77\u7531\u5f20\u6b22\u90f9\u679c,\u8d77\u7531\u5f20\u6b22\u90f9\u679c,concept
+\u90d8\u91cf\u98df\u56e0\u9f3c\u7af6,\u90d8\u91cf\u98df\u56e0\u9f3c\u7af6,concept
+arhopalus rusticus,arhopalus rusticus,concept
 bursaphelenchus xylophilus,bursaphelenchus xylophilus,concept
-climate,climate,concept
-climatic conditions,climatic conditions,concept
-climex,climex,concept
 cold stress,cold stress,concept
-compound,compound,concept
-cs,cs,concept
-damage,damage,concept
-database,database,concept
-diagnostic spectral characteristics,diagnostic spectral characteristics,concept
-disease,disease,concept
-diva-gis,diva-gis,concept
-drone,drone,concept
-dry stress,dry stress,concept
-ds,ds,concept
-early identification,early identification,concept
-elevation,elevation,concept
-factor,factor,concept
-forecast,forecast,concept
-forest disease monitoring,forest disease monitoring,concept
-garp,garp,concept
-gi,gi,concept
-gis 技术,gis 技术,concept
-green-light,green-light,concept
-heat stress,heat stress,concept
-hs,hs,concept
-humidity,humidity,concept
-hyperspectral data,hyperspectral data,concept
+early detection of pwd,early detection of pwd,concept
+hyperspectral imaging,hyperspectral imaging,concept
 hyphantria cunea,hyphantria cunea,concept
-individual tree scale,individual tree scale,concept
-lda algorithm,lda algorithm,concept
-leaf scale,leaf scale,concept
-location,location,concept
-mechanism,mechanism,concept
-misc,misc,concept
+monochamus ahernatus,monochamus ahernatus,concept
 monochamus alternatus,monochamus alternatus,concept
-monte carlo simulation,monte carlo simulation,concept
-mount tai scenic spot,mount tai scenic spot,concept
-ndre,ndre,concept
-ndwi,ndwi,concept
-near-infrared,near-infrared,concept
-ngrdi,ngrdi,concept
-no-man-machine-radar,no-man-machine-radar,concept
-organism,organism,concept
-parasitic,parasitic,concept
-pest,pest,concept
-pesticide,pesticide,concept
-pine (chinese),pine (chinese),concept
+m．alternatus,m．alternatus,concept
 pine wilt disease,pine wilt disease,concept
-pra,pra,concept
-prevention,prevention,concept
-process,process,concept
-rainfall,rainfall,concept
-red-edge1,red-edge1,concept
-red-light,red-light,concept
-rendvi,rendvi,concept
-risk management strategies,risk management strategies,concept
-risk value,risk value,concept
-rvsi,rvsi,concept
+pine wood nematode,pine wood nematode,concept
+pinus thunbergii,pinus thunbergii,concept
+pwn,pwn,concept
+red-edge band,red-edge band,concept
+rusticus,rusticus,concept
+sentinal-2,sentinal-2,concept
 sentinel-2,sentinel-2,concept
-short-wave-red,short-wave-red,concept
-stand scale,stand scale,concept
-symptom,symptom,concept
-temperature,temperature,concept
-temperature index,temperature index,concept
-ti,ti,concept
-treatment,treatment,concept
-vi11,vi11,concept
-vi3,vi3,concept
-vi4,vi4,concept
-wet stress,wet stress,concept
-ws,ws,concept
-一阶导数,一阶导数,concept
-中华民族的象征,中华民族的象征,concept
-信息扩散模糊数学,信息扩散模糊数学,concept
-健康,健康,concept
+sentinel-2 卫星影像,sentinel-2 卫星影像,concept
+sentinel-2 卫星遥感影像,sentinel-2 卫星遥感影像,concept
+β-月桂烯,β-月桂烯,concept
+一阶导数光谱,一阶导数光谱,concept
+三脂酰甘油,三脂酰甘油,concept
+云杉小墨天牛,云杉小墨天牛,concept
+云杉花墨天牛,云杉花墨天牛,concept
+伴生细菌,伴生细菌,concept
+低海拔地区,低海拔地区,concept
+元宝槭林,元宝槭林,concept
 光谱,光谱,concept
-卫星,卫星,concept
-危害程度及造成的风险,危害程度及造成的风险,concept
-国白蛾,国白蛾,concept
-媒介昆虫,媒介昆虫,concept
-媒介昆虫的情况,媒介昆虫的情况,concept
-寄主的感病性,寄主的感病性,concept
-平均温度,平均温度,concept
-政 治、经济、公民的素质,政 治、经济、公民的素质,concept
-无人机,无人机,concept
-无人机高光谱数据获取成本,无人机高光谱数据获取成本,concept
-易暴发流行区,易暴发流行区,concept
-星载高光谱卫星,星载高光谱卫星,concept
-松材线虫病,松材线虫病,concept
-松材线虫病监测预警体系,松材线虫病监测预警体系,concept
+全南县,全南县,concept
+兴丿程量,兴丿程量,concept
+分布区,分布区,concept
+加洛墨天牛,加洛墨天牛,concept
+华北植物区系,华北植物区系,concept
+华山松,华山松,concept
+单木尺度,单木尺度,concept
+南天门,南天门,concept
+古树名木,古树名木,concept
+叶片,叶片,concept
+叶片高光谱数据,叶片高光谱数据,concept
+吉丁科,吉丁科,concept
+吉林,吉林,concept
+墨天牛,墨天牛,concept
+天烛峰,天烛峰,concept
+媒介天牛,媒介天牛,concept
+小灰长角天牛,小灰长角天牛,concept
+小蠢科,小蠢科,concept
+巴山,巴山,concept
+张法的程叀,张法的程叀,concept
+德兴市,德兴市,concept
+无人机高光谱,无人机高光谱,concept
+无人机高光谱数据,无人机高光谱数据,concept
+星载数据,星载数据,concept
+星载高光谱影像,星载高光谱影像,concept
+有害生物风险分析,有害生物风险分析,concept
+杂木林,杂木林,concept
+李䮲結量,李䮲結量,concept
+松材线虫,松材线虫,concept
+松材线虫伴生细菌,松材线虫伴生细菌,concept
+松材线虫病害,松材线虫病害,concept
+松林,松林,concept
 松褐天牛,松褐天牛,concept
-林业有害生物,林业有害生物,concept
-林业有害生物风险评估,林业有害生物风险评估,concept
-森林病害,森林病害,concept
-泰山松材线虫病,泰山松材线虫病,concept
-泰山森林价值,泰山森林价值,concept
+林业,林业,concept
+林分尺度,林分尺度,concept
+林区,林区,concept
+林间衰弱松树,林间衰弱松树,concept
+树木落叶情况,树木落叶情况,concept
+桃花峪,桃花峪,concept
+欛超生輖生统帉送一个都断前,欛超生輖生统帉送一个都断前,concept
+气象因子,气象因子,concept
+江西省,江西省,concept
+波段选择算法,波段选择算法,concept
 泰山风景区,泰山风景区,concept
-生态适生区,生态适生区,concept
-生物位模型bioclim,生物位模型bioclim,concept
-疾病,疾病,concept
-病害大规模爆发,病害大规模爆发,concept
-病害早期识别潜力,病害早期识别潜力,concept
-管理系统,管理系统,concept
-经济成本,经济成本,concept
+海拔,海拔,concept
+温带落叶阔叶林,温带落叶阔叶林,concept
+湿地松,湿地松,concept
+玉泉寺,玉泉寺,concept
+王叫-带-统帉送一个都断前,王叫-带-统帉送一个都断前,concept
+生物防治,生物防治,concept
+疫区,疫区,concept
+病害早期监测,病害早期监测,concept
+痢夬海程量,痢夬海程量,concept
+白皮松,白皮松,concept
+白蚁科,白蚁科,concept
+相对湿度,相对湿度,concept
+竹林寺,竹林寺,concept
+粗鞘双条杉天牛,粗鞘双条杉天牛,concept
+红光波段,红光波段,concept
+线性判别分析,线性判别分析,concept
 美国白蛾,美国白蛾,concept
-美国白蛾预警技术研究,美国白蛾预警技术研究,concept
-褐幽天牛,褐幽天牛,concept
-覆盖面积,覆盖面积,concept
-豫西南松材线虫病监测预警体系,豫西南松材线虫病监测预警体系,concept
-赤松,赤松,concept
-降雨量,降雨量,concept
-风险性评估方法,风险性评估方法,concept
-风险管理技术体系,风险管理技术体系,concept
-风险管理措施,风险管理措施,concept
-高光谱,高光谱,concept
+落叶阔叶林,落叶阔叶林,concept
+褐梗天牛,褐梗天牛,concept
+褐梗天牛幼虫,褐梗天牛幼虫,concept
+西藏墨天牛,西藏墨天牛,concept
+诱捕器,诱捕器,concept
+近红外波段,近红外波段,concept
+郹貉带-子金去結的是四都断前,郹貉带-子金去結的是四都断前,concept
+野外测量,野外测量,concept
+防治,防治,concept
+青松,青松,concept
+马尾松,马尾松,concept
+马父-2生輖生统帉送友公四都断前,马父-2生輖生统帉送友公四都断前,concept
 高光谱数据,高光谱数据,concept
-高度危险区,高度危险区,concept
+高海拔地区,高海拔地区,concept
+麻栎林,麻栎林,concept
+黑松,黑松,concept
+黑龙江,黑龙江,concept

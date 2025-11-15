@@ -13,7 +13,7 @@
 
 ---
 
-## 📋 项目简介
+## 项目简介
 
 本项目是知识工程课程第二组的实验项目，从松材线虫病（Pine Wilt Disease，PWD）相关的 PDF 学术论文中自动提取知识实体和关系，构建可导入 Neo4j 的知识图谱。采用多策略实体识别、规则与统计结合的关系抽取方法，实现从文献到知识图谱的端到端自动化处理。
 
@@ -35,7 +35,7 @@
 
 ---
 
-## 🚀 快速开始
+## 快速开始
 
 ### 环境要求
 
@@ -81,16 +81,16 @@ python import_fixed_data.py
 
 **当前数据状态**：
 
-- 节点数: 44
-- 关系数: 43
-- 数据质量: 优秀
+- 节点数: 59
+- 关系数: 365
+- 数据来源: 松材线虫病相关文献
 - 核心疾病: 松材线虫病（1 个）
 - 实体类型: 8 种（Host, Symptom, ControlMeasure, EnvironmentalFactor, Region, Vector, Disease, Pathogen）
 - 关系类型: 7 种（hasHost, hasSymptom, controlledBy, affectedBy, hasVector, occursIn, hasPathogen）
 
 ---
 
-## 🏗️ 系统架构
+## 系统架构
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
@@ -108,7 +108,7 @@ python import_fixed_data.py
 
 ---
 
-## 📊 数据模型
+## 数据模型
 
 ### 实体类型
 
@@ -139,7 +139,7 @@ python import_fixed_data.py
 
 ---
 
-## 📁 数据处理流程
+## 数据处理流程
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -183,15 +183,18 @@ python import_fixed_data.py
 
 ### 文件说明
 
-| 文件                                 | 说明                        | 用途           |
-| ------------------------------------ | --------------------------- | -------------- |
-| `output/entities.csv`                | 原始提取的实体              | 备份           |
-| `output/relations.csv`               | 原始提取的关系              | 备份           |
-| `output/entities_clean.csv`          | 清洗后的实体                | 备份           |
-| `output/relations_clean.csv`         | 清洗后的关系                | 备份           |
-| `output/neo4j_import/nodes.csv`      | Neo4j 节点文件（44 个节点） | **导入 Neo4j** |
-| `output/neo4j_import/relations.csv`  | Neo4j 关系文件（43 条关系） | **导入 Neo4j** |
-| `output/neo4j_import/queries.cypher` | Cypher 查询示例             | 参考查询       |
+| 文件                                       | 说明                         | 用途           |
+| ------------------------------------------ | ---------------------------- | -------------- |
+| `output/entities.csv`                      | 原始提取的实体               | 备份           |
+| `output/relations.csv`                     | 原始提取的关系               | 备份           |
+| `output/entities_clean.csv`                | 清洗后的实体                 | 备份           |
+| `output/relations_clean.csv`               | 清洗后的关系                 | 备份           |
+| `output/triples_export.csv`                | 最初导出的三元组             | 语义体检输入   |
+| `output/triples_export_semantic_clean.csv` | 语义体检与规则修正后的三元组 | Neo4j 导入源   |
+| `output/triples_semantic_issues.csv`       | 语义体检中发现的问题及建议   | 人工复核       |
+| `output/neo4j_import/nodes.csv`            | Neo4j 节点文件（最终节点集） | **导入 Neo4j** |
+| `output/neo4j_import/relations.csv`        | Neo4j 关系文件（最终关系集） | **导入 Neo4j** |
+| `output/neo4j_import/queries.cypher`       | Cypher 查询示例              | 参考查询       |
 
 ### 项目结构
 
@@ -218,11 +221,31 @@ PWD/
 └── 文献/                    # PDF 文献目录
 ```
 
-**注意**：`archive/` 目录包含项目开发过程中的临时脚本和过时文档，已归档不再使用，但保留作为历史记录。
+**注意**：`archive/` 目录用于存放开发过程中的临时脚本和历史文档，不影响核心流程。
+
+### 语义体检与最终图谱构建流程
+
+在传统管道的基础上，本项目增加了一套面向松材线虫病领域的语义检查与修正流程，用于得到最终版本的 PWD 图谱：
+
+1. 使用抽取管道生成 `output/triples_export.csv`。
+2. 运行 `bio_semantic_review.py`：
+   - 基于名称规则推断节点类型（Pathogen, Host, Vector, Disease 等）。
+   - 按白名单检查关系三元组的起点/终点类型是否合理。
+   - 在少数关系类型上自动纠正方向，并导出：
+     - `triples_export_semantic_clean.csv`（用于重新导入的三元组）。
+     - `triples_semantic_issues.csv`（问题三元组及建议）。
+3. 根据 `triples_semantic_issues.csv`，结合生物学知识手工/脚本化修正：
+   - 运行 `fix_semantic_triples.py` 对部分典型三元组做批量修正或删除。
+   - 运行 `refine_node_labels.py` 调整 Neo4j 中关键节点的标签（如 Symptom, EnvironmentalFactor, Location 等）。
+   - 运行 `fix_remaining_relations.py` 对少量残余关系类型进行统一处理。
+4. 运行 `import_to_neo4j_final.py`：
+   - 优先导入 `triples_export_semantic_clean.csv`，若不存在则回退到原始导出文件。
+   - 在 Neo4j 中创建节点和关系，并应用可视化样式文件 `neo4j_style.grass`。
+5. 使用 `export_neo4j_to_csv.py` 与 `verify_neo4j_data.py` 对最终数据库进行导出与一致性检查。
 
 ---
 
-## ⚙️ 配置说明
+## 配置说明
 
 主要配置文件：`config/config.yaml`
 
@@ -259,7 +282,7 @@ cleaning:
 
 ---
 
-## 🔍 Neo4j 使用指南
+## Neo4j 使用指南
 
 ### 连接信息
 
@@ -312,7 +335,7 @@ LIMIT 50;
 
 ---
 
-## 🔧 故障排除
+## 故障排除
 
 ### KeyBERT 导入错误
 
@@ -404,7 +427,7 @@ pdf:
 
 ---
 
-## 📈 性能指标
+## 性能指标
 
 ### 典型处理速度（14 个 PDF，约 50MB）
 
@@ -429,7 +452,7 @@ pdf:
 
 ---
 
-## 🔧 技术栈
+## 技术栈
 
 - **语言**：Python 3.8+
 - **PDF 处理**：PyMuPDF
@@ -439,7 +462,7 @@ pdf:
 
 ---
 
-## ⚠️ 注意事项
+## 注意事项
 
 1. **PDF 格式**：仅支持可提取文本的 PDF（不支持扫描版）
 2. **准确率**：自动提取的准确率约 70-80%，建议人工审核关键数据
@@ -449,7 +472,7 @@ pdf:
 
 ---
 
-## 👥 项目信息
+## 项目信息
 
 - **课程**：知识工程
 - **小组**：第二组
@@ -458,7 +481,7 @@ pdf:
 
 ---
 
-## 📚 扩展功能
+## 扩展功能
 
 ### 增量更新
 
@@ -478,7 +501,7 @@ pdf:
 
 ---
 
-## 📜 许可证
+## 许可证
 
 本项目仅供学术研究使用。
 

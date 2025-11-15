@@ -135,24 +135,48 @@ class ConceptExtractor:
             return None
         
         try:
-            # Try to extract JSON from response
-            concepts = json.loads(response)
+            # 清理markdown代码块
+            response = response.strip()
+            if response.startswith('```json'):
+                response = response[7:].strip()
+            elif response.startswith('```'):
+                response = response[3:].strip()
+            if response.endswith('```'):
+                response = response[:-3].strip()
+            response = response.strip('`').strip()
+            
+            response_clean = response.strip('`').strip()
+            
+            concepts = json.loads(response_clean)
             
             # Validate and normalize
             valid_concepts = []
-            for concept in concepts:
-                if isinstance(concept, dict) and 'entity' in concept:
+            for c in concepts:
+                if isinstance(c, dict) and 'entity' in c:
+                    # 安全处理importance字段
+                    importance_val = c.get('importance', 3)
+                    if importance_val is None:
+                        importance_val = 3
+                    try:
+                        importance = min(5, max(1, int(importance_val)))
+                    except (ValueError, TypeError):
+                        importance = 3
+                    
                     valid_concepts.append({
-                        'entity': str(concept.get('entity', '')).lower().strip(),
-                        'importance': min(5, max(1, int(concept.get('importance', 3)))),
-                        'category': str(concept.get('category', 'misc')).lower(),
+                        'entity': str(c.get('entity', '')).lower().strip(),
+                        'importance': importance,
+                        'category': str(c.get('category', 'misc')).lower(),
                         'chunk_id': chunk_id,
                         'type': 'concept'
                     })
             
             return valid_concepts if valid_concepts else None
-        except json.JSONDecodeError:
-            logger.warning(f"Failed to parse JSON response for chunk {chunk_id}")
+        except json.JSONDecodeError as e:
+            logger.error(f"❌ 概念JSON解析失败 [{chunk_id}]")
+            logger.error(f"   错误类型: {type(e).__name__}")
+            logger.error(f"   错误信息: {str(e)}")
+            logger.error(f"   原始响应前500字符:\n{response[:500]}")
+            logger.warning(f"   ⚠️  返回None继续处理")
             return None
     
     def extract_relationships(self, text: str, chunk_id: str = "") -> Optional[List[Dict]]:
@@ -201,7 +225,19 @@ class ConceptExtractor:
             return None
         
         try:
-            relationships = json.loads(response)
+            # 清理markdown代码块
+            response = response.strip()
+            if response.startswith('```json'):
+                response = response[7:].strip()
+            elif response.startswith('```'):
+                response = response[3:].strip()
+            if response.endswith('```'):
+                response = response[:-3].strip()
+            response = response.strip('`').strip()
+            
+            response_clean = response.strip('`').strip()
+            
+            relationships = json.loads(response_clean)
             
             valid_relationships = []
             for rel in relationships:
@@ -261,15 +297,36 @@ class ConceptExtractor:
             return None, None
         
         try:
-            data = json.loads(response)
+            # 清理markdown代码块
+            response = response.strip()
+            if response.startswith('```json'):
+                response = response[7:].strip()
+            elif response.startswith('```'):
+                response = response[3:].strip()
+            if response.endswith('```'):
+                response = response[:-3].strip()
+            response = response.strip('`').strip()
+            
+            response_clean = response.strip('`').strip()
+            
+            data = json.loads(response_clean)
             
             # Parse concepts
             concepts = []
             for c in data.get('concepts', []):
                 if isinstance(c, dict) and 'entity' in c:
+                    # 安全处理importance字段
+                    importance_val = c.get('importance', 3)
+                    if importance_val is None:
+                        importance_val = 3
+                    try:
+                        importance = min(5, max(1, int(importance_val)))
+                    except (ValueError, TypeError):
+                        importance = 3
+                    
                     concepts.append({
                         'entity': str(c.get('entity', '')).lower().strip(),
-                        'importance': min(5, max(1, int(c.get('importance', 3)))),
+                        'importance': importance,
                         'category': str(c.get('category', 'misc')).lower(),
                         'chunk_id': chunk_id,
                         'type': 'concept'
@@ -290,8 +347,12 @@ class ConceptExtractor:
             
             return (concepts if concepts else None, 
                     relationships if relationships else None)
-        except json.JSONDecodeError:
-            logger.warning(f"Failed to parse JSON for chunk {chunk_id}")
+        except json.JSONDecodeError as e:
+            logger.error(f"❌ 组合提取JSON解析失败 [{chunk_id}]")
+            logger.error(f"   错误类型: {type(e).__name__}")
+            logger.error(f"   错误信息: {str(e)}")
+            logger.error(f"   原始响应前500字符:\n{response[:500]}")
+            logger.warning(f"   ⚠️  返回None继续处理")
             return None, None
     
     def extract_from_chunks(self, chunks: List[Dict], max_chunks: int = None) -> Tuple[pd.DataFrame, pd.DataFrame]:

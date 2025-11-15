@@ -5,7 +5,7 @@ pdf:
   input_directory: ./文献
   output_directory: ./output/extracted_texts
   enable_cache: true
-  parallel_workers: 4
+  parallel_workers: 8
   enable_ocr: false # 是否启用OCR（用于扫描版PDF）
   ocr_engine: tesseract # OCR引擎: tesseract 或 paddle（推荐中文用paddle）
   ocr_languages: chi_sim+eng # OCR识别语言（tesseract格式）
@@ -90,10 +90,12 @@ logging:
 
 # LLM 配置
 llm:
-  model: llama3.2:3b # 3B 模型，平衡速度和质量
+  model: llama3.2:3b # Llama3.2
   ollama_host: http://localhost:11434
-  max_chunks: 150 # 处理 150 块 (约需 45-75 分钟) - 方案B
-  timeout: 120 # API 超时时间（秒）
+  max_chunks: 100 # 减少到100块加速（约需30-40分钟）
+  timeout: 120 # API 超时时间（秒）- 确保稳定性
+  num_ctx: 2048 # 上下文窗口
+  temperature: 0.1 # 降低温度提升稳定性
 
 # 去重配置
 deduplication:
