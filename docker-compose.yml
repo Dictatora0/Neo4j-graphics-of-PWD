@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  kg-builder:
+    build: .
+    container_name: pwd-kg-builder
+    volumes:
+      - ./output:/app/output
+      - ./cache:/app/cache
+      - ./文献:/app/文献
+    environment:
+      - OLLAMA_HOST=http://localhost:11434
+    # 如果服务器有GPU
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    restart: unless-stopped
+    command: python3 main.py
+
+  # 可选: Neo4j数据库
+  # neo4j:
+  #   image: neo4j:5.13
+  #   container_name: pwd-neo4j
+  #   ports:
+  #     - "7474:7474"
+  #     - "7687:7687"
+  #   environment:
+  #     - NEO4J_AUTH=neo4j/12345678
+  #   volumes:
+  #     - neo4j-data:/data
+  #   restart: unless-stopped
+# volumes:
+#   neo4j-data:

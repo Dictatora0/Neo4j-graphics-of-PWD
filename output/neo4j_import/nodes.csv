@@ -1,45 +1,123 @@
 ﻿id,name,label
-1,化学防治,ControlMeasure
-2,检疫,ControlMeasure
-3,清理病死树,ControlMeasure
-4,焚烧,ControlMeasure
-5,熏蒸,ControlMeasure
-6,生物防治,ControlMeasure
-7,监测,ControlMeasure
-8,营林措施,ControlMeasure
-9,诱捕器,ControlMeasure
-10,除害处理,ControlMeasure
-11,隔离带,ControlMeasure
-12,松材线虫病,Disease
-13,日照,EnvironmentalFactor
-14,海拔,EnvironmentalFactor
-15,湿度,EnvironmentalFactor
-16,云南松,Host
-17,华山松,Host
-18,思茅松,Host
-19,日本黑松,Host
-20,樟子松,Host
-21,油松,Host
-22,湿地松,Host
-23,火炬松,Host
-24,白皮松,Host
-25,红松,Host
-26,赤松,Host
-27,马尾松,Host
-28,黑松,Host
-29,松材线虫,Pathogen
-30,中国,Region
-31,泰山,Region
-32,整株枯死,Symptom
-33,材色变化,Symptom
-34,枝条枯萎,Symptom
-35,枯死,Symptom
-36,树干失水,Symptom
-37,树脂分泌停止,Symptom
-38,萎蔫,Symptom
-39,蓝变,Symptom
-40,针叶变色,Symptom
-41,针叶褐变,Symptom
-42,针叶黄化,Symptom
-43,天牛,Vector
-44,松褐天牛,Vector
+@risk,@risk,concept
+altitude,altitude,concept
+area,area,concept
+b.xylophilus,b.xylophilus,concept
+bursaphelenchus xylophilus,bursaphelenchus xylophilus,concept
+climate,climate,concept
+climatic conditions,climatic conditions,concept
+climex,climex,concept
+cold stress,cold stress,concept
+compound,compound,concept
+cs,cs,concept
+damage,damage,concept
+database,database,concept
+diagnostic spectral characteristics,diagnostic spectral characteristics,concept
+disease,disease,concept
+diva-gis,diva-gis,concept
+drone,drone,concept
+dry stress,dry stress,concept
+ds,ds,concept
+early identification,early identification,concept
+elevation,elevation,concept
+factor,factor,concept
+forecast,forecast,concept
+forest disease monitoring,forest disease monitoring,concept
+garp,garp,concept
+gi,gi,concept
+gis 技术,gis 技术,concept
+green-light,green-light,concept
+heat stress,heat stress,concept
+hs,hs,concept
+humidity,humidity,concept
+hyperspectral data,hyperspectral data,concept
+hyphantria cunea,hyphantria cunea,concept
+individual tree scale,individual tree scale,concept
+lda algorithm,lda algorithm,concept
+leaf scale,leaf scale,concept
+location,location,concept
+mechanism,mechanism,concept
+misc,misc,concept
+monochamus alternatus,monochamus alternatus,concept
+monte carlo simulation,monte carlo simulation,concept
+mount tai scenic spot,mount tai scenic spot,concept
+ndre,ndre,concept
+ndwi,ndwi,concept
+near-infrared,near-infrared,concept
+ngrdi,ngrdi,concept
+no-man-machine-radar,no-man-machine-radar,concept
+organism,organism,concept
+parasitic,parasitic,concept
+pest,pest,concept
+pesticide,pesticide,concept
+pine (chinese),pine (chinese),concept
+pine wilt disease,pine wilt disease,concept
+pra,pra,concept
+prevention,prevention,concept
+process,process,concept
+rainfall,rainfall,concept
+red-edge1,red-edge1,concept
+red-light,red-light,concept
+rendvi,rendvi,concept
+risk management strategies,risk management strategies,concept
+risk value,risk value,concept
+rvsi,rvsi,concept
+sentinel-2,sentinel-2,concept
+short-wave-red,short-wave-red,concept
+stand scale,stand scale,concept
+symptom,symptom,concept
+temperature,temperature,concept
+temperature index,temperature index,concept
+ti,ti,concept
+treatment,treatment,concept
+vi11,vi11,concept
+vi3,vi3,concept
+vi4,vi4,concept
+wet stress,wet stress,concept
+ws,ws,concept
+一阶导数,一阶导数,concept
+中华民族的象征,中华民族的象征,concept
+信息扩散模糊数学,信息扩散模糊数学,concept
+健康,健康,concept
+光谱,光谱,concept
+卫星,卫星,concept
+危害程度及造成的风险,危害程度及造成的风险,concept
+国白蛾,国白蛾,concept
+媒介昆虫,媒介昆虫,concept
+媒介昆虫的情况,媒介昆虫的情况,concept
+寄主的感病性,寄主的感病性,concept
+平均温度,平均温度,concept
+政 治、经济、公民的素质,政 治、经济、公民的素质,concept
+无人机,无人机,concept
+无人机高光谱数据获取成本,无人机高光谱数据获取成本,concept
+易暴发流行区,易暴发流行区,concept
+星载高光谱卫星,星载高光谱卫星,concept
+松材线虫病,松材线虫病,concept
+松材线虫病监测预警体系,松材线虫病监测预警体系,concept
+松褐天牛,松褐天牛,concept
+林业有害生物,林业有害生物,concept
+林业有害生物风险评估,林业有害生物风险评估,concept
+森林病害,森林病害,concept
+泰山松材线虫病,泰山松材线虫病,concept
+泰山森林价值,泰山森林价值,concept
+泰山风景区,泰山风景区,concept
+生态适生区,生态适生区,concept
+生物位模型bioclim,生物位模型bioclim,concept
+疾病,疾病,concept
+病害大规模爆发,病害大规模爆发,concept
+病害早期识别潜力,病害早期识别潜力,concept
+管理系统,管理系统,concept
+经济成本,经济成本,concept
+美国白蛾,美国白蛾,concept
+美国白蛾预警技术研究,美国白蛾预警技术研究,concept
+褐幽天牛,褐幽天牛,concept
+覆盖面积,覆盖面积,concept
+豫西南松材线虫病监测预警体系,豫西南松材线虫病监测预警体系,concept
+赤松,赤松,concept
+降雨量,降雨量,concept
+风险性评估方法,风险性评估方法,concept
+风险管理技术体系,风险管理技术体系,concept
+风险管理措施,风险管理措施,concept
+高光谱,高光谱,concept
+高光谱数据,高光谱数据,concept
+高度危险区,高度危险区,concept

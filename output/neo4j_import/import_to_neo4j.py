@@ -10,7 +10,7 @@ import os
 # Neo4j 连接配置
 NEO4J_URI = "bolt://localhost:7687"
 NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "12345678"  # 请修改为您的密码
+NEO4J_PASSWORD = "password"  # 请修改为您的密码
 
 def import_to_neo4j(uri, user, password, cypher_file):
     '''执行Cypher脚本导入数据'''

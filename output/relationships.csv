@@ -1,0 +1,815 @@
+﻿node_1,node_2,weight,edge,chunk_id,source
+@risk,diva-gis,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,garp,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,monte carlo simulation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,信息扩散模糊数学,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,林业有害生物,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,生物位模型bioclim,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,管理系统,0.2727272727272727,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+@risk,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+altitude,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+altitude,climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+altitude,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+altitude,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+altitude,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+area,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+area,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+b.xylophilus,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+b.xylophilus,forecast,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+b.xylophilus,humidity,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+b.xylophilus,pest,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+b.xylophilus,pesticide,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+b.xylophilus,rainfall,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+b.xylophilus,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+bursaphelenchus xylophilus,altitude,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,hyphantria cunea,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,monochamus alternatus,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,mount tai scenic spot,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,parasitic,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,pine (chinese),0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,risk value,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+bursaphelenchus xylophilus,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+climate,b.xylophilus,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climate,damage,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climate,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climate,forecast,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climate,humidity,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climate,pest,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climate,pesticide,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climate,rainfall,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climate,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+climatic conditions,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+climatic conditions,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+climatic conditions,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+climatic conditions,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+climex,@risk,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,diva-gis,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,garp,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,monte carlo simulation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,信息扩散模糊数学,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,林业有害生物,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,生物位模型bioclim,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,管理系统,0.2727272727272727,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+climex,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+cold stress,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cold stress,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cold stress,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cold stress,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+compound,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+cs,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cs,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cs,ds,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+cs,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cs,hs,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+cs,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cs,ti,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cs,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cs,ws,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+cs,泰山松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+cs,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+damage,b.xylophilus,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+damage,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+damage,forecast,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+damage,humidity,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+damage,pest,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+damage,pesticide,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+damage,rainfall,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+damage,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+diagnostic spectral characteristics,drone,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+diagnostic spectral characteristics,forest disease monitoring,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+diagnostic spectral characteristics,hyperspectral data,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+diagnostic spectral characteristics,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+diagnostic spectral characteristics,leaf scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+diagnostic spectral characteristics,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+diagnostic spectral characteristics,stand scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+disease,compound,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+disease,factor,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+disease,location,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+disease,mechanism,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+disease,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+disease,organism,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+disease,process,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+disease,symptom,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+disease,treatment,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33",proximity
+diva-gis,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+diva-gis,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+diva-gis,松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+diva-gis,林业有害生物,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+diva-gis,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+diva-gis,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+diva-gis,管理系统,0.2727272727272727,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+diva-gis,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+diva-gis,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+drone,forest disease monitoring,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+drone,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+drone,leaf scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+drone,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+drone,stand scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+dry stress,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+dry stress,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,ti,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,ws,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,泰山松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ds,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+early identification,diagnostic spectral characteristics,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+early identification,drone,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+early identification,forest disease monitoring,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+early identification,hyperspectral data,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+early identification,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+early identification,leaf scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+early identification,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+early identification,stand scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+elevation,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+elevation,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+elevation,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+factor,compound,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+factor,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+factor,process,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+forecast,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+forest disease monitoring,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+forest disease monitoring,leaf scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+forest disease monitoring,stand scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+garp,diva-gis,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,信息扩散模糊数学,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,林业有害生物,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,生物位模型bioclim,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,管理系统,0.2727272727272727,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+garp,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+gi,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+gi,cs,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+gi,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+gi,ds,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+gi,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+gi,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+gi,hs,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+gi,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+gi,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+gi,red-edge1,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+gi,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+gi,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+gi,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+gi,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+gi,ti,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+gi,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+gi,ws,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+gi,泰山松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+gi,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+gis 技术,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+gis 技术,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+gis 技术,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+gis 技术,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+gis 技术,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+green-light,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+green-light,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+heat stress,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+heat stress,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+heat stress,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+hs,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+hs,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+hs,ds,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+hs,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+hs,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+hs,ti,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+hs,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+hs,ws,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+hs,泰山松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+hs,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+humidity,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+humidity,forecast,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+humidity,pesticide,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+hyperspectral data,diagnostic spectral characteristics,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,drone,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,early identification,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,forest disease monitoring,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,individual tree scale,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,lda algorithm,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,leaf scale,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,ndwi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,pine wilt disease,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,sentinel-2,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyperspectral data,stand scale,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+hyphantria cunea,altitude,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,monochamus alternatus,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,mount tai scenic spot,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,parasitic,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,pine (chinese),0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,risk value,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+hyphantria cunea,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+lda algorithm,diagnostic spectral characteristics,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,drone,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,early identification,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,forest disease monitoring,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,hyperspectral data,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,leaf scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,ndwi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,pine wilt disease,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+lda algorithm,stand scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+leaf scale,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+location,compound,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+location,factor,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+location,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+location,process,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+mechanism,compound,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+mechanism,factor,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+mechanism,location,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+mechanism,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+mechanism,process,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+monochamus alternatus,altitude,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,mount tai scenic spot,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,parasitic,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,pine (chinese),0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,risk value,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monochamus alternatus,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+monte carlo simulation,diva-gis,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,garp,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,信息扩散模糊数学,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,林业有害生物,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,生物位模型bioclim,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,管理系统,0.2727272727272727,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+monte carlo simulation,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+mount tai scenic spot,altitude,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,parasitic,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,pine (chinese),0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,risk value,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+mount tai scenic spot,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+ndre,gi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,ngrdi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,red-edge1,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,rendvi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,rvsi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,vi11,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,vi3,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndre,vi4,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ndwi,diagnostic spectral characteristics,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,drone,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,early identification,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,forest disease monitoring,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,hyperspectral data,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,leaf scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,pine wilt disease,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+ndwi,stand scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+near-infrared,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+near-infrared,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+near-infrared,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,gi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,red-edge1,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,rendvi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+ngrdi,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+organism,compound,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+organism,factor,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+organism,location,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+organism,mechanism,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+organism,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+organism,process,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+organism,symptom,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+organism,treatment,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33",proximity
+parasitic,altitude,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+parasitic,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+parasitic,climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+parasitic,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+parasitic,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+parasitic,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pest,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+pest,forecast,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+pest,humidity,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+pest,pesticide,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+pest,rainfall,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+pest,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+pesticide,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+pesticide,forecast,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+pine (chinese),altitude,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine (chinese),area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine (chinese),climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine (chinese),elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine (chinese),parasitic,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine (chinese),prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine (chinese),risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine (chinese),risk value,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine (chinese),temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+pine wilt disease,diagnostic spectral characteristics,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pine wilt disease,drone,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pine wilt disease,early identification,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pine wilt disease,forest disease monitoring,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pine wilt disease,hyperspectral data,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pine wilt disease,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pine wilt disease,leaf scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pine wilt disease,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pine wilt disease,stand scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+pra,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+pra,cs,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+pra,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+pra,ds,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+pra,gi,0.23636363636363636,分析中 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+pra,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+pra,hs,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+pra,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+pra,ti,0.23636363636363636,分析中 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+pra,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+pra,ws,0.23636363636363636,影响 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+pra,泰山松材线虫病,0.23636363636363636,研究中 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+pra,美国白蛾,0.23636363636363636,研究中 | co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,"llm,proximity"
+process,compound,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+process,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+rainfall,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+rainfall,forecast,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+rainfall,humidity,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+rainfall,pesticide,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+red-edge1,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-edge1,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-edge1,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-edge1,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-edge1,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-edge1,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-light,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-light,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-light,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-light,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+red-light,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rendvi,gi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rendvi,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rendvi,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rendvi,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rendvi,red-edge1,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rendvi,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rendvi,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rendvi,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+risk management strategies,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+risk value,altitude,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+risk value,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+risk value,climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+risk value,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+risk value,parasitic,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+risk value,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+risk value,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+risk value,temperature,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+rvsi,gi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,ngrdi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,red-edge1,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,rendvi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,vi11,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,vi3,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+rvsi,vi4,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+sentinel-2,diagnostic spectral characteristics,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,drone,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,early identification,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,forest disease monitoring,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,hyperspectral data,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,individual tree scale,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,lda algorithm,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,leaf scale,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,ndwi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+sentinel-2,pine wilt disease,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+sentinel-2,stand scale,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+short-wave-red,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+short-wave-red,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+short-wave-red,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+short-wave-red,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+stand scale,individual tree scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+stand scale,leaf scale,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,proximity
+symptom,compound,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+symptom,factor,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+symptom,location,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+symptom,mechanism,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+symptom,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+symptom,process,0.2727272727272727,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_48",proximity
+symptom,treatment,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33",proximity
+temperature,altitude,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+temperature,area,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+temperature,climatic conditions,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+temperature,database,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+temperature,elevation,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+temperature,forecast,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+temperature,humidity,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+temperature,parasitic,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+temperature,pesticide,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+temperature,prevention,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+temperature,rainfall,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_45,proximity
+temperature,risk management strategies,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_40,proximity
+ti,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ti,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ti,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ti,pra,0.14545454545454545,计算,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,llm
+ti,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ti,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ti,泰山松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ti,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+treatment,compound,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33",proximity
+treatment,factor,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33",proximity
+treatment,location,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33",proximity
+treatment,mechanism,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33",proximity
+treatment,misc,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,proximity
+treatment,process,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_26,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_33",proximity
+vi11,gi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,ngrdi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,red-edge1,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,rendvi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,vi3,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi11,vi4,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,gi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,ngrdi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,red-edge1,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,rendvi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi3,vi4,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,gi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,green-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,near-infrared,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,ngrdi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,no-man-machine-radar,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,red-edge1,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,red-light,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,rendvi,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,sentinel-2,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+vi4,short-wave-red,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_32,proximity
+wet stress,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ws,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ws,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ws,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ws,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ws,ti,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ws,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ws,泰山松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+ws,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+信息扩散模糊数学,diva-gis,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,林业有害生物,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,生物位模型bioclim,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,管理系统,0.2727272727272727,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+信息扩散模糊数学,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+健康,一阶导数,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+健康,疾病,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+健康,管理系统,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+健康,高光谱数据,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+光谱,卫星,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+光谱,无人机,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+光谱,森林病害,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+光谱,管理系统,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+光谱,高光谱,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+卫星,森林病害,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+卫星,管理系统,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+危害程度及造成的风险,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+危害程度及造成的风险,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,寄主的感病性,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,松褐天牛,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,美国白蛾预警技术研究,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,褐幽天牛,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,豫西南松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,风险管理技术体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+国白蛾,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+媒介昆虫,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+媒介昆虫,疾病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+媒介昆虫,降雨量,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+媒介昆虫的情况,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+媒介昆虫的情况,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+媒介昆虫的情况,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+媒介昆虫的情况,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+媒介昆虫的情况,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+媒介昆虫的情况,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+寄主的感病性,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+寄主的感病性,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+寄主的感病性,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+寄主的感病性,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+寄主的感病性,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+寄主的感病性,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+寄主的感病性,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+寄主的感病性,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+平均温度,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+平均温度,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+平均温度,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+平均温度,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+平均温度,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+平均温度,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+平均温度,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+政 治、经济、公民的素质,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+政 治、经济、公民的素质,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+政 治、经济、公民的素质,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+无人机,卫星,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+无人机,森林病害,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+无人机,管理系统,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+无人机,高光谱数据,0.14545454545454545,相关,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,llm
+无人机高光谱数据获取成本,星载高光谱卫星,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+无人机高光谱数据获取成本,病害大规模爆发,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+无人机高光谱数据获取成本,病害早期识别潜力,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+无人机高光谱数据获取成本,经济成本,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+无人机高光谱数据获取成本,覆盖面积,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+易暴发流行区,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+易暴发流行区,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+易暴发流行区,管理系统,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+易暴发流行区,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+易暴发流行区,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+星载高光谱卫星,病害大规模爆发,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+星载高光谱卫星,病害早期识别潜力,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+星载高光谱卫星,经济成本,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+星载高光谱卫星,覆盖面积,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+松材线虫病,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,光谱,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+松材线虫病,卫星,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+松材线虫病,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,寄主的感病性,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,无人机,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+松材线虫病,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病,森林病害,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+松材线虫病,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,疾病,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+松材线虫病,管理系统,0.5454545454545454,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43",proximity
+松材线虫病,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病,美国白蛾预警技术研究,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,豫西南松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,风险管理技术体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松材线虫病,高光谱,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+松材线虫病监测预警体系,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病监测预警体系,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病监测预警体系,林业有害生物,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病监测预警体系,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病监测预警体系,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病监测预警体系,管理系统,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病监测预警体系,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松材线虫病监测预警体系,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+松褐天牛,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,寄主的感病性,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,美国白蛾预警技术研究,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,褐幽天牛,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,豫西南松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,风险管理技术体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+松褐天牛,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+林业有害生物,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+林业有害生物,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+林业有害生物,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+林业有害生物,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+林业有害生物,管理系统,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+林业有害生物,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+林业有害生物,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+林业有害生物风险评估,管理系统,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+森林病害,管理系统,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+泰山松材线虫病,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+泰山松材线虫病,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+泰山松材线虫病,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+泰山松材线虫病,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+泰山松材线虫病,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+泰山松材线虫病,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+泰山森林价值,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+泰山风景区,媒介昆虫,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+泰山风景区,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+泰山风景区,疾病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+泰山风景区,降雨量,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+生态适生区,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生态适生区,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生态适生区,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生态适生区,管理系统,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生态适生区,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生态适生区,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,diva-gis,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,易暴发流行区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,林业有害生物,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,生态适生区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,管理系统,0.2727272727272727,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+生物位模型bioclim,高度危险区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+疾病,一阶导数,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+疾病,健康,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+疾病,光谱,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+疾病,卫星,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+疾病,无人机,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+疾病,松材线虫病,0.18181818181818182,co-occurs in,"4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28",proximity
+疾病,森林病害,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+疾病,管理系统,1.0,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28",proximity
+疾病,赤松,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+疾病,降雨量,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+疾病,高光谱,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+疾病,高光谱数据,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+病害早期识别潜力,病害大规模爆发,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+病害早期识别潜力,经济成本,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+病害早期识别潜力,覆盖面积,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+管理系统,一阶导数,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+管理系统,光谱,0.2727272727272727,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+管理系统,卫星,0.2727272727272727,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+管理系统,无人机,0.2727272727272727,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+管理系统,易暴发流行区,0.18181818181818182,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+管理系统,松材线虫病,0.18181818181818182,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+管理系统,松材线虫病监测预警体系,0.18181818181818182,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+管理系统,林业有害生物,0.18181818181818182,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+管理系统,林业有害生物风险评估,0.18181818181818182,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+管理系统,森林病害,0.2727272727272727,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+管理系统,生态适生区,0.18181818181818182,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+管理系统,疾病,0.2727272727272727,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+管理系统,美国白蛾,0.18181818181818182,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+管理系统,高光谱,0.2727272727272727,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+管理系统,高光谱数据,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+管理系统,高度危险区,0.18181818181818182,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+经济成本,病害大规模爆发,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+美国白蛾,cold stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+美国白蛾,dry stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+美国白蛾,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,heat stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+美国白蛾,temperature index,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+美国白蛾,wet stress,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_37,proximity
+美国白蛾,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,寄主的感病性,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,松褐天牛,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+美国白蛾,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,管理系统,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+美国白蛾,美国白蛾预警技术研究,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,褐幽天牛,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,豫西南松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,风险管理技术体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,寄主的感病性,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,豫西南松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,风险管理技术体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+美国白蛾预警技术研究,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,寄主的感病性,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,美国白蛾预警技术研究,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,豫西南松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,风险管理技术体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+褐幽天牛,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+覆盖面积,病害大规模爆发,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+覆盖面积,经济成本,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+豫西南松材线虫病监测预警体系,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+豫西南松材线虫病监测预警体系,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+豫西南松材线虫病监测预警体系,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+豫西南松材线虫病监测预警体系,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+豫西南松材线虫病监测预警体系,寄主的感病性,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+豫西南松材线虫病监测预警体系,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+豫西南松材线虫病监测预警体系,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+豫西南松材线虫病监测预警体系,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+豫西南松材线虫病监测预警体系,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+赤松,一阶导数,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+赤松,健康,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+赤松,疾病,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+赤松,管理系统,0.36363636363636365,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+赤松,高光谱数据,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+降雨量,光谱,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+降雨量,卫星,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+降雨量,无人机,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+降雨量,松材线虫病,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46",proximity
+降雨量,森林病害,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+降雨量,疾病,0.18181818181818182,co-occurs in,"ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46",proximity
+降雨量,管理系统,0.45454545454545453,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+降雨量,高光谱,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+风险性评估方法,媒介昆虫,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+风险性评估方法,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+风险性评估方法,泰山风景区,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+风险性评估方法,疾病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+风险性评估方法,降雨量,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_46,proximity
+风险管理技术体系,gis 技术,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,媒介昆虫的情况,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,寄主的感病性,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,平均温度,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,豫西南松材线虫病监测预警体系,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理技术体系,风险管理措施,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理措施,中华民族的象征,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理措施,危害程度及造成的风险,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理措施,政 治、经济、公民的素质,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+风险管理措施,泰山森林价值,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_44,proximity
+高光谱,卫星,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+高光谱,无人机,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+高光谱,森林病害,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+高光谱,管理系统,0.18181818181818182,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_28,proximity
+高光谱数据,一阶导数,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+高光谱数据,无人机高光谱数据获取成本,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+高光谱数据,星载高光谱卫星,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+高光谱数据,病害大规模爆发,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+高光谱数据,病害早期识别潜力,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+高光谱数据,管理系统,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_22,proximity
+高光谱数据,经济成本,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+高光谱数据,覆盖面积,0.09090909090909091,co-occurs in,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_36,proximity
+高度危险区,松材线虫病,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+高度危险区,林业有害生物风险评估,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+高度危险区,管理系统,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity
+高度危险区,美国白蛾,0.09090909090909091,co-occurs in,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_43,proximity

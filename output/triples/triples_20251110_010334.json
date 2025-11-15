@@ -1,0 +1,353 @@
+{
+  "metadata": {
+    "export_time": "2025-11-10T01:03:35.117731",
+    "total_triples": 43,
+    "source": "Neo4j"
+  },
+  "triples": [
+    {
+      "subject": "松材线虫病",
+      "predicate": "affectedBy",
+      "object": "日照",
+      "subject_type": "Disease",
+      "object_type": "EnvironmentalFactor",
+      "confidence": 0.7
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "affectedBy",
+      "object": "海拔",
+      "subject_type": "Disease",
+      "object_type": "EnvironmentalFactor",
+      "confidence": 0.7
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "affectedBy",
+      "object": "湿度",
+      "subject_type": "Disease",
+      "object_type": "EnvironmentalFactor",
+      "confidence": 0.7
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "化学防治",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "检疫",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "清理病死树",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "焚烧",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "熏蒸",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "生物防治",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "监测",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "营林措施",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "诱捕器",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "除害处理",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "controlledBy",
+      "object": "隔离带",
+      "subject_type": "Disease",
+      "object_type": "ControlMeasure",
+      "confidence": 0.65
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "云南松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "华山松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "思茅松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "日本黑松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "樟子松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "油松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "湿地松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "火炬松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "白皮松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "红松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "赤松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "马尾松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasHost",
+      "object": "黑松",
+      "subject_type": "Disease",
+      "object_type": "Host",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasPathogen",
+      "object": "松材线虫",
+      "subject_type": "Disease",
+      "object_type": "Pathogen",
+      "confidence": 0.95
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "整株枯死",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "材色变化",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "枝条枯萎",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "枯死",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.9
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "树干失水",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "树脂分泌停止",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "萎蔫",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "蓝变",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "针叶变色",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "针叶褐变",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasSymptom",
+      "object": "针叶黄化",
+      "subject_type": "Disease",
+      "object_type": "Symptom",
+      "confidence": 0.8
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasVector",
+      "object": "天牛",
+      "subject_type": "Disease",
+      "object_type": "Vector",
+      "confidence": 0.7
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "hasVector",
+      "object": "松褐天牛",
+      "subject_type": "Disease",
+      "object_type": "Vector",
+      "confidence": 0.95
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "occursIn",
+      "object": "中国",
+      "subject_type": "Disease",
+      "object_type": "Region",
+      "confidence": 0.72
+    },
+    {
+      "subject": "松材线虫病",
+      "predicate": "occursIn",
+      "object": "泰山",
+      "subject_type": "Disease",
+      "object_type": "Region",
+      "confidence": 0.72
+    }
+  ]
+}

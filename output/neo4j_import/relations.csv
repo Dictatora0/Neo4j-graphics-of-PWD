@@ -1,44 +1,815 @@
 ﻿start_id,relation,end_id,confidence
-12,affectedBy,13,0.7
-12,affectedBy,14,0.7
-12,affectedBy,15,0.7
-12,controlledBy,1,0.65
-12,controlledBy,2,0.65
-12,controlledBy,3,0.65
-12,controlledBy,4,0.65
-12,controlledBy,5,0.65
-12,controlledBy,6,0.65
-12,controlledBy,7,0.65
-12,controlledBy,8,0.65
-12,controlledBy,9,0.65
-12,controlledBy,10,0.65
-12,controlledBy,11,0.65
-12,hasHost,16,0.8
-12,hasHost,17,0.8
-12,hasHost,18,0.8
-12,hasHost,19,0.8
-12,hasHost,20,0.8
-12,hasHost,21,0.8
-12,hasHost,22,0.8
-12,hasHost,23,0.8
-12,hasHost,24,0.8
-12,hasHost,25,0.8
-12,hasHost,26,0.8
-12,hasHost,27,0.8
-12,hasHost,28,0.8
-12,hasPathogen,29,0.95
-12,hasSymptom,32,0.8
-12,hasSymptom,33,0.8
-12,hasSymptom,34,0.8
-12,hasSymptom,35,0.9
-12,hasSymptom,36,0.8
-12,hasSymptom,37,0.8
-12,hasSymptom,38,0.8
-12,hasSymptom,39,0.8
-12,hasSymptom,40,0.8
-12,hasSymptom,41,0.8
-12,hasSymptom,42,0.8
-12,hasVector,43,0.7
-12,hasVector,44,0.95
-12,occursIn,30,0.72
-12,occursIn,31,0.72
+@risk,co-occurs in,diva-gis,0.09090909090909091
+@risk,co-occurs in,garp,0.09090909090909091
+@risk,co-occurs in,monte carlo simulation,0.09090909090909091
+@risk,co-occurs in,信息扩散模糊数学,0.09090909090909091
+@risk,co-occurs in,易暴发流行区,0.09090909090909091
+@risk,co-occurs in,松材线虫病,0.09090909090909091
+@risk,co-occurs in,松材线虫病监测预警体系,0.09090909090909091
+@risk,co-occurs in,林业有害生物,0.09090909090909091
+@risk,co-occurs in,林业有害生物风险评估,0.09090909090909091
+@risk,co-occurs in,生态适生区,0.09090909090909091
+@risk,co-occurs in,生物位模型bioclim,0.09090909090909091
+@risk,co-occurs in,管理系统,0.2727272727272727
+@risk,co-occurs in,美国白蛾,0.09090909090909091
+@risk,co-occurs in,高度危险区,0.09090909090909091
+altitude,co-occurs in,area,0.09090909090909091
+altitude,co-occurs in,climatic conditions,0.09090909090909091
+altitude,co-occurs in,elevation,0.09090909090909091
+altitude,co-occurs in,prevention,0.09090909090909091
+altitude,co-occurs in,risk management strategies,0.09090909090909091
+area,co-occurs in,prevention,0.09090909090909091
+area,co-occurs in,risk management strategies,0.09090909090909091
+b.xylophilus,co-occurs in,database,0.09090909090909091
+b.xylophilus,co-occurs in,forecast,0.09090909090909091
+b.xylophilus,co-occurs in,humidity,0.09090909090909091
+b.xylophilus,co-occurs in,pest,0.09090909090909091
+b.xylophilus,co-occurs in,pesticide,0.09090909090909091
+b.xylophilus,co-occurs in,rainfall,0.09090909090909091
+b.xylophilus,co-occurs in,temperature,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,altitude,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,area,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,climatic conditions,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,elevation,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,hyphantria cunea,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,monochamus alternatus,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,mount tai scenic spot,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,parasitic,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,pine (chinese),0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,prevention,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,risk management strategies,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,risk value,0.09090909090909091
+bursaphelenchus xylophilus,co-occurs in,temperature,0.09090909090909091
+climate,co-occurs in,b.xylophilus,0.09090909090909091
+climate,co-occurs in,damage,0.09090909090909091
+climate,co-occurs in,database,0.09090909090909091
+climate,co-occurs in,forecast,0.09090909090909091
+climate,co-occurs in,humidity,0.09090909090909091
+climate,co-occurs in,pest,0.09090909090909091
+climate,co-occurs in,pesticide,0.09090909090909091
+climate,co-occurs in,rainfall,0.09090909090909091
+climate,co-occurs in,temperature,0.09090909090909091
+climatic conditions,co-occurs in,area,0.09090909090909091
+climatic conditions,co-occurs in,elevation,0.09090909090909091
+climatic conditions,co-occurs in,prevention,0.09090909090909091
+climatic conditions,co-occurs in,risk management strategies,0.09090909090909091
+climex,co-occurs in,@risk,0.09090909090909091
+climex,co-occurs in,diva-gis,0.09090909090909091
+climex,co-occurs in,garp,0.09090909090909091
+climex,co-occurs in,monte carlo simulation,0.09090909090909091
+climex,co-occurs in,信息扩散模糊数学,0.09090909090909091
+climex,co-occurs in,易暴发流行区,0.09090909090909091
+climex,co-occurs in,松材线虫病,0.09090909090909091
+climex,co-occurs in,松材线虫病监测预警体系,0.09090909090909091
+climex,co-occurs in,林业有害生物,0.09090909090909091
+climex,co-occurs in,林业有害生物风险评估,0.09090909090909091
+climex,co-occurs in,生态适生区,0.09090909090909091
+climex,co-occurs in,生物位模型bioclim,0.09090909090909091
+climex,co-occurs in,管理系统,0.2727272727272727
+climex,co-occurs in,美国白蛾,0.09090909090909091
+climex,co-occurs in,高度危险区,0.09090909090909091
+cold stress,co-occurs in,dry stress,0.09090909090909091
+cold stress,co-occurs in,heat stress,0.09090909090909091
+cold stress,co-occurs in,temperature index,0.09090909090909091
+cold stress,co-occurs in,wet stress,0.09090909090909091
+compound,co-occurs in,misc,0.09090909090909091
+cs,co-occurs in,cold stress,0.09090909090909091
+cs,co-occurs in,dry stress,0.09090909090909091
+cs,影响 | co-occurs in,ds,0.23636363636363636
+cs,co-occurs in,heat stress,0.09090909090909091
+cs,影响 | co-occurs in,hs,0.23636363636363636
+cs,co-occurs in,temperature index,0.09090909090909091
+cs,co-occurs in,ti,0.09090909090909091
+cs,co-occurs in,wet stress,0.09090909090909091
+cs,影响 | co-occurs in,ws,0.23636363636363636
+cs,co-occurs in,泰山松材线虫病,0.09090909090909091
+cs,co-occurs in,美国白蛾,0.09090909090909091
+damage,co-occurs in,b.xylophilus,0.09090909090909091
+damage,co-occurs in,database,0.09090909090909091
+damage,co-occurs in,forecast,0.09090909090909091
+damage,co-occurs in,humidity,0.09090909090909091
+damage,co-occurs in,pest,0.09090909090909091
+damage,co-occurs in,pesticide,0.09090909090909091
+damage,co-occurs in,rainfall,0.09090909090909091
+damage,co-occurs in,temperature,0.09090909090909091
+diagnostic spectral characteristics,co-occurs in,drone,0.09090909090909091
+diagnostic spectral characteristics,co-occurs in,forest disease monitoring,0.09090909090909091
+diagnostic spectral characteristics,co-occurs in,hyperspectral data,0.09090909090909091
+diagnostic spectral characteristics,co-occurs in,individual tree scale,0.09090909090909091
+diagnostic spectral characteristics,co-occurs in,leaf scale,0.09090909090909091
+diagnostic spectral characteristics,co-occurs in,sentinel-2,0.09090909090909091
+diagnostic spectral characteristics,co-occurs in,stand scale,0.09090909090909091
+disease,co-occurs in,compound,0.2727272727272727
+disease,co-occurs in,factor,0.2727272727272727
+disease,co-occurs in,location,0.2727272727272727
+disease,co-occurs in,mechanism,0.2727272727272727
+disease,co-occurs in,misc,0.09090909090909091
+disease,co-occurs in,organism,0.2727272727272727
+disease,co-occurs in,process,0.2727272727272727
+disease,co-occurs in,symptom,0.2727272727272727
+disease,co-occurs in,treatment,0.18181818181818182
+diva-gis,co-occurs in,易暴发流行区,0.09090909090909091
+diva-gis,co-occurs in,松材线虫病,0.09090909090909091
+diva-gis,co-occurs in,松材线虫病监测预警体系,0.09090909090909091
+diva-gis,co-occurs in,林业有害生物,0.09090909090909091
+diva-gis,co-occurs in,林业有害生物风险评估,0.09090909090909091
+diva-gis,co-occurs in,生态适生区,0.09090909090909091
+diva-gis,co-occurs in,管理系统,0.2727272727272727
+diva-gis,co-occurs in,美国白蛾,0.09090909090909091
+diva-gis,co-occurs in,高度危险区,0.09090909090909091
+drone,co-occurs in,forest disease monitoring,0.09090909090909091
+drone,co-occurs in,individual tree scale,0.09090909090909091
+drone,co-occurs in,leaf scale,0.09090909090909091
+drone,co-occurs in,sentinel-2,0.09090909090909091
+drone,co-occurs in,stand scale,0.09090909090909091
+dry stress,co-occurs in,temperature index,0.09090909090909091
+dry stress,co-occurs in,wet stress,0.09090909090909091
+ds,co-occurs in,cold stress,0.09090909090909091
+ds,co-occurs in,dry stress,0.09090909090909091
+ds,co-occurs in,heat stress,0.09090909090909091
+ds,co-occurs in,temperature index,0.09090909090909091
+ds,co-occurs in,ti,0.09090909090909091
+ds,co-occurs in,wet stress,0.09090909090909091
+ds,co-occurs in,ws,0.09090909090909091
+ds,co-occurs in,泰山松材线虫病,0.09090909090909091
+ds,co-occurs in,美国白蛾,0.09090909090909091
+early identification,co-occurs in,diagnostic spectral characteristics,0.09090909090909091
+early identification,co-occurs in,drone,0.09090909090909091
+early identification,co-occurs in,forest disease monitoring,0.09090909090909091
+early identification,co-occurs in,hyperspectral data,0.09090909090909091
+early identification,co-occurs in,individual tree scale,0.09090909090909091
+early identification,co-occurs in,leaf scale,0.09090909090909091
+early identification,co-occurs in,sentinel-2,0.09090909090909091
+early identification,co-occurs in,stand scale,0.09090909090909091
+elevation,co-occurs in,area,0.09090909090909091
+elevation,co-occurs in,prevention,0.09090909090909091
+elevation,co-occurs in,risk management strategies,0.09090909090909091
+factor,co-occurs in,compound,0.2727272727272727
+factor,co-occurs in,misc,0.09090909090909091
+factor,co-occurs in,process,0.2727272727272727
+forecast,co-occurs in,database,0.09090909090909091
+forest disease monitoring,co-occurs in,individual tree scale,0.09090909090909091
+forest disease monitoring,co-occurs in,leaf scale,0.09090909090909091
+forest disease monitoring,co-occurs in,stand scale,0.09090909090909091
+garp,co-occurs in,diva-gis,0.09090909090909091
+garp,co-occurs in,信息扩散模糊数学,0.09090909090909091
+garp,co-occurs in,易暴发流行区,0.09090909090909091
+garp,co-occurs in,松材线虫病,0.09090909090909091
+garp,co-occurs in,松材线虫病监测预警体系,0.09090909090909091
+garp,co-occurs in,林业有害生物,0.09090909090909091
+garp,co-occurs in,林业有害生物风险评估,0.09090909090909091
+garp,co-occurs in,生态适生区,0.09090909090909091
+garp,co-occurs in,生物位模型bioclim,0.09090909090909091
+garp,co-occurs in,管理系统,0.2727272727272727
+garp,co-occurs in,美国白蛾,0.09090909090909091
+garp,co-occurs in,高度危险区,0.09090909090909091
+gi,co-occurs in,cold stress,0.09090909090909091
+gi,影响 | co-occurs in,cs,0.23636363636363636
+gi,co-occurs in,dry stress,0.09090909090909091
+gi,影响 | co-occurs in,ds,0.23636363636363636
+gi,co-occurs in,green-light,0.09090909090909091
+gi,co-occurs in,heat stress,0.09090909090909091
+gi,影响 | co-occurs in,hs,0.23636363636363636
+gi,co-occurs in,near-infrared,0.09090909090909091
+gi,co-occurs in,no-man-machine-radar,0.09090909090909091
+gi,co-occurs in,red-edge1,0.09090909090909091
+gi,co-occurs in,red-light,0.09090909090909091
+gi,co-occurs in,sentinel-2,0.09090909090909091
+gi,co-occurs in,short-wave-red,0.09090909090909091
+gi,co-occurs in,temperature index,0.09090909090909091
+gi,co-occurs in,ti,0.09090909090909091
+gi,co-occurs in,wet stress,0.09090909090909091
+gi,影响 | co-occurs in,ws,0.23636363636363636
+gi,co-occurs in,泰山松材线虫病,0.09090909090909091
+gi,co-occurs in,美国白蛾,0.09090909090909091
+gis 技术,co-occurs in,中华民族的象征,0.09090909090909091
+gis 技术,co-occurs in,危害程度及造成的风险,0.09090909090909091
+gis 技术,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+gis 技术,co-occurs in,泰山森林价值,0.09090909090909091
+gis 技术,co-occurs in,风险管理措施,0.09090909090909091
+green-light,co-occurs in,no-man-machine-radar,0.09090909090909091
+green-light,co-occurs in,sentinel-2,0.09090909090909091
+heat stress,co-occurs in,dry stress,0.09090909090909091
+heat stress,co-occurs in,temperature index,0.09090909090909091
+heat stress,co-occurs in,wet stress,0.09090909090909091
+hs,co-occurs in,cold stress,0.09090909090909091
+hs,co-occurs in,dry stress,0.09090909090909091
+hs,影响 | co-occurs in,ds,0.23636363636363636
+hs,co-occurs in,heat stress,0.09090909090909091
+hs,co-occurs in,temperature index,0.09090909090909091
+hs,co-occurs in,ti,0.09090909090909091
+hs,co-occurs in,wet stress,0.09090909090909091
+hs,影响 | co-occurs in,ws,0.23636363636363636
+hs,co-occurs in,泰山松材线虫病,0.09090909090909091
+hs,co-occurs in,美国白蛾,0.09090909090909091
+humidity,co-occurs in,database,0.09090909090909091
+humidity,co-occurs in,forecast,0.09090909090909091
+humidity,co-occurs in,pesticide,0.09090909090909091
+hyperspectral data,co-occurs in,diagnostic spectral characteristics,0.09090909090909091
+hyperspectral data,co-occurs in,drone,0.18181818181818182
+hyperspectral data,co-occurs in,early identification,0.09090909090909091
+hyperspectral data,co-occurs in,forest disease monitoring,0.18181818181818182
+hyperspectral data,co-occurs in,individual tree scale,0.18181818181818182
+hyperspectral data,co-occurs in,lda algorithm,0.09090909090909091
+hyperspectral data,co-occurs in,leaf scale,0.18181818181818182
+hyperspectral data,co-occurs in,ndwi,0.09090909090909091
+hyperspectral data,co-occurs in,pine wilt disease,0.09090909090909091
+hyperspectral data,co-occurs in,sentinel-2,0.18181818181818182
+hyperspectral data,co-occurs in,stand scale,0.18181818181818182
+hyphantria cunea,co-occurs in,altitude,0.09090909090909091
+hyphantria cunea,co-occurs in,area,0.09090909090909091
+hyphantria cunea,co-occurs in,climatic conditions,0.09090909090909091
+hyphantria cunea,co-occurs in,elevation,0.09090909090909091
+hyphantria cunea,co-occurs in,monochamus alternatus,0.09090909090909091
+hyphantria cunea,co-occurs in,mount tai scenic spot,0.09090909090909091
+hyphantria cunea,co-occurs in,parasitic,0.09090909090909091
+hyphantria cunea,co-occurs in,pine (chinese),0.09090909090909091
+hyphantria cunea,co-occurs in,prevention,0.09090909090909091
+hyphantria cunea,co-occurs in,risk management strategies,0.09090909090909091
+hyphantria cunea,co-occurs in,risk value,0.09090909090909091
+hyphantria cunea,co-occurs in,temperature,0.09090909090909091
+lda algorithm,co-occurs in,diagnostic spectral characteristics,0.09090909090909091
+lda algorithm,co-occurs in,drone,0.09090909090909091
+lda algorithm,co-occurs in,early identification,0.09090909090909091
+lda algorithm,co-occurs in,forest disease monitoring,0.09090909090909091
+lda algorithm,co-occurs in,hyperspectral data,0.09090909090909091
+lda algorithm,co-occurs in,individual tree scale,0.09090909090909091
+lda algorithm,co-occurs in,leaf scale,0.09090909090909091
+lda algorithm,co-occurs in,ndwi,0.09090909090909091
+lda algorithm,co-occurs in,pine wilt disease,0.09090909090909091
+lda algorithm,co-occurs in,sentinel-2,0.09090909090909091
+lda algorithm,co-occurs in,stand scale,0.09090909090909091
+leaf scale,co-occurs in,individual tree scale,0.09090909090909091
+location,co-occurs in,compound,0.2727272727272727
+location,co-occurs in,factor,0.2727272727272727
+location,co-occurs in,misc,0.09090909090909091
+location,co-occurs in,process,0.2727272727272727
+mechanism,co-occurs in,compound,0.2727272727272727
+mechanism,co-occurs in,factor,0.2727272727272727
+mechanism,co-occurs in,location,0.2727272727272727
+mechanism,co-occurs in,misc,0.09090909090909091
+mechanism,co-occurs in,process,0.2727272727272727
+monochamus alternatus,co-occurs in,altitude,0.09090909090909091
+monochamus alternatus,co-occurs in,area,0.09090909090909091
+monochamus alternatus,co-occurs in,climatic conditions,0.09090909090909091
+monochamus alternatus,co-occurs in,elevation,0.09090909090909091
+monochamus alternatus,co-occurs in,mount tai scenic spot,0.09090909090909091
+monochamus alternatus,co-occurs in,parasitic,0.09090909090909091
+monochamus alternatus,co-occurs in,pine (chinese),0.09090909090909091
+monochamus alternatus,co-occurs in,prevention,0.09090909090909091
+monochamus alternatus,co-occurs in,risk management strategies,0.09090909090909091
+monochamus alternatus,co-occurs in,risk value,0.09090909090909091
+monochamus alternatus,co-occurs in,temperature,0.09090909090909091
+monte carlo simulation,co-occurs in,diva-gis,0.09090909090909091
+monte carlo simulation,co-occurs in,garp,0.09090909090909091
+monte carlo simulation,co-occurs in,信息扩散模糊数学,0.09090909090909091
+monte carlo simulation,co-occurs in,易暴发流行区,0.09090909090909091
+monte carlo simulation,co-occurs in,松材线虫病,0.09090909090909091
+monte carlo simulation,co-occurs in,松材线虫病监测预警体系,0.09090909090909091
+monte carlo simulation,co-occurs in,林业有害生物,0.09090909090909091
+monte carlo simulation,co-occurs in,林业有害生物风险评估,0.09090909090909091
+monte carlo simulation,co-occurs in,生态适生区,0.09090909090909091
+monte carlo simulation,co-occurs in,生物位模型bioclim,0.09090909090909091
+monte carlo simulation,co-occurs in,管理系统,0.2727272727272727
+monte carlo simulation,co-occurs in,美国白蛾,0.09090909090909091
+monte carlo simulation,co-occurs in,高度危险区,0.09090909090909091
+mount tai scenic spot,co-occurs in,altitude,0.09090909090909091
+mount tai scenic spot,co-occurs in,area,0.09090909090909091
+mount tai scenic spot,co-occurs in,climatic conditions,0.09090909090909091
+mount tai scenic spot,co-occurs in,elevation,0.09090909090909091
+mount tai scenic spot,co-occurs in,parasitic,0.09090909090909091
+mount tai scenic spot,co-occurs in,pine (chinese),0.09090909090909091
+mount tai scenic spot,co-occurs in,prevention,0.09090909090909091
+mount tai scenic spot,co-occurs in,risk management strategies,0.09090909090909091
+mount tai scenic spot,co-occurs in,risk value,0.09090909090909091
+mount tai scenic spot,co-occurs in,temperature,0.09090909090909091
+ndre,co-occurs in,gi,0.09090909090909091
+ndre,co-occurs in,green-light,0.09090909090909091
+ndre,co-occurs in,near-infrared,0.09090909090909091
+ndre,co-occurs in,ngrdi,0.09090909090909091
+ndre,co-occurs in,no-man-machine-radar,0.09090909090909091
+ndre,co-occurs in,red-edge1,0.09090909090909091
+ndre,co-occurs in,red-light,0.09090909090909091
+ndre,co-occurs in,rendvi,0.09090909090909091
+ndre,co-occurs in,rvsi,0.09090909090909091
+ndre,co-occurs in,sentinel-2,0.09090909090909091
+ndre,co-occurs in,short-wave-red,0.09090909090909091
+ndre,co-occurs in,vi11,0.09090909090909091
+ndre,co-occurs in,vi3,0.09090909090909091
+ndre,co-occurs in,vi4,0.09090909090909091
+ndwi,co-occurs in,diagnostic spectral characteristics,0.09090909090909091
+ndwi,co-occurs in,drone,0.09090909090909091
+ndwi,co-occurs in,early identification,0.09090909090909091
+ndwi,co-occurs in,forest disease monitoring,0.09090909090909091
+ndwi,co-occurs in,hyperspectral data,0.09090909090909091
+ndwi,co-occurs in,individual tree scale,0.09090909090909091
+ndwi,co-occurs in,leaf scale,0.09090909090909091
+ndwi,co-occurs in,pine wilt disease,0.09090909090909091
+ndwi,co-occurs in,sentinel-2,0.09090909090909091
+ndwi,co-occurs in,stand scale,0.09090909090909091
+near-infrared,co-occurs in,green-light,0.09090909090909091
+near-infrared,co-occurs in,no-man-machine-radar,0.09090909090909091
+near-infrared,co-occurs in,sentinel-2,0.09090909090909091
+ngrdi,co-occurs in,gi,0.09090909090909091
+ngrdi,co-occurs in,green-light,0.09090909090909091
+ngrdi,co-occurs in,near-infrared,0.09090909090909091
+ngrdi,co-occurs in,no-man-machine-radar,0.09090909090909091
+ngrdi,co-occurs in,red-edge1,0.09090909090909091
+ngrdi,co-occurs in,red-light,0.09090909090909091
+ngrdi,co-occurs in,rendvi,0.09090909090909091
+ngrdi,co-occurs in,sentinel-2,0.09090909090909091
+ngrdi,co-occurs in,short-wave-red,0.09090909090909091
+organism,co-occurs in,compound,0.2727272727272727
+organism,co-occurs in,factor,0.2727272727272727
+organism,co-occurs in,location,0.2727272727272727
+organism,co-occurs in,mechanism,0.2727272727272727
+organism,co-occurs in,misc,0.09090909090909091
+organism,co-occurs in,process,0.2727272727272727
+organism,co-occurs in,symptom,0.2727272727272727
+organism,co-occurs in,treatment,0.18181818181818182
+parasitic,co-occurs in,altitude,0.09090909090909091
+parasitic,co-occurs in,area,0.09090909090909091
+parasitic,co-occurs in,climatic conditions,0.09090909090909091
+parasitic,co-occurs in,elevation,0.09090909090909091
+parasitic,co-occurs in,prevention,0.09090909090909091
+parasitic,co-occurs in,risk management strategies,0.09090909090909091
+pest,co-occurs in,database,0.09090909090909091
+pest,co-occurs in,forecast,0.09090909090909091
+pest,co-occurs in,humidity,0.09090909090909091
+pest,co-occurs in,pesticide,0.09090909090909091
+pest,co-occurs in,rainfall,0.09090909090909091
+pest,co-occurs in,temperature,0.09090909090909091
+pesticide,co-occurs in,database,0.09090909090909091
+pesticide,co-occurs in,forecast,0.09090909090909091
+pine (chinese),co-occurs in,altitude,0.09090909090909091
+pine (chinese),co-occurs in,area,0.09090909090909091
+pine (chinese),co-occurs in,climatic conditions,0.09090909090909091
+pine (chinese),co-occurs in,elevation,0.09090909090909091
+pine (chinese),co-occurs in,parasitic,0.09090909090909091
+pine (chinese),co-occurs in,prevention,0.09090909090909091
+pine (chinese),co-occurs in,risk management strategies,0.09090909090909091
+pine (chinese),co-occurs in,risk value,0.09090909090909091
+pine (chinese),co-occurs in,temperature,0.09090909090909091
+pine wilt disease,co-occurs in,diagnostic spectral characteristics,0.09090909090909091
+pine wilt disease,co-occurs in,drone,0.09090909090909091
+pine wilt disease,co-occurs in,early identification,0.09090909090909091
+pine wilt disease,co-occurs in,forest disease monitoring,0.09090909090909091
+pine wilt disease,co-occurs in,hyperspectral data,0.09090909090909091
+pine wilt disease,co-occurs in,individual tree scale,0.09090909090909091
+pine wilt disease,co-occurs in,leaf scale,0.09090909090909091
+pine wilt disease,co-occurs in,sentinel-2,0.09090909090909091
+pine wilt disease,co-occurs in,stand scale,0.09090909090909091
+pra,co-occurs in,cold stress,0.09090909090909091
+pra,影响 | co-occurs in,cs,0.23636363636363636
+pra,co-occurs in,dry stress,0.09090909090909091
+pra,影响 | co-occurs in,ds,0.23636363636363636
+pra,分析中 | co-occurs in,gi,0.23636363636363636
+pra,co-occurs in,heat stress,0.09090909090909091
+pra,影响 | co-occurs in,hs,0.23636363636363636
+pra,co-occurs in,temperature index,0.09090909090909091
+pra,分析中 | co-occurs in,ti,0.23636363636363636
+pra,co-occurs in,wet stress,0.09090909090909091
+pra,影响 | co-occurs in,ws,0.23636363636363636
+pra,研究中 | co-occurs in,泰山松材线虫病,0.23636363636363636
+pra,研究中 | co-occurs in,美国白蛾,0.23636363636363636
+process,co-occurs in,compound,0.2727272727272727
+process,co-occurs in,misc,0.09090909090909091
+rainfall,co-occurs in,database,0.09090909090909091
+rainfall,co-occurs in,forecast,0.09090909090909091
+rainfall,co-occurs in,humidity,0.09090909090909091
+rainfall,co-occurs in,pesticide,0.09090909090909091
+red-edge1,co-occurs in,green-light,0.09090909090909091
+red-edge1,co-occurs in,near-infrared,0.09090909090909091
+red-edge1,co-occurs in,no-man-machine-radar,0.09090909090909091
+red-edge1,co-occurs in,red-light,0.09090909090909091
+red-edge1,co-occurs in,sentinel-2,0.09090909090909091
+red-edge1,co-occurs in,short-wave-red,0.09090909090909091
+red-light,co-occurs in,green-light,0.09090909090909091
+red-light,co-occurs in,near-infrared,0.09090909090909091
+red-light,co-occurs in,no-man-machine-radar,0.09090909090909091
+red-light,co-occurs in,sentinel-2,0.09090909090909091
+red-light,co-occurs in,short-wave-red,0.09090909090909091
+rendvi,co-occurs in,gi,0.09090909090909091
+rendvi,co-occurs in,green-light,0.09090909090909091
+rendvi,co-occurs in,near-infrared,0.09090909090909091
+rendvi,co-occurs in,no-man-machine-radar,0.09090909090909091
+rendvi,co-occurs in,red-edge1,0.09090909090909091
+rendvi,co-occurs in,red-light,0.09090909090909091
+rendvi,co-occurs in,sentinel-2,0.09090909090909091
+rendvi,co-occurs in,short-wave-red,0.09090909090909091
+risk management strategies,co-occurs in,prevention,0.09090909090909091
+risk value,co-occurs in,altitude,0.09090909090909091
+risk value,co-occurs in,area,0.09090909090909091
+risk value,co-occurs in,climatic conditions,0.09090909090909091
+risk value,co-occurs in,elevation,0.09090909090909091
+risk value,co-occurs in,parasitic,0.09090909090909091
+risk value,co-occurs in,prevention,0.09090909090909091
+risk value,co-occurs in,risk management strategies,0.09090909090909091
+risk value,co-occurs in,temperature,0.09090909090909091
+rvsi,co-occurs in,gi,0.09090909090909091
+rvsi,co-occurs in,green-light,0.09090909090909091
+rvsi,co-occurs in,near-infrared,0.09090909090909091
+rvsi,co-occurs in,ngrdi,0.09090909090909091
+rvsi,co-occurs in,no-man-machine-radar,0.09090909090909091
+rvsi,co-occurs in,red-edge1,0.09090909090909091
+rvsi,co-occurs in,red-light,0.09090909090909091
+rvsi,co-occurs in,rendvi,0.09090909090909091
+rvsi,co-occurs in,sentinel-2,0.09090909090909091
+rvsi,co-occurs in,short-wave-red,0.09090909090909091
+rvsi,co-occurs in,vi11,0.09090909090909091
+rvsi,co-occurs in,vi3,0.09090909090909091
+rvsi,co-occurs in,vi4,0.09090909090909091
+sentinel-2,co-occurs in,diagnostic spectral characteristics,0.09090909090909091
+sentinel-2,co-occurs in,drone,0.09090909090909091
+sentinel-2,co-occurs in,early identification,0.09090909090909091
+sentinel-2,co-occurs in,forest disease monitoring,0.18181818181818182
+sentinel-2,co-occurs in,hyperspectral data,0.18181818181818182
+sentinel-2,co-occurs in,individual tree scale,0.18181818181818182
+sentinel-2,co-occurs in,lda algorithm,0.09090909090909091
+sentinel-2,co-occurs in,leaf scale,0.18181818181818182
+sentinel-2,co-occurs in,ndwi,0.09090909090909091
+sentinel-2,co-occurs in,no-man-machine-radar,0.09090909090909091
+sentinel-2,co-occurs in,pine wilt disease,0.09090909090909091
+sentinel-2,co-occurs in,stand scale,0.18181818181818182
+short-wave-red,co-occurs in,green-light,0.09090909090909091
+short-wave-red,co-occurs in,near-infrared,0.09090909090909091
+short-wave-red,co-occurs in,no-man-machine-radar,0.09090909090909091
+short-wave-red,co-occurs in,sentinel-2,0.09090909090909091
+stand scale,co-occurs in,individual tree scale,0.09090909090909091
+stand scale,co-occurs in,leaf scale,0.09090909090909091
+symptom,co-occurs in,compound,0.2727272727272727
+symptom,co-occurs in,factor,0.2727272727272727
+symptom,co-occurs in,location,0.2727272727272727
+symptom,co-occurs in,mechanism,0.2727272727272727
+symptom,co-occurs in,misc,0.09090909090909091
+symptom,co-occurs in,process,0.2727272727272727
+symptom,co-occurs in,treatment,0.18181818181818182
+temperature,co-occurs in,altitude,0.09090909090909091
+temperature,co-occurs in,area,0.09090909090909091
+temperature,co-occurs in,climatic conditions,0.09090909090909091
+temperature,co-occurs in,database,0.09090909090909091
+temperature,co-occurs in,elevation,0.09090909090909091
+temperature,co-occurs in,forecast,0.09090909090909091
+temperature,co-occurs in,humidity,0.09090909090909091
+temperature,co-occurs in,parasitic,0.09090909090909091
+temperature,co-occurs in,pesticide,0.09090909090909091
+temperature,co-occurs in,prevention,0.09090909090909091
+temperature,co-occurs in,rainfall,0.09090909090909091
+temperature,co-occurs in,risk management strategies,0.09090909090909091
+ti,co-occurs in,cold stress,0.09090909090909091
+ti,co-occurs in,dry stress,0.09090909090909091
+ti,co-occurs in,heat stress,0.09090909090909091
+ti,计算,pra,0.14545454545454545
+ti,co-occurs in,temperature index,0.09090909090909091
+ti,co-occurs in,wet stress,0.09090909090909091
+ti,co-occurs in,泰山松材线虫病,0.09090909090909091
+ti,co-occurs in,美国白蛾,0.09090909090909091
+treatment,co-occurs in,compound,0.18181818181818182
+treatment,co-occurs in,factor,0.18181818181818182
+treatment,co-occurs in,location,0.18181818181818182
+treatment,co-occurs in,mechanism,0.18181818181818182
+treatment,co-occurs in,misc,0.09090909090909091
+treatment,co-occurs in,process,0.18181818181818182
+vi11,co-occurs in,gi,0.09090909090909091
+vi11,co-occurs in,green-light,0.09090909090909091
+vi11,co-occurs in,near-infrared,0.09090909090909091
+vi11,co-occurs in,ngrdi,0.09090909090909091
+vi11,co-occurs in,no-man-machine-radar,0.09090909090909091
+vi11,co-occurs in,red-edge1,0.09090909090909091
+vi11,co-occurs in,red-light,0.09090909090909091
+vi11,co-occurs in,rendvi,0.09090909090909091
+vi11,co-occurs in,sentinel-2,0.09090909090909091
+vi11,co-occurs in,short-wave-red,0.09090909090909091
+vi11,co-occurs in,vi3,0.09090909090909091
+vi11,co-occurs in,vi4,0.09090909090909091
+vi3,co-occurs in,gi,0.09090909090909091
+vi3,co-occurs in,green-light,0.09090909090909091
+vi3,co-occurs in,near-infrared,0.09090909090909091
+vi3,co-occurs in,ngrdi,0.09090909090909091
+vi3,co-occurs in,no-man-machine-radar,0.09090909090909091
+vi3,co-occurs in,red-edge1,0.09090909090909091
+vi3,co-occurs in,red-light,0.09090909090909091
+vi3,co-occurs in,rendvi,0.09090909090909091
+vi3,co-occurs in,sentinel-2,0.09090909090909091
+vi3,co-occurs in,short-wave-red,0.09090909090909091
+vi3,co-occurs in,vi4,0.09090909090909091
+vi4,co-occurs in,gi,0.09090909090909091
+vi4,co-occurs in,green-light,0.09090909090909091
+vi4,co-occurs in,near-infrared,0.09090909090909091
+vi4,co-occurs in,ngrdi,0.09090909090909091
+vi4,co-occurs in,no-man-machine-radar,0.09090909090909091
+vi4,co-occurs in,red-edge1,0.09090909090909091
+vi4,co-occurs in,red-light,0.09090909090909091
+vi4,co-occurs in,rendvi,0.09090909090909091
+vi4,co-occurs in,sentinel-2,0.09090909090909091
+vi4,co-occurs in,short-wave-red,0.09090909090909091
+wet stress,co-occurs in,temperature index,0.09090909090909091
+ws,co-occurs in,cold stress,0.09090909090909091
+ws,co-occurs in,dry stress,0.09090909090909091
+ws,co-occurs in,heat stress,0.09090909090909091
+ws,co-occurs in,temperature index,0.09090909090909091
+ws,co-occurs in,ti,0.09090909090909091
+ws,co-occurs in,wet stress,0.09090909090909091
+ws,co-occurs in,泰山松材线虫病,0.09090909090909091
+ws,co-occurs in,美国白蛾,0.09090909090909091
+信息扩散模糊数学,co-occurs in,diva-gis,0.09090909090909091
+信息扩散模糊数学,co-occurs in,易暴发流行区,0.09090909090909091
+信息扩散模糊数学,co-occurs in,松材线虫病,0.09090909090909091
+信息扩散模糊数学,co-occurs in,松材线虫病监测预警体系,0.09090909090909091
+信息扩散模糊数学,co-occurs in,林业有害生物,0.09090909090909091
+信息扩散模糊数学,co-occurs in,林业有害生物风险评估,0.09090909090909091
+信息扩散模糊数学,co-occurs in,生态适生区,0.09090909090909091
+信息扩散模糊数学,co-occurs in,生物位模型bioclim,0.09090909090909091
+信息扩散模糊数学,co-occurs in,管理系统,0.2727272727272727
+信息扩散模糊数学,co-occurs in,美国白蛾,0.09090909090909091
+信息扩散模糊数学,co-occurs in,高度危险区,0.09090909090909091
+健康,co-occurs in,一阶导数,0.09090909090909091
+健康,co-occurs in,疾病,0.09090909090909091
+健康,co-occurs in,管理系统,0.18181818181818182
+健康,co-occurs in,高光谱数据,0.09090909090909091
+光谱,co-occurs in,卫星,0.09090909090909091
+光谱,co-occurs in,无人机,0.09090909090909091
+光谱,co-occurs in,森林病害,0.09090909090909091
+光谱,co-occurs in,管理系统,0.18181818181818182
+光谱,co-occurs in,高光谱,0.09090909090909091
+卫星,co-occurs in,森林病害,0.09090909090909091
+卫星,co-occurs in,管理系统,0.18181818181818182
+危害程度及造成的风险,co-occurs in,中华民族的象征,0.09090909090909091
+危害程度及造成的风险,co-occurs in,泰山森林价值,0.09090909090909091
+国白蛾,co-occurs in,gis 技术,0.09090909090909091
+国白蛾,co-occurs in,中华民族的象征,0.09090909090909091
+国白蛾,co-occurs in,危害程度及造成的风险,0.09090909090909091
+国白蛾,co-occurs in,媒介昆虫的情况,0.09090909090909091
+国白蛾,co-occurs in,寄主的感病性,0.09090909090909091
+国白蛾,co-occurs in,平均温度,0.09090909090909091
+国白蛾,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+国白蛾,co-occurs in,松材线虫病,0.09090909090909091
+国白蛾,co-occurs in,松褐天牛,0.09090909090909091
+国白蛾,co-occurs in,泰山森林价值,0.09090909090909091
+国白蛾,co-occurs in,美国白蛾,0.09090909090909091
+国白蛾,co-occurs in,美国白蛾预警技术研究,0.09090909090909091
+国白蛾,co-occurs in,褐幽天牛,0.09090909090909091
+国白蛾,co-occurs in,豫西南松材线虫病监测预警体系,0.09090909090909091
+国白蛾,co-occurs in,风险管理技术体系,0.09090909090909091
+国白蛾,co-occurs in,风险管理措施,0.09090909090909091
+媒介昆虫,co-occurs in,松材线虫病,0.09090909090909091
+媒介昆虫,co-occurs in,疾病,0.09090909090909091
+媒介昆虫,co-occurs in,降雨量,0.09090909090909091
+媒介昆虫的情况,co-occurs in,gis 技术,0.09090909090909091
+媒介昆虫的情况,co-occurs in,中华民族的象征,0.09090909090909091
+媒介昆虫的情况,co-occurs in,危害程度及造成的风险,0.09090909090909091
+媒介昆虫的情况,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+媒介昆虫的情况,co-occurs in,泰山森林价值,0.09090909090909091
+媒介昆虫的情况,co-occurs in,风险管理措施,0.09090909090909091
+寄主的感病性,co-occurs in,gis 技术,0.09090909090909091
+寄主的感病性,co-occurs in,中华民族的象征,0.09090909090909091
+寄主的感病性,co-occurs in,危害程度及造成的风险,0.09090909090909091
+寄主的感病性,co-occurs in,媒介昆虫的情况,0.09090909090909091
+寄主的感病性,co-occurs in,平均温度,0.09090909090909091
+寄主的感病性,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+寄主的感病性,co-occurs in,泰山森林价值,0.09090909090909091
+寄主的感病性,co-occurs in,风险管理措施,0.09090909090909091
+平均温度,co-occurs in,gis 技术,0.09090909090909091
+平均温度,co-occurs in,中华民族的象征,0.09090909090909091
+平均温度,co-occurs in,危害程度及造成的风险,0.09090909090909091
+平均温度,co-occurs in,媒介昆虫的情况,0.09090909090909091
+平均温度,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+平均温度,co-occurs in,泰山森林价值,0.09090909090909091
+平均温度,co-occurs in,风险管理措施,0.09090909090909091
+政 治、经济、公民的素质,co-occurs in,中华民族的象征,0.09090909090909091
+政 治、经济、公民的素质,co-occurs in,危害程度及造成的风险,0.09090909090909091
+政 治、经济、公民的素质,co-occurs in,泰山森林价值,0.09090909090909091
+无人机,co-occurs in,卫星,0.09090909090909091
+无人机,co-occurs in,森林病害,0.09090909090909091
+无人机,co-occurs in,管理系统,0.18181818181818182
+无人机,相关,高光谱数据,0.14545454545454545
+无人机高光谱数据获取成本,co-occurs in,星载高光谱卫星,0.09090909090909091
+无人机高光谱数据获取成本,co-occurs in,病害大规模爆发,0.09090909090909091
+无人机高光谱数据获取成本,co-occurs in,病害早期识别潜力,0.09090909090909091
+无人机高光谱数据获取成本,co-occurs in,经济成本,0.09090909090909091
+无人机高光谱数据获取成本,co-occurs in,覆盖面积,0.09090909090909091
+易暴发流行区,co-occurs in,松材线虫病,0.09090909090909091
+易暴发流行区,co-occurs in,林业有害生物风险评估,0.09090909090909091
+易暴发流行区,co-occurs in,管理系统,0.09090909090909091
+易暴发流行区,co-occurs in,美国白蛾,0.09090909090909091
+易暴发流行区,co-occurs in,高度危险区,0.09090909090909091
+星载高光谱卫星,co-occurs in,病害大规模爆发,0.09090909090909091
+星载高光谱卫星,co-occurs in,病害早期识别潜力,0.09090909090909091
+星载高光谱卫星,co-occurs in,经济成本,0.09090909090909091
+星载高光谱卫星,co-occurs in,覆盖面积,0.09090909090909091
+松材线虫病,co-occurs in,gis 技术,0.09090909090909091
+松材线虫病,co-occurs in,中华民族的象征,0.09090909090909091
+松材线虫病,co-occurs in,光谱,0.09090909090909091
+松材线虫病,co-occurs in,卫星,0.09090909090909091
+松材线虫病,co-occurs in,危害程度及造成的风险,0.09090909090909091
+松材线虫病,co-occurs in,媒介昆虫的情况,0.09090909090909091
+松材线虫病,co-occurs in,寄主的感病性,0.09090909090909091
+松材线虫病,co-occurs in,平均温度,0.09090909090909091
+松材线虫病,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+松材线虫病,co-occurs in,无人机,0.09090909090909091
+松材线虫病,co-occurs in,林业有害生物风险评估,0.09090909090909091
+松材线虫病,co-occurs in,森林病害,0.09090909090909091
+松材线虫病,co-occurs in,泰山森林价值,0.09090909090909091
+松材线虫病,co-occurs in,疾病,0.09090909090909091
+松材线虫病,co-occurs in,管理系统,0.5454545454545454
+松材线虫病,co-occurs in,美国白蛾,0.09090909090909091
+松材线虫病,co-occurs in,美国白蛾预警技术研究,0.09090909090909091
+松材线虫病,co-occurs in,豫西南松材线虫病监测预警体系,0.09090909090909091
+松材线虫病,co-occurs in,风险管理技术体系,0.09090909090909091
+松材线虫病,co-occurs in,风险管理措施,0.09090909090909091
+松材线虫病,co-occurs in,高光谱,0.09090909090909091
+松材线虫病监测预警体系,co-occurs in,易暴发流行区,0.09090909090909091
+松材线虫病监测预警体系,co-occurs in,松材线虫病,0.09090909090909091
+松材线虫病监测预警体系,co-occurs in,林业有害生物,0.09090909090909091
+松材线虫病监测预警体系,co-occurs in,林业有害生物风险评估,0.09090909090909091
+松材线虫病监测预警体系,co-occurs in,生态适生区,0.09090909090909091
+松材线虫病监测预警体系,co-occurs in,管理系统,0.09090909090909091
+松材线虫病监测预警体系,co-occurs in,美国白蛾,0.09090909090909091
+松材线虫病监测预警体系,co-occurs in,高度危险区,0.09090909090909091
+松褐天牛,co-occurs in,gis 技术,0.09090909090909091
+松褐天牛,co-occurs in,中华民族的象征,0.09090909090909091
+松褐天牛,co-occurs in,危害程度及造成的风险,0.09090909090909091
+松褐天牛,co-occurs in,媒介昆虫的情况,0.09090909090909091
+松褐天牛,co-occurs in,寄主的感病性,0.09090909090909091
+松褐天牛,co-occurs in,平均温度,0.09090909090909091
+松褐天牛,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+松褐天牛,co-occurs in,松材线虫病,0.09090909090909091
+松褐天牛,co-occurs in,泰山森林价值,0.09090909090909091
+松褐天牛,co-occurs in,美国白蛾预警技术研究,0.09090909090909091
+松褐天牛,co-occurs in,褐幽天牛,0.09090909090909091
+松褐天牛,co-occurs in,豫西南松材线虫病监测预警体系,0.09090909090909091
+松褐天牛,co-occurs in,风险管理技术体系,0.09090909090909091
+松褐天牛,co-occurs in,风险管理措施,0.09090909090909091
+林业有害生物,co-occurs in,易暴发流行区,0.09090909090909091
+林业有害生物,co-occurs in,松材线虫病,0.09090909090909091
+林业有害生物,co-occurs in,林业有害生物风险评估,0.09090909090909091
+林业有害生物,co-occurs in,生态适生区,0.09090909090909091
+林业有害生物,co-occurs in,管理系统,0.09090909090909091
+林业有害生物,co-occurs in,美国白蛾,0.09090909090909091
+林业有害生物,co-occurs in,高度危险区,0.09090909090909091
+林业有害生物风险评估,co-occurs in,管理系统,0.09090909090909091
+森林病害,co-occurs in,管理系统,0.18181818181818182
+泰山松材线虫病,co-occurs in,cold stress,0.09090909090909091
+泰山松材线虫病,co-occurs in,dry stress,0.09090909090909091
+泰山松材线虫病,co-occurs in,heat stress,0.09090909090909091
+泰山松材线虫病,co-occurs in,temperature index,0.09090909090909091
+泰山松材线虫病,co-occurs in,wet stress,0.09090909090909091
+泰山松材线虫病,co-occurs in,美国白蛾,0.09090909090909091
+泰山森林价值,co-occurs in,中华民族的象征,0.09090909090909091
+泰山风景区,co-occurs in,媒介昆虫,0.09090909090909091
+泰山风景区,co-occurs in,松材线虫病,0.09090909090909091
+泰山风景区,co-occurs in,疾病,0.09090909090909091
+泰山风景区,co-occurs in,降雨量,0.09090909090909091
+生态适生区,co-occurs in,易暴发流行区,0.09090909090909091
+生态适生区,co-occurs in,松材线虫病,0.09090909090909091
+生态适生区,co-occurs in,林业有害生物风险评估,0.09090909090909091
+生态适生区,co-occurs in,管理系统,0.09090909090909091
+生态适生区,co-occurs in,美国白蛾,0.09090909090909091
+生态适生区,co-occurs in,高度危险区,0.09090909090909091
+生物位模型bioclim,co-occurs in,diva-gis,0.09090909090909091
+生物位模型bioclim,co-occurs in,易暴发流行区,0.09090909090909091
+生物位模型bioclim,co-occurs in,松材线虫病,0.09090909090909091
+生物位模型bioclim,co-occurs in,松材线虫病监测预警体系,0.09090909090909091
+生物位模型bioclim,co-occurs in,林业有害生物,0.09090909090909091
+生物位模型bioclim,co-occurs in,林业有害生物风险评估,0.09090909090909091
+生物位模型bioclim,co-occurs in,生态适生区,0.09090909090909091
+生物位模型bioclim,co-occurs in,管理系统,0.2727272727272727
+生物位模型bioclim,co-occurs in,美国白蛾,0.09090909090909091
+生物位模型bioclim,co-occurs in,高度危险区,0.09090909090909091
+疾病,co-occurs in,一阶导数,0.18181818181818182
+疾病,co-occurs in,健康,0.09090909090909091
+疾病,co-occurs in,光谱,0.18181818181818182
+疾病,co-occurs in,卫星,0.18181818181818182
+疾病,co-occurs in,无人机,0.18181818181818182
+疾病,co-occurs in,松材线虫病,0.18181818181818182
+疾病,co-occurs in,森林病害,0.18181818181818182
+疾病,co-occurs in,管理系统,1.0
+疾病,co-occurs in,赤松,0.18181818181818182
+疾病,co-occurs in,降雨量,0.09090909090909091
+疾病,co-occurs in,高光谱,0.18181818181818182
+疾病,co-occurs in,高光谱数据,0.18181818181818182
+病害早期识别潜力,co-occurs in,病害大规模爆发,0.09090909090909091
+病害早期识别潜力,co-occurs in,经济成本,0.09090909090909091
+病害早期识别潜力,co-occurs in,覆盖面积,0.09090909090909091
+管理系统,co-occurs in,一阶导数,0.18181818181818182
+管理系统,co-occurs in,光谱,0.2727272727272727
+管理系统,co-occurs in,卫星,0.2727272727272727
+管理系统,co-occurs in,无人机,0.2727272727272727
+管理系统,co-occurs in,易暴发流行区,0.18181818181818182
+管理系统,co-occurs in,松材线虫病,0.18181818181818182
+管理系统,co-occurs in,松材线虫病监测预警体系,0.18181818181818182
+管理系统,co-occurs in,林业有害生物,0.18181818181818182
+管理系统,co-occurs in,林业有害生物风险评估,0.18181818181818182
+管理系统,co-occurs in,森林病害,0.2727272727272727
+管理系统,co-occurs in,生态适生区,0.18181818181818182
+管理系统,co-occurs in,疾病,0.2727272727272727
+管理系统,co-occurs in,美国白蛾,0.18181818181818182
+管理系统,co-occurs in,高光谱,0.2727272727272727
+管理系统,co-occurs in,高光谱数据,0.09090909090909091
+管理系统,co-occurs in,高度危险区,0.18181818181818182
+经济成本,co-occurs in,病害大规模爆发,0.09090909090909091
+美国白蛾,co-occurs in,cold stress,0.09090909090909091
+美国白蛾,co-occurs in,dry stress,0.09090909090909091
+美国白蛾,co-occurs in,gis 技术,0.09090909090909091
+美国白蛾,co-occurs in,heat stress,0.09090909090909091
+美国白蛾,co-occurs in,temperature index,0.09090909090909091
+美国白蛾,co-occurs in,wet stress,0.09090909090909091
+美国白蛾,co-occurs in,中华民族的象征,0.09090909090909091
+美国白蛾,co-occurs in,危害程度及造成的风险,0.09090909090909091
+美国白蛾,co-occurs in,媒介昆虫的情况,0.09090909090909091
+美国白蛾,co-occurs in,寄主的感病性,0.09090909090909091
+美国白蛾,co-occurs in,平均温度,0.09090909090909091
+美国白蛾,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+美国白蛾,co-occurs in,松材线虫病,0.09090909090909091
+美国白蛾,co-occurs in,松褐天牛,0.09090909090909091
+美国白蛾,co-occurs in,林业有害生物风险评估,0.09090909090909091
+美国白蛾,co-occurs in,泰山森林价值,0.09090909090909091
+美国白蛾,co-occurs in,管理系统,0.09090909090909091
+美国白蛾,co-occurs in,美国白蛾预警技术研究,0.09090909090909091
+美国白蛾,co-occurs in,褐幽天牛,0.09090909090909091
+美国白蛾,co-occurs in,豫西南松材线虫病监测预警体系,0.09090909090909091
+美国白蛾,co-occurs in,风险管理技术体系,0.09090909090909091
+美国白蛾,co-occurs in,风险管理措施,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,gis 技术,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,中华民族的象征,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,危害程度及造成的风险,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,媒介昆虫的情况,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,寄主的感病性,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,平均温度,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,泰山森林价值,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,豫西南松材线虫病监测预警体系,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,风险管理技术体系,0.09090909090909091
+美国白蛾预警技术研究,co-occurs in,风险管理措施,0.09090909090909091
+褐幽天牛,co-occurs in,gis 技术,0.09090909090909091
+褐幽天牛,co-occurs in,中华民族的象征,0.09090909090909091
+褐幽天牛,co-occurs in,危害程度及造成的风险,0.09090909090909091
+褐幽天牛,co-occurs in,媒介昆虫的情况,0.09090909090909091
+褐幽天牛,co-occurs in,寄主的感病性,0.09090909090909091
+褐幽天牛,co-occurs in,平均温度,0.09090909090909091
+褐幽天牛,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+褐幽天牛,co-occurs in,松材线虫病,0.09090909090909091
+褐幽天牛,co-occurs in,泰山森林价值,0.09090909090909091
+褐幽天牛,co-occurs in,美国白蛾预警技术研究,0.09090909090909091
+褐幽天牛,co-occurs in,豫西南松材线虫病监测预警体系,0.09090909090909091
+褐幽天牛,co-occurs in,风险管理技术体系,0.09090909090909091
+褐幽天牛,co-occurs in,风险管理措施,0.09090909090909091
+覆盖面积,co-occurs in,病害大规模爆发,0.09090909090909091
+覆盖面积,co-occurs in,经济成本,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,gis 技术,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,中华民族的象征,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,危害程度及造成的风险,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,媒介昆虫的情况,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,寄主的感病性,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,平均温度,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,泰山森林价值,0.09090909090909091
+豫西南松材线虫病监测预警体系,co-occurs in,风险管理措施,0.09090909090909091
+赤松,co-occurs in,一阶导数,0.18181818181818182
+赤松,co-occurs in,健康,0.18181818181818182
+赤松,co-occurs in,疾病,0.18181818181818182
+赤松,co-occurs in,管理系统,0.36363636363636365
+赤松,co-occurs in,高光谱数据,0.18181818181818182
+降雨量,co-occurs in,光谱,0.09090909090909091
+降雨量,co-occurs in,卫星,0.09090909090909091
+降雨量,co-occurs in,无人机,0.09090909090909091
+降雨量,co-occurs in,松材线虫病,0.18181818181818182
+降雨量,co-occurs in,森林病害,0.09090909090909091
+降雨量,co-occurs in,疾病,0.18181818181818182
+降雨量,co-occurs in,管理系统,0.45454545454545453
+降雨量,co-occurs in,高光谱,0.09090909090909091
+风险性评估方法,co-occurs in,媒介昆虫,0.09090909090909091
+风险性评估方法,co-occurs in,松材线虫病,0.09090909090909091
+风险性评估方法,co-occurs in,泰山风景区,0.09090909090909091
+风险性评估方法,co-occurs in,疾病,0.09090909090909091
+风险性评估方法,co-occurs in,降雨量,0.09090909090909091
+风险管理技术体系,co-occurs in,gis 技术,0.09090909090909091
+风险管理技术体系,co-occurs in,中华民族的象征,0.09090909090909091
+风险管理技术体系,co-occurs in,危害程度及造成的风险,0.09090909090909091
+风险管理技术体系,co-occurs in,媒介昆虫的情况,0.09090909090909091
+风险管理技术体系,co-occurs in,寄主的感病性,0.09090909090909091
+风险管理技术体系,co-occurs in,平均温度,0.09090909090909091
+风险管理技术体系,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+风险管理技术体系,co-occurs in,泰山森林价值,0.09090909090909091
+风险管理技术体系,co-occurs in,豫西南松材线虫病监测预警体系,0.09090909090909091
+风险管理技术体系,co-occurs in,风险管理措施,0.09090909090909091
+风险管理措施,co-occurs in,中华民族的象征,0.09090909090909091
+风险管理措施,co-occurs in,危害程度及造成的风险,0.09090909090909091
+风险管理措施,co-occurs in,政 治、经济、公民的素质,0.09090909090909091
+风险管理措施,co-occurs in,泰山森林价值,0.09090909090909091
+高光谱,co-occurs in,卫星,0.09090909090909091
+高光谱,co-occurs in,无人机,0.09090909090909091
+高光谱,co-occurs in,森林病害,0.09090909090909091
+高光谱,co-occurs in,管理系统,0.18181818181818182
+高光谱数据,co-occurs in,一阶导数,0.09090909090909091
+高光谱数据,co-occurs in,无人机高光谱数据获取成本,0.09090909090909091
+高光谱数据,co-occurs in,星载高光谱卫星,0.09090909090909091
+高光谱数据,co-occurs in,病害大规模爆发,0.09090909090909091
+高光谱数据,co-occurs in,病害早期识别潜力,0.09090909090909091
+高光谱数据,co-occurs in,管理系统,0.09090909090909091
+高光谱数据,co-occurs in,经济成本,0.09090909090909091
+高光谱数据,co-occurs in,覆盖面积,0.09090909090909091
+高度危险区,co-occurs in,松材线虫病,0.09090909090909091
+高度危险区,co-occurs in,林业有害生物风险评估,0.09090909090909091
+高度危险区,co-occurs in,管理系统,0.09090909090909091
+高度危险区,co-occurs in,美国白蛾,0.09090909090909091
