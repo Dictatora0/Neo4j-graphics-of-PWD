@@ -72,3 +72,15 @@ output/*.md
 
 # 归档目录（保留历史记录）
 # archive/
+
+# 大文件和临时文件（加快推送速度）
+*.zip
+output/triples/*.csv
+output/triples/*.json
+output/triples/*.ntriples
+output/triples/*.tsv
+output/triples/*.turtle
+output/triples/*.txt
+output/*.csv
+output/neo4j_backups/
+PWD_Colab_Upload/
