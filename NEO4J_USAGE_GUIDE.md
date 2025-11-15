@@ -1,6 +1,6 @@
 # Neo4j 知识图谱使用指南
 
-## 🚀 快速开始
+## 快速开始
 
 ### 1. 启动 Neo4j
 
@@ -25,7 +25,7 @@ neo4j start
 4. 粘贴到样式编辑器
 5. 点击**保存**
 
-## 📊 常用查询
+## 常用查询
 
 ### 基础查询
 
@@ -158,36 +158,36 @@ WHERE a.name IN ['pine wilt disease', 'bursaphelenchus xylophilus', 'monochamus 
 RETURN a, r, b
 ```
 
-## 🎨 可视化优化
+## 可视化优化
 
 ### 节点颜色编码
 
-| 类型       | 颜色    | 含义               |
-| ---------- | ------- | ------------------ |
-| Pathogen   | 🔴 红色 | 病原体（松材线虫） |
-| Disease    | 🟠 橙色 | 疾病（松材线虫病） |
-| Vector     | 🔵 青色 | 媒介（天牛）       |
-| Host       | 🟢 绿色 | 寄主（松树）       |
-| Location   | 🟡 黄色 | 地点               |
-| Technology | 🔷 蓝色 | 技术/方法          |
-| Control    | 🟢 浅绿 | 防治措施           |
+| 类型       | 颜色 | 含义               |
+| ---------- | ---- | ------------------ |
+| Pathogen   | 红色 | 病原体（松材线虫） |
+| Disease    | 橙色 | 疾病（松材线虫病） |
+| Vector     | 青色 | 媒介（天牛）       |
+| Host       | 绿色 | 寄主（松树）       |
+| Location   | 黄色 | 地点               |
+| Technology | 蓝色 | 技术/方法          |
+| Control    | 浅绿 | 防治措施           |
 
 ### 关系颜色编码
 
-| 关系           | 颜色    | 宽度 | 含义 |
-| -------------- | ------- | ---- | ---- |
-| PARASITIZES    | 🔴 红色 | 粗   | 寄生 |
-| TRANSMITS      | 🟠 橙色 | 粗   | 传播 |
-| CAUSES         | 🔴 红色 | 粗   | 引起 |
-| INFECTS        | 🔴 红色 | 粗   | 感染 |
-| AFFECTS        | 🟡 黄色 | 中   | 影响 |
-| FEEDS_ON       | 🔵 青色 | 中   | 取食 |
-| CARRIES        | 🔵 青色 | 中   | 携带 |
-| CONTROLS       | 🟢 绿色 | 中   | 防治 |
-| MONITORS       | 🔷 蓝色 | 中   | 监测 |
-| CO_OCCURS_WITH | ⚪ 灰色 | 细   | 共现 |
+| 关系           | 颜色 | 宽度 | 含义 |
+| -------------- | ---- | ---- | ---- |
+| PARASITIZES    | 红色 | 粗   | 寄生 |
+| TRANSMITS      | 橙色 | 粗   | 传播 |
+| CAUSES         | 红色 | 粗   | 引起 |
+| INFECTS        | 红色 | 粗   | 感染 |
+| AFFECTS        | 黄色 | 中   | 影响 |
+| FEEDS_ON       | 青色 | 中   | 取食 |
+| CARRIES        | 青色 | 中   | 携带 |
+| CONTROLS       | 绿色 | 中   | 防治 |
+| MONITORS       | 蓝色 | 中   | 监测 |
+| CO_OCCURS_WITH | 灰色 | 细   | 共现 |
 
-## 📈 数据统计
+## 数据统计
 
 ### 当前数据规模
 
@@ -219,7 +219,7 @@ RETURN a, r, b
 9. CAUSES (引起): 4 条
 10. USED_FOR (用于): 3 条
 
-## 🔍 关键节点
+## 关键节点
 
 ### 度数最高的节点
 
@@ -229,7 +229,7 @@ RETURN a, r, b
 4. **pinus thunbergii** (黑松) - 度数: 45
 5. **leaf** (叶片) - 度数: 41
 
-## 💡 查询技巧
+## 查询技巧
 
 ### 1. 使用参数化查询
 
@@ -260,7 +260,7 @@ EXPLAIN MATCH (n) RETURN n
 PROFILE MATCH (n) RETURN n
 ```
 
-## 🚨 常见问题
+## 常见问题
 
 ### Q: 如何导出查询结果？
 
@@ -294,16 +294,16 @@ CREATE (n:NewType {name: 'new_node', property: 'value'})
 RETURN n
 ```
 
-## 📚 更多资源
+## 更多资源
 
 - [Neo4j 官方文档](https://neo4j.com/docs/)
 - [Cypher 查询语言指南](https://neo4j.com/docs/cypher-manual/current/)
 - [Neo4j Browser 用户指南](https://neo4j.com/docs/browser-manual/current/)
 
-## 🎯 下一步
+## 下一步
 
-1. ✅ 已导入数据到 Neo4j
-2. ✅ 已应用样式配置
-3. 📌 建议：在 Neo4j Browser 中探索数据
-4. 📌 建议：根据需要调整样式
-5. 📌 建议：创建自定义查询和报告
+1. 已导入数据到 Neo4j
+2. 已应用样式配置
+3. 建议：在 Neo4j Browser 中探索数据
+4. 建议：根据需要调整样式
+5. 建议：创建自定义查询和报告

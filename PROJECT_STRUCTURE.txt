@@ -1,0 +1,126 @@
+================================================================================
+松材线虫病知识图谱项目 - 最终项目结构
+================================================================================
+
+项目根目录结构：
+
+PWD/
+│
+├── 📋 文档文件
+│   ├── README.md                    # 项目主文档（已更新）
+│   ├── QUICK_START.md               # 快速开始指南
+│   ├── FINAL_REPORT.md              # 课程最终报告
+│   ├── NEO4J_USAGE_GUIDE.md         # Neo4j 使用指南
+│   ├── PROJECT_FILES.md             # 项目文件说明
+│   └── 加速优化说明.md              # 性能优化说明
+│
+├── 🔧 核心脚本（主流程）
+│   ├── main.py                      # 主入口程序
+│   ├── pdf_extractor.py             # PDF 文本提取
+│   ├── concept_extractor.py         # 实体识别
+│   ├── concept_deduplicator.py      # 实体去重
+│   ├── entity_linker.py             # 实体链接
+│   ├── data_cleaner.py              # 数据清洗
+│   ├── enhanced_pipeline.py         # 增强型管道
+│   ├── neo4j_generator.py           # Neo4j 导入文件生成
+│   ├── neo4j_manager.py             # Neo4j 数据库管理
+│   └── parallel_processor.py        # 并行处理
+│
+├── 🧪 语义体检与最终导入脚本
+│   ├── bio_semantic_review.py       # 语义体检脚本
+│   ├── import_to_neo4j_final.py     # 最终导入脚本
+│   ├── export_neo4j_to_csv.py       # 导出脚本
+│   ├── verify_neo4j_data.py         # 数据验证脚本
+│   ├── fix_semantic_triples.py      # 语义修复脚本
+│   ├── refine_node_labels.py        # 节点标签优化
+│   ├── fix_remaining_relations.py   # 关系修复脚本
+│   └── neo4j_style.grass            # Neo4j 可视化样式
+│
+├── 🛠️ 辅助脚本
+│   ├── run_complete_workflow.sh     # 完整工作流脚本
+│   ├── check_progress.sh            # 进度检查脚本
+│   ├── view_results.sh              # 结果查看脚本
+│   ├── clean_project.sh             # 项目清理脚本
+│   ├── organize_project.sh          # 项目整理脚本
+│   ├── export_for_review.py         # 导出审查文件
+│   ├── export_triples.py            # 导出三元组
+│   ├── auto_disambiguate.py         # 自动消歧
+│   └── logger_config.py             # 日志配置
+│
+├── ⚙️ 配置文件
+│   ├── config/
+│   │   ├── config.yaml              # 主配置文件
+│   │   ├── domain_dict.json         # 领域词典
+│   │   └── stopwords.txt            # 停用词表
+│   ├── requirements.txt             # Python 依赖
+│   └── .gitignore                   # Git 忽略规则
+│
+├── 📊 输出目录
+│   ├── output/
+│   │   ├── neo4j_import/            # Neo4j 导入文件
+│   │   │   ├── nodes.csv
+│   │   │   ├── relations.csv
+│   │   │   └── import.cypher
+│   │   ├── triples/                 # 三元组数据
+│   │   ├── README.md                # 输出文件说明
+│   │   └── ...（其他导出文件）
+│   └── cache/                       # 缓存目录
+│
+├── 📚 数据目录
+│   └── 文献/                        # PDF 文献存放目录
+│
+├── 📦 开发过程存档
+│   └── archive/
+│       ├── scripts/                 # 调试和中间版本脚本（37 个）
+│       └── docs/                    # 旧文档和报告
+│
+└── 其他
+    ├── .git/                        # Git 版本控制
+    ├── __pycache__/                 # Python 缓存
+    ├── venv/                        # 虚拟环境
+    └── PWD_KG_Notebook.ipynb        # Jupyter 笔记本
+
+================================================================================
+核心数据状态
+================================================================================
+
+当前知识图谱规模：
+  - 节点数：59
+  - 关系数：365
+  - 实体类型：8 种
+  - 关系类型：7 种
+  - 数据来源：松材线虫病相关文献
+
+================================================================================
+快速开始
+================================================================================
+
+1. 安装依赖：
+   pip install -r requirements.txt
+
+2. 运行主程序：
+   python main.py
+
+3. 导入 Neo4j：
+   python import_to_neo4j_final.py
+
+4. 访问 Neo4j Browser：
+   http://localhost:7474
+
+================================================================================
+文件清理说明
+================================================================================
+
+✅ 已完成的清理工作：
+  - 将 37 个调试和中间版本脚本移到 archive/scripts/
+  - 将旧文档移到 archive/docs/
+  - 修正 README.md 中的导入脚本名称
+  - 保留所有核心脚本和必要文件在项目根目录
+
+✅ 项目现在已准备好提交：
+  - 核心代码清晰可维护
+  - 文档完整准确
+  - 开发过程记录保存在 archive/
+  - Git 历史完整
+
+================================================================================
