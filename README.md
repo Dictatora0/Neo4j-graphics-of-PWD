@@ -74,7 +74,7 @@ python main.py
 
 ```bash
 # 直接导入数据到 Neo4j
-python import_fixed_data.py
+python import_to_neo4j_final.py
 ```
 
 导入完成后访问：http://localhost:7474
