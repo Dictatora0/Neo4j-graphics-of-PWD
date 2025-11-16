@@ -6,7 +6,7 @@
 
 PWD/
 │
-├── 📋 文档文件
+├── 文档文件
 │   ├── README.md                    # 项目主文档（已更新）
 │   ├── QUICK_START.md               # 快速开始指南
 │   ├── FINAL_REPORT.md              # 课程最终报告
@@ -14,7 +14,7 @@ PWD/
 │   ├── PROJECT_FILES.md             # 项目文件说明
 │   └── 加速优化说明.md              # 性能优化说明
 │
-├── 🔧 核心脚本（主流程）
+├── 核心脚本（主流程）
 │   ├── main.py                      # 主入口程序
 │   ├── pdf_extractor.py             # PDF 文本提取
 │   ├── concept_extractor.py         # 实体识别
@@ -26,7 +26,7 @@ PWD/
 │   ├── neo4j_manager.py             # Neo4j 数据库管理
 │   └── parallel_processor.py        # 并行处理
 │
-├── 🧪 语义体检与最终导入脚本
+├── 语义体检与最终导入脚本
 │   ├── bio_semantic_review.py       # 语义体检脚本
 │   ├── import_to_neo4j_final.py     # 最终导入脚本
 │   ├── export_neo4j_to_csv.py       # 导出脚本
@@ -36,7 +36,7 @@ PWD/
 │   ├── fix_remaining_relations.py   # 关系修复脚本
 │   └── neo4j_style.grass            # Neo4j 可视化样式
 │
-├── 🛠️ 辅助脚本
+├── 辅助脚本
 │   ├── run_complete_workflow.sh     # 完整工作流脚本
 │   ├── check_progress.sh            # 进度检查脚本
 │   ├── view_results.sh              # 结果查看脚本
@@ -47,7 +47,7 @@ PWD/
 │   ├── auto_disambiguate.py         # 自动消歧
 │   └── logger_config.py             # 日志配置
 │
-├── ⚙️ 配置文件
+├── 配置文件
 │   ├── config/
 │   │   ├── config.yaml              # 主配置文件
 │   │   ├── domain_dict.json         # 领域词典
@@ -55,7 +55,7 @@ PWD/
 │   ├── requirements.txt             # Python 依赖
 │   └── .gitignore                   # Git 忽略规则
 │
-├── 📊 输出目录
+├── 输出目录
 │   ├── output/
 │   │   ├── neo4j_import/            # Neo4j 导入文件
 │   │   │   ├── nodes.csv
@@ -66,10 +66,10 @@ PWD/
 │   │   └── ...（其他导出文件）
 │   └── cache/                       # 缓存目录
 │
-├── 📚 数据目录
+├── 数据目录
 │   └── 文献/                        # PDF 文献存放目录
 │
-├── 📦 开发过程存档
+├── 开发过程存档
 │   └── archive/
 │       ├── scripts/                 # 调试和中间版本脚本（37 个）
 │       └── docs/                    # 旧文档和报告
@@ -111,13 +111,13 @@ PWD/
 文件清理说明
 ================================================================================
 
-✅ 已完成的清理工作：
+已完成的清理工作：
   - 将 37 个调试和中间版本脚本移到 archive/scripts/
   - 将旧文档移到 archive/docs/
   - 修正 README.md 中的导入脚本名称
   - 保留所有核心脚本和必要文件在项目根目录
 
-✅ 项目现在已准备好提交：
+项目现在已准备好提交：
   - 核心代码清晰可维护
   - 文档完整准确
   - 开发过程记录保存在 archive/

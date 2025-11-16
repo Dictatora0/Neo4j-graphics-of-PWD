@@ -73,7 +73,7 @@ for (old_n1, old_rel, old_n2), (new_n1, new_rel, new_n2) in fixes:
         df.loc[mask, "relationship"] = new_rel
         df.loc[mask, "node_2"] = new_n2
         fixed_count += 1
-        print(f"✓ 修复: {old_n1} -{old_rel}-> {old_n2}")
+        print(f"修复: {old_n1} -{old_rel}-> {old_n2}")
         print(f"  改为: {new_n1} -{new_rel}-> {new_n2}")
 
 # 删除明显有问题的行
@@ -90,7 +90,7 @@ for (n1, rel, n2), reason in delete_conditions:
     if mask.any():
         df = df[~mask]
         deleted_count += 1
-        print(f"✓ 删除: {n1} -{rel}-> {n2}")
+        print(f"删除: {n1} -{rel}-> {n2}")
         print(f"  原因: {reason}")
 
 # 保存修改后的 CSV
@@ -99,4 +99,4 @@ print(f"\n修复完成:")
 print(f"  修改行数: {fixed_count}")
 print(f"  删除行数: {deleted_count}")
 print(f"  最终三元组数: {len(df)}")
-print(f"\n✓ 已保存到: {CSV_PATH}")
+print(f"\n已保存到: {CSV_PATH}")

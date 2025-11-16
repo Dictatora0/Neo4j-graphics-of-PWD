@@ -29,7 +29,7 @@ else:
 
 df = pd.read_csv(csv_path)
 
-print(f"\n📊 数据统计:")
+print("\n数据统计:")
 print(f"  总行数: {len(df)}")
 print(f"  关系类型: {df['relationship'].nunique()}")
 print(f"  唯一节点: {len(set(df['node_1'].unique()) | set(df['node_2'].unique()))}")
@@ -46,7 +46,7 @@ with driver.session() as session:
     print("="*80)
     
     session.run("MATCH (n) DETACH DELETE n")
-    print("  ✓ 已清空所有节点和关系")
+    print("  已清空所有节点和关系")
     
     # ========================================================================
     # 步骤2: 定义节点样式和颜色
@@ -55,74 +55,74 @@ with driver.session() as session:
     print("步骤2: 创建节点（带样式）")
     print("="*80)
     
-    # 节点分类和颜色
+    # 节点分类和颜色（去除图标中的表情符号，只保留类型标签）
     node_styles = {
         'bursaphelenchus xylophilus': {
             'type': 'Pathogen',
             'color': '#FF6B6B',  # 红色
             'size': 'large',
-            'icon': '🦠'
+            'icon': 'PATHOGEN'
         },
         'pine wilt disease': {
             'type': 'Disease',
             'color': '#FF8C42',  # 橙色
             'size': 'large',
-            'icon': '🌳'
+            'icon': 'DISEASE'
         },
         'monochamus alternatus': {
             'type': 'Vector',
             'color': '#4ECDC4',  # 青色
             'size': 'large',
-            'icon': '🐛'
+            'icon': 'VECTOR'
         },
         'monochamus saltuarius': {
             'type': 'Vector',
             'color': '#4ECDC4',
             'size': 'medium',
-            'icon': '🐛'
+            'icon': 'VECTOR'
         },
         'pinus thunbergii': {
             'type': 'Host',
             'color': '#95E1D3',  # 浅绿色
             'size': 'large',
-            'icon': '🌲'
+            'icon': 'HOST'
         },
         'pinus massoniana': {
             'type': 'Host',
             'color': '#95E1D3',
             'size': 'medium',
-            'icon': '🌲'
+            'icon': 'HOST'
         },
         'pinus elliottii': {
             'type': 'Host',
             'color': '#95E1D3',
             'size': 'medium',
-            'icon': '🌲'
+            'icon': 'HOST'
         },
         'biological control': {
             'type': 'Control',
             'color': '#A8E6CF',  # 绿色
             'size': 'medium',
-            'icon': '🛡️'
+            'icon': 'CONTROL'
         },
         'trap': {
             'type': 'Control',
             'color': '#A8E6CF',
             'size': 'medium',
-            'icon': '🪤'
+            'icon': 'TRAP'
         },
     }
     
     # 默认样式
     default_styles = {
-        'Pathogen': {'color': '#FF6B6B', 'size': 'medium', 'icon': '🦠'},
-        'Disease': {'color': '#FF8C42', 'size': 'medium', 'icon': '🌳'},
-        'Vector': {'color': '#4ECDC4', 'size': 'medium', 'icon': '🐛'},
-        'Host': {'color': '#95E1D3', 'size': 'medium', 'icon': '🌲'},
-        'Location': {'color': '#FFE66D', 'size': 'small', 'icon': '📍'},
-        'Technology': {'color': '#95B8D1', 'size': 'small', 'icon': '🔬'},
-        'Control': {'color': '#A8E6CF', 'size': 'medium', 'icon': '🛡️'},
-        'Other': {'color': '#C7CEEA', 'size': 'small', 'icon': '📌'},
+        'Pathogen': {'color': '#FF6B6B', 'size': 'medium', 'icon': 'PATHOGEN'},
+        'Disease': {'color': '#FF8C42', 'size': 'medium', 'icon': 'DISEASE'},
+        'Vector': {'color': '#4ECDC4', 'size': 'medium', 'icon': 'VECTOR'},
+        'Host': {'color': '#95E1D3', 'size': 'medium', 'icon': 'HOST'},
+        'Location': {'color': '#FFE66D', 'size': 'small', 'icon': 'LOCATION'},
+        'Technology': {'color': '#95B8D1', 'size': 'small', 'icon': 'TECH'},
+        'Control': {'color': '#A8E6CF', 'size': 'medium', 'icon': 'CONTROL'},
+        'Other': {'color': '#C7CEEA', 'size': 'small', 'icon': 'OTHER'},
     }
     
     # 获取所有唯一节点
@@ -161,7 +161,7 @@ with driver.session() as session:
                 style = default_styles['Other']
             
             color = style['color']
-            icon = style.get('icon', '📌')
+            icon = style.get('icon', '')
         
         # 创建节点
         session.run(f"""
@@ -179,17 +179,17 @@ with driver.session() as session:
         color=color,
         icon=icon,
         timestamp=datetime.now().isoformat(),
-        display_name=f"{icon} {node}")
+        display_name=node)
         
         created_nodes += 1
     
-    print(f"  ✓ 创建了 {created_nodes} 个节点")
+    print(f"  创建了 {created_nodes} 个节点")
     
     # ========================================================================
     # 步骤3: 创建关系（带样式）
     # ========================================================================
     print("\n" + "="*80)
-    print("步骤3: 创建关系（带样式）")
+    print("步骤3: 创建关系")
     print("="*80)
     
     # 关系样式
@@ -310,9 +310,9 @@ with driver.session() as session:
             
             created_rels += 1
         except Exception as e:
-            print(f"  ⚠️  创建关系失败: {source} -> {target}: {str(e)[:50]}")
+            print(f"  创建关系失败: {source} -> {target}: {str(e)[:50]}")
     
-    print(f"  ✓ 创建了 {created_rels} 个关系")
+    print(f"  创建了 {created_rels} 个关系")
     
     # ========================================================================
     # 步骤4: 创建索引以提高查询性能
@@ -330,7 +330,7 @@ with driver.session() as session:
     for query in index_queries:
         try:
             session.run(query)
-            print(f"  ✓ {query.split('FOR')[0].strip()}")
+            print(f"  已执行: {query.split('FOR')[0].strip()}")
         except:
             pass
     
@@ -348,7 +348,7 @@ with driver.session() as session:
         SET n.out_degree = out_degree, n.in_degree = in_degree, n.total_degree = out_degree + in_degree
     """)
     
-    print("  ✓ 已计算节点度数")
+    print("  已计算节点度数")
     
     # 计算关系权重统计
     session.run("""
@@ -357,7 +357,7 @@ with driver.session() as session:
         RETURN rel_type, avg_weight, max_weight, min_weight
     """)
     
-    print("  ✓ 已计算关系权重统计")
+    print("  已计算关系权重统计")
     
     # ========================================================================
     # 步骤6: 最终验证
@@ -372,7 +372,7 @@ with driver.session() as session:
     result = session.run("MATCH ()-[r]->() RETURN count(r) as count").single()
     rel_count = result['count']
     
-    print(f"\n  ✅ 导入完成:")
+    print(f"\n  导入完成:")
     print(f"    节点数: {node_count}")
     print(f"    关系数: {rel_count}")
     
@@ -409,40 +409,33 @@ with driver.session() as session:
     
     print(f"\n  度数最高的节点:")
     for record in result:
-        icon = record['icon'] if record['icon'] else '📌'
-        print(f"    {icon} {record['name']:40s}: {record['degree']}")
+        print(f"    {record['name']:40s}: {record['degree']}")
 
 driver.close()
 
 print("\n" + "="*80)
-print("✓ 导入完成！")
+print("导入完成")
 print("="*80)
 
-print("\n📊 导入统计:")
-print(f"  ✅ 节点: {created_nodes} 个")
-print(f"  ✅ 关系: {created_rels} 个")
-print(f"  ✅ 样式: 已应用")
-print(f"  ✅ 索引: 已创建")
+print("\n导入统计:")
+print(f"  节点: {created_nodes} 个")
+print(f"  关系: {created_rels} 个")
+print(f"  样式: 已应用")
+print(f"  索引: 已创建")
 
-print("\n🎨 样式特性:")
-print("  ✓ 节点按类型着色（病原体、疾病、媒介、寄主等）")
-print("  ✓ 关系按类型着色和宽度设置")
-print("  ✓ 每个节点都有图标和显示名称")
-print("  ✓ 计算了节点度数用于可视化大小")
-
-print("\n🔍 查询示例:")
+print("\n查询示例:")
 print("  查看所有节点: MATCH (n) RETURN n")
 print("  查看所有关系: MATCH ()-[r]->() RETURN r")
 print("  查看高度数节点: MATCH (n) RETURN n ORDER BY n.total_degree DESC LIMIT 10")
 print("  查看特定关系: MATCH ()-[r:PARASITIZES]->() RETURN r")
 
-print("\n🌐 访问Neo4j Browser:")
+print("\n访问 Neo4j Browser:")
 print("  URL: http://localhost:7474")
 print("  用户名: neo4j")
 print("  密码: 12345678")
 
-print("\n💡 建议:")
-print("  1. 在Neo4j Browser中运行查询查看可视化")
+print("\n使用建议:")
+print("  1. 在 Neo4j Browser 中运行查询查看可视化")
 print("  2. 使用 MATCH (n) RETURN n LIMIT 25 查看节点")
 print("  3. 使用 MATCH p=()-[r]->() RETURN p LIMIT 25 查看关系")
 print("  4. 尝试路径查询: MATCH p=(a)-[*1..3]-(b) WHERE a.name='pine wilt disease' RETURN p")

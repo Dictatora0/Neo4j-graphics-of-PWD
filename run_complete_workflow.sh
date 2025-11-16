@@ -36,7 +36,7 @@ print_header() {
 }
 
 print_success() {
-    echo -e "${GREEN}✓ $1${NC}"
+    echo -e "${GREEN}$1${NC}"
 }
 
 print_error() {
@@ -360,7 +360,7 @@ run_complete_workflow() {
     # 7. 显示结果
     show_results
     
-    print_header "✓ 完整工作流程完成！"
+    print_header "完整工作流程完成。"
     print_info "Ollama 服务仍在运行"
     print_info "停止服务: bash $0 stop"
 }

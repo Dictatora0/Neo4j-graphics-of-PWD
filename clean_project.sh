@@ -27,7 +27,7 @@ case $choice in
         rm -rf output/neo4j_import
         rm -rf output/neo4j_import_enhanced
         rm -f output/*.txt
-        echo "✓ 输出文件已清理（备份保留）"
+        echo "输出文件已清理（备份保留）"
         ;;
     
     2)
@@ -36,21 +36,21 @@ case $choice in
         rm -rf __pycache__
         find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
         find . -type f -name "*.pyc" -delete 2>/dev/null
-        echo "✓ 缓存文件已清理"
+        echo "缓存文件已清理"
         ;;
     
     3)
         echo "清理 Neo4j 导入文件..."
         rm -rf output/neo4j_import
         rm -rf output/neo4j_import_enhanced
-        echo "✓ Neo4j 导入文件已清理"
+        echo "Neo4j 导入文件已清理"
         ;;
     
     4)
         echo "清理日志文件..."
         rm -f output/*.log
         rm -f output/*.log.*
-        echo "✓ 日志文件已清理"
+        echo "日志文件已清理"
         ;;
     
     5)
@@ -65,7 +65,7 @@ case $choice in
         rm -rf __pycache__
         find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
         find . -type f -name "*.pyc" -delete 2>/dev/null
-        echo "✓ 所有文件已清理（备份保留）"
+        echo "所有文件已清理（备份保留）"
         ;;
     
     6)

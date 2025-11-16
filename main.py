@@ -80,11 +80,11 @@ def main():
             # 备份当前数据库
             backup_file = neo4j_manager.backup_database()
             if backup_file:
-                print(f"✓ 数据库已备份: {backup_file}")
+                print(f"数据库已备份: {backup_file}")
             
             # 清空数据库
             neo4j_manager.clear_database()
-            print("✓ 数据库已清空，准备导入新数据\n")
+            print("数据库已清空，准备导入新数据\n")
         else:
             logger.info("跳过 Neo4j 数据库操作（服务未运行）\n")
     
@@ -140,7 +140,7 @@ def main():
         relations_clean.to_csv(f"{OUTPUT_DIR}/relations_clean.csv", 
                              index=False, encoding='utf-8-sig')
         
-        print("\n✓ 清洗后的数据已保存:")
+        print("\n清洗后的数据已保存:")
         print(f"  - {OUTPUT_DIR}/entities_clean.csv")
         print(f"  - {OUTPUT_DIR}/relations_clean.csv")
         
@@ -164,7 +164,7 @@ def main():
         logger.info(f"知识图谱构建完成，总耗时: {duration}")
         
         print("\n" + "="*60)
-        print("✓ 增强型知识图谱构建完成！")
+        print("增强型知识图谱构建完成。")
         print("="*60)
         print(f"\n结束时间: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"总耗时: {duration}")
@@ -189,12 +189,12 @@ def main():
         print("  RETURN d.name, p.name;")
         
         print("\n管道特性:")
-        print("  ✓ LLM 概念提取（Mistral/Llama/Zephyr）")
-        print("  ✓ 语义关系提取（带权重）")
-        print("  ✓ 上下文邻近性分析")
-        print("  ✓ 嵌入式概念去重")
-        print("  ✓ 自动重要性过滤")
-        print("  ✓ Neo4j 自动备份和回滚")
+        print("  - LLM 概念提取（Mistral/Llama/Zephyr）")
+        print("  - 语义关系提取（带权重）")
+        print("  - 上下文邻近性分析")
+        print("  - 嵌入式概念去重")
+        print("  - 自动重要性过滤")
+        print("  - Neo4j 自动备份和回滚")
         
     except KeyboardInterrupt:
         logger.warning("程序被用户中断")
@@ -204,7 +204,7 @@ def main():
         if neo4j_manager and backup_file:
             logger.info("尝试回滚 Neo4j 数据库...")
             if neo4j_manager.restore_from_backup(backup_file):
-                print("✓ 数据库已回滚到之前的状态")
+                print("数据库已回滚到之前的状态")
         
         if neo4j_manager:
             neo4j_manager.close()
@@ -221,9 +221,9 @@ def main():
         if neo4j_manager and backup_file:
             logger.info("尝试回滚 Neo4j 数据库...")
             if neo4j_manager.restore_from_backup(backup_file):
-                print("✓ 数据库已回滚到之前的状态")
+                print("数据库已回滚到之前的状态")
             else:
-                print("⚠️  数据库回滚失败，请手动恢复")
+                print("数据库回滚失败，请手动恢复")
                 print(f"   备份文件: {backup_file}")
         
         if neo4j_manager:
@@ -336,7 +336,7 @@ def generate_statistics_report(entities_df, relations_df, output_dir):
         f.write("报告生成完成\n")
         f.write("="*60 + "\n")
     
-    print(f"✓ 统计报告已生成: {report_path}")
+    print(f"统计报告已生成: {report_path}")
     
     # 在控制台显示摘要
     print("\n知识图谱摘要:")

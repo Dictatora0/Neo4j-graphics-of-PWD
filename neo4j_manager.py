@@ -41,10 +41,10 @@ class Neo4jManager:
             # 测试连接
             with self.driver.session() as session:
                 session.run("RETURN 1")
-            logger.info(f"✓ 成功连接到 Neo4j: {self.uri}")
+            logger.info(f"成功连接到 Neo4j: {self.uri}")
             return True
         except Exception as e:
-            logger.warning(f"⚠️  无法连接到 Neo4j: {e}")
+            logger.warning(f"无法连接到 Neo4j: {e}")
             logger.info("如果 Neo4j 未运行，可以跳过数据库操作")
             return False
     
@@ -52,7 +52,7 @@ class Neo4jManager:
         """关闭连接"""
         if self.driver:
             self.driver.close()
-            logger.info("✓ Neo4j 连接已关闭")
+            logger.info("Neo4j 连接已关闭")
     
     def backup_database(self):
         """
@@ -121,7 +121,7 @@ class Neo4jManager:
                         f.write(f"MATCH (a {{id: {repr(start_id)}}}), (b {{id: {repr(end_id)}}})\n")
                         f.write(f"CREATE (a)-[:{rel_type} {{{props_str}}}]->(b);\n")
                 
-                logger.info(f"✓ 备份完成: {backup_file}")
+                logger.info(f"备份完成: {backup_file}")
                 return backup_file
                 
         except Exception as e:
@@ -154,7 +154,7 @@ class Neo4jManager:
                 # 删除所有节点和关系
                 session.run("MATCH (n) DETACH DELETE n")
                 
-                logger.info("✓ 数据库已清空")
+                logger.info("数据库已清空")
                 return True
                 
         except Exception as e:
@@ -197,7 +197,7 @@ class Neo4jManager:
                     if stmt:
                         session.run(stmt)
             
-            logger.info("✓ 数据库恢复完成")
+            logger.info("数据库恢复完成")
             return True
             
         except Exception as e:
@@ -270,7 +270,7 @@ def main():
         if manager.connect():
             backup_file = manager.backup_database()
             if backup_file:
-                print(f"✓ 备份完成: {backup_file}")
+                print(f"备份完成: {backup_file}")
             manager.close()
     
     elif command == 'clear':

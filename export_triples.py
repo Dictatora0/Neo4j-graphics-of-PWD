@@ -19,7 +19,7 @@ driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 triples = []
 
 with driver.session() as session:
-    print("\n🔍 Querying database...")
+    print("\nQuerying database...")
     result = session.run("""
         MATCH (n1)-[r]->(n2)
         RETURN n1.name AS node_1, r.type AS relationship, n2.name AS node_2, r.weight as weight
@@ -36,17 +36,17 @@ with driver.session() as session:
         # Reorder columns for clarity
         df = df[['node_1', 'relationship', 'node_2', 'weight']]
         
-        print(f"\n💾 Saving to {OUTPUT_FILE}...")
+        print(f"\nSaving to {OUTPUT_FILE}...")
         # Save to CSV with UTF-8 BOM encoding for Excel compatibility
         df.to_csv(OUTPUT_FILE, index=False, encoding='utf-8-sig')
-        print(f"   ✅ Export complete.")
+        print("   Export complete.")
     else:
-        print("   ⚠️ No relationships found in the database.")
+        print("   No relationships found in the database.")
 
 driver.close()
 
 print("\n" + "="*80)
-print("✓ Export Finished!")
+print("Export finished.")
 print("="*80)
-print(f"\n📌 The exported file is located at: {OUTPUT_FILE}")
+print(f"\nThe exported file is located at: {OUTPUT_FILE}")
 print("   You can now open this CSV file in Excel or any spreadsheet editor to review the triples.")

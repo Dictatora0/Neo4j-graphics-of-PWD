@@ -7,12 +7,12 @@ echo ""
 # 检查输出文件
 if [ -f "output/concepts_enhanced.csv" ]; then
     CONCEPTS=$(wc -l < output/concepts_enhanced.csv)
-    echo "✓ 已提取概念: $CONCEPTS 行"
+    echo "已提取概念: $CONCEPTS 行"
 fi
 
 if [ -f "output/relationships_enhanced.csv" ]; then
     RELATIONS=$(wc -l < output/relationships_enhanced.csv)
-    echo "✓ 已提取关系: $RELATIONS 行"
+    echo "已提取关系: $RELATIONS 行"
 fi
 
 # 检查日志

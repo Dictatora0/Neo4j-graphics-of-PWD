@@ -40,7 +40,7 @@ with driver.session() as session:
     result = session.run(query)
     records = list(result)
     
-    print(f"✓ 查询完成，共 {len(records)} 条三元组")
+    print(f"查询完成，共 {len(records)} 条三元组")
     
     # 转换为 DataFrame
     df = pd.DataFrame([dict(record) for record in records])
@@ -52,7 +52,7 @@ with driver.session() as session:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     df_export.to_csv(OUTPUT_PATH, index=False)
     
-    print(f"\n✓ 已导出到: {OUTPUT_PATH}")
+    print(f"\n已导出到: {OUTPUT_PATH}")
     print(f"  总行数: {len(df_export)}")
     print(f"  关系类型数: {df_export['relationship'].nunique()}")
     print(f"  唯一节点数: {len(set(df_export['node_1'].unique()) | set(df_export['node_2'].unique()))}")
@@ -82,7 +82,7 @@ with driver.session() as session:
     # 创建带详细信息的导出版本（包含节点类型）
     OUTPUT_DETAILED_PATH = os.path.join(OUTPUT_DIR, f"neo4j_export_detailed_{TIMESTAMP}.csv")
     df.to_csv(OUTPUT_DETAILED_PATH, index=False)
-    print(f"\n✓ 详细版本已导出到: {OUTPUT_DETAILED_PATH}")
+    print(f"\n详细版本已导出到: {OUTPUT_DETAILED_PATH}")
     print("  包含列: node_1, relationship, node_2, weight, node_1_type, node_2_type")
 
 print("\n" + "=" * 80)

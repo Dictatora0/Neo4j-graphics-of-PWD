@@ -52,7 +52,7 @@ with open(review_file, 'w', encoding='utf-8') as f:
         for _, row in rel_df.iterrows():
             f.write(f"{row['node_1']},{row['relationship']},{row['node_2']},{row['weight']}\n")
 
-print(f"  ✓ 已生成 {review_file}")
+print(f"  已生成 {review_file}")
 
 # ============================================================================
 # 2. 生成关系类型统计表
@@ -70,7 +70,7 @@ rel_stats = rel_stats.sort_values('count', ascending=False)
 
 stats_file = 'output/relationship_statistics.csv'
 rel_stats.to_csv(stats_file)
-print(f"  ✓ 已生成 {stats_file}")
+print(f"  已生成 {stats_file}")
 
 print("\n  关系类型统计（前15）:")
 for rel, row in rel_stats.head(15).iterrows():
@@ -97,7 +97,7 @@ node_stats = node_stats.sort_values('total_degree', ascending=False)
 
 nodes_file = 'output/node_statistics.csv'
 node_stats.to_csv(nodes_file)
-print(f"  ✓ 已生成 {nodes_file}")
+print(f"  已生成 {nodes_file}")
 
 print(f"\n  节点统计:")
 print(f"    总节点数: {len(node_stats)}")
@@ -152,20 +152,20 @@ with open(quality_file, 'w', encoding='utf-8') as f:
     chinese_nodes_1 = df[df['node_1'].str.contains('[\u4e00-\u9fa5]', regex=True)].shape[0]
     chinese_nodes_2 = df[df['node_2'].str.contains('[\u4e00-\u9fa5]', regex=True)].shape[0]
     
-    f.write(f"  中文关系类型: {chinese_rels} 个 {'✅' if chinese_rels == 0 else '❌'}\n")
-    f.write(f"  中文节点: {chinese_nodes_1 + chinese_nodes_2} 个 {'✅' if chinese_nodes_1 + chinese_nodes_2 == 0 else '❌'}\n")
+    f.write(f"  中文关系类型: {chinese_rels} 个\n")
+    f.write(f"  中文节点: {chinese_nodes_1 + chinese_nodes_2} 个\n")
     
     # 检查重复
     duplicates = df.duplicated(subset=['node_1', 'relationship', 'node_2']).sum()
-    f.write(f"  重复三元组: {duplicates} 个 {'✅' if duplicates == 0 else '❌'}\n")
+    f.write(f"  重复三元组: {duplicates} 个\n")
     
     # 检查孤立节点
     isolated = len([n for n in node_stats.index if node_stats.loc[n, 'total_degree'] == 0])
-    f.write(f"  孤立节点: {isolated} 个 {'✅' if isolated == 0 else '❌'}\n")
+    f.write(f"  孤立节点: {isolated} 个\n")
     
     # 检查自环
     self_loops = ((df['node_1'] == df['node_2']).sum())
-    f.write(f"  自环关系: {self_loops} 个 {'✅' if self_loops == 0 else '❌'}\n\n")
+    f.write(f"  自环关系: {self_loops} 个\n\n")
     
     # 节点度数分析
     f.write("【节点度数分析】\n")
@@ -189,7 +189,7 @@ with open(quality_file, 'w', encoding='utf-8') as f:
         f.write(f"    平均权重: {rel_df['weight'].mean():.6f}\n")
         f.write(f"    权重范围: [{rel_df['weight'].min():.6f}, {rel_df['weight'].max():.6f}]\n")
 
-print(f"  ✓ 已生成 {quality_file}")
+print(f"  已生成 {quality_file}")
 
 # ============================================================================
 # 5. 生成可视化友好的格式
@@ -202,19 +202,19 @@ print("="*80)
 sorted_file = 'output/triples_sorted_by_weight.csv'
 df_sorted = df.sort_values('weight', ascending=False)
 df_sorted.to_csv(sorted_file, index=False)
-print(f"  ✓ 已生成 {sorted_file}")
+print(f"  已生成 {sorted_file}")
 
 # 生成高权重三元组
 high_weight_file = 'output/high_weight_triples.csv'
 high_weight_df = df[df['weight'] >= 0.5].sort_values('weight', ascending=False)
 high_weight_df.to_csv(high_weight_file, index=False)
-print(f"  ✓ 已生成 {high_weight_file} ({len(high_weight_df)} 条)")
+print(f"  已生成 {high_weight_file} ({len(high_weight_df)} 条)")
 
 # 生成低权重三元组
 low_weight_file = 'output/low_weight_triples.csv'
 low_weight_df = df[df['weight'] < 0.2].sort_values('weight', ascending=False)
 low_weight_df.to_csv(low_weight_file, index=False)
-print(f"  ✓ 已生成 {low_weight_file} ({len(low_weight_df)} 条)")
+print(f"  已生成 {low_weight_file} ({len(low_weight_df)} 条)")
 
 # ============================================================================
 # 6. 生成审查清单
@@ -255,14 +255,14 @@ with open(checklist_file, 'w', encoding='utf-8') as f:
     f.write("   文件: high_weight_triples.csv, low_weight_triples.csv\n\n")
     
     f.write("【数据质量指标】\n\n")
-    f.write(f"✓ 总三元组数: {len(df)}\n")
-    f.write(f"✓ 唯一节点数: {len(node_stats)}\n")
-    f.write(f"✓ 关系类型数: {df['relationship'].nunique()}\n")
-    f.write(f"✓ 中文关系: {chinese_rels} 个\n")
-    f.write(f"✓ 中文节点: {chinese_nodes_1 + chinese_nodes_2} 个\n")
-    f.write(f"✓ 重复三元组: {duplicates} 个\n")
-    f.write(f"✓ 孤立节点: {isolated} 个\n")
-    f.write(f"✓ 自环关系: {self_loops} 个\n\n")
+    f.write(f"总三元组数: {len(df)}\n")
+    f.write(f"唯一节点数: {len(node_stats)}\n")
+    f.write(f"关系类型数: {df['relationship'].nunique()}\n")
+    f.write(f"中文关系: {chinese_rels} 个\n")
+    f.write(f"中文节点: {chinese_nodes_1 + chinese_nodes_2} 个\n")
+    f.write(f"重复三元组: {duplicates} 个\n")
+    f.write(f"孤立节点: {isolated} 个\n")
+    f.write(f"自环关系: {self_loops} 个\n\n")
     
     f.write("【建议的审查顺序】\n\n")
     f.write("1. 首先查看 quality_report.txt 了解整体数据质量\n")
@@ -272,16 +272,16 @@ with open(checklist_file, 'w', encoding='utf-8') as f:
     f.write("5. 查看 high_weight_triples.csv 审查高权重三元组\n")
     f.write("6. 查看 low_weight_triples.csv 决定是否删除低权重三元组\n")
 
-print(f"  ✓ 已生成 {checklist_file}")
+print(f"  已生成 {checklist_file}")
 
 # ============================================================================
 # 总结
 # ============================================================================
 print("\n" + "="*80)
-print("✓ 导出完成！")
+print("导出完成。")
 print("="*80)
 
-print("\n📁 生成的文件:")
+print("\n生成的文件:")
 print(f"  1. triples_export.csv - 原始三元组（标准格式）")
 print(f"  2. triples_by_relationship.csv - 按关系类型分类的三元组")
 print(f"  3. relationship_statistics.csv - 关系类型统计")
@@ -292,7 +292,7 @@ print(f"  7. high_weight_triples.csv - 高权重三元组（权重≥0.5）")
 print(f"  8. low_weight_triples.csv - 低权重三元组（权重<0.2）")
 print(f"  9. review_checklist.txt - 人工审查清单")
 
-print("\n📌 建议的审查流程:")
+print("\n建议的审查流程:")
 print("  1. 阅读 review_checklist.txt 了解审查指南")
 print("  2. 查看 quality_report.txt 了解整体质量")
 print("  3. 按照清单中的建议逐个审查各个文件")

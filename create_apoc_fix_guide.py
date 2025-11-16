@@ -84,14 +84,14 @@ try:
         
         path_str = ' → '.join(path_parts)
         
-        print("✅ 找到最短路径:")
+        print("找到最短路径:")
         print(path_str)
         print(f"路径长度: {len(nodes)} 个节点")
     else:
-        print("❌ 未找到连接路径")
+        print("未找到连接路径")
         
 except Exception as e:
-    print(f"❌ 查询出错: {e}")
+    print(f"查询出错: {e}")
     
     # 备用查询
     backup_query = """
@@ -103,11 +103,11 @@ except Exception as e:
     try:
         result = query_database(backup_query)
         if result:
-            print(f"✅ 存在连接，连接数: {result[0]['connections']}")
+            print(f"存在连接，连接数: {result[0]['connections']}")
         else:
-            print("❌ 未找到连接")
+            print("未找到连接")
     except:
-        print("❌ 备用查询也失败")
+        print("备用查询也失败")
 ```
 """
     
@@ -118,6 +118,6 @@ instructions = create_comprehensive_fix()
 with open('/Users/lifulin/Desktop/PWD/APOC_FIX_GUIDE.md', 'w', encoding='utf-8') as f:
     f.write(instructions)
 
-print("✅ APOC 修复指南已创建: APOC_FIX_GUIDE.md")
+print("APOC 修复指南已创建: APOC_FIX_GUIDE.md")
 print("\n请在 Jupyter Notebook 中运行以下代码来修复问题:")
 print("\n# 复制 apoc_fix_notebook.py 中的代码到新的 notebook 单元格中运行")

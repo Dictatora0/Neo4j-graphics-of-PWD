@@ -29,7 +29,7 @@ class AutoDisambiguator:
     
     def find_merge_candidates(self):
         """查找需要合并的候选实体"""
-        print("\n🔍 查找合并候选...")
+        print("\n查找合并候选...")
         
         entities = self.concepts_df['entity'].tolist()
         categories = self.concepts_df['category'].tolist()
@@ -118,7 +118,7 @@ class AutoDisambiguator:
                         'confidence': 1.0
                     })
         
-        print(f"\n  ✓ 发现 {len(self.merge_candidates)} 个合并候选")
+        print(f"\n  发现 {len(self.merge_candidates)} 个合并候选")
         
         return self.merge_candidates
     
@@ -159,7 +159,7 @@ class AutoDisambiguator:
             
             # 高置信度自动批准
             if candidate['confidence'] >= 0.95:
-                print("  [自动批准 - 高置信度]")
+                print("  自动批准（高置信度）")
                 approved.append(candidate)
             else:
                 print("\n  操作: [y]合并 [n]跳过 [c]修改保留项 [q]退出审查")
@@ -169,7 +169,7 @@ class AutoDisambiguator:
                     break
                 elif action == 'y':
                     approved.append(candidate)
-                    print("  ✓ 已批准")
+                    print("  已批准")
                 elif action == 'c':
                     keep_choice = input(f"  保留哪个? (1={candidate['entity1']}, 2={candidate['entity2']}): ").strip()
                     if keep_choice == '1':
@@ -177,9 +177,9 @@ class AutoDisambiguator:
                     elif keep_choice == '2':
                         candidate['keep'] = candidate['entity2']
                     approved.append(candidate)
-                    print(f"  ✓ 已批准，保留: {candidate['keep']}")
+                    print(f"  已批准，保留: {candidate['keep']}")
                 else:
-                    print("  ⊘ 已跳过")
+                    print("  已跳过")
         
         return approved
     
@@ -222,24 +222,24 @@ class AutoDisambiguator:
             'chunk_id': 'first'
         })
         after_dedup = len(self.relationships_df)
-        print(f"  ✓ 去重: {before_dedup} -> {after_dedup} (移除 {before_dedup - after_dedup} 个)")
+        print(f"  去重: {before_dedup} -> {after_dedup} (移除 {before_dedup - after_dedup} 个)")
     
     def save_results(self):
         """保存结果"""
-        print("\n💾 保存结果...")
+        print("\n保存结果...")
         
         self.concepts_df.to_csv('output/concepts_disambiguated.csv', index=False, encoding='utf-8-sig')
         self.relationships_df.to_csv('output/relationships_disambiguated.csv', index=False, encoding='utf-8-sig')
         
-        print(f"  ✓ 已保存: output/concepts_disambiguated.csv ({len(self.concepts_df)} 个实体)")
-        print(f"  ✓ 已保存: output/relationships_disambiguated.csv ({len(self.relationships_df)} 个关系)")
+        print(f"  已保存: output/concepts_disambiguated.csv ({len(self.concepts_df)} 个实体)")
+        print(f"  已保存: output/relationships_disambiguated.csv ({len(self.relationships_df)} 个关系)")
         
         # 保存合并记录
         import json
         with open('output/entity_merges.json', 'w', encoding='utf-8') as f:
             json.dump(self.merges_applied, f, ensure_ascii=False, indent=2)
         
-        print(f"  ✓ 合并记录: output/entity_merges.json")
+        print(f"  合并记录: output/entity_merges.json")
     
     def run(self, auto_mode=False):
         """运行消歧流程"""
@@ -247,7 +247,7 @@ class AutoDisambiguator:
         self.find_merge_candidates()
         
         if not self.merge_candidates:
-            print("\n✓ 未发现需要合并的实体")
+            print("\n未发现需要合并的实体")
             return
         
         # 2. 审查候选
@@ -269,7 +269,7 @@ class AutoDisambiguator:
         self.save_results()
         
         print("\n" + "="*80)
-        print("✓ 消歧完成！")
+        print("消歧完成。")
         print("="*80)
         print(f"\n统计:")
         print(f"  合并候选: {len(self.merge_candidates)}")

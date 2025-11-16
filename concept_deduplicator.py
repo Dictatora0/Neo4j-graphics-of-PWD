@@ -70,7 +70,7 @@ class SentenceTransformerEmbedding(EmbeddingProvider):
         try:
             from sentence_transformers import SentenceTransformer
             self.model = SentenceTransformer(model_name)
-            logger.info(f"✓ Loaded embedding model: {model_name}")
+            logger.info(f"Loaded embedding model: {model_name}")
         except ImportError:
             logger.error("sentence-transformers not installed. Install with: pip install sentence-transformers")
             raise

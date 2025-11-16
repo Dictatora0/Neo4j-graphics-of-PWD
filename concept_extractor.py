@@ -35,15 +35,15 @@ class ConceptExtractor:
         try:
             response = requests.get(f"{self.ollama_host}/api/tags", timeout=5)
             if response.status_code == 200:
-                logger.info(f"✓ Connected to Ollama at {self.ollama_host}")
+                logger.info(f"Connected to Ollama at {self.ollama_host}")
                 models = response.json().get('models', [])
                 model_names = [m.get('name', '').split(':')[0] for m in models]
-                logger.info(f"  Available models: {', '.join(model_names)}")
+                logger.info(f"Available models: {', '.join(model_names)}")
             else:
                 raise ConnectionError(f"Ollama returned status {response.status_code}")
         except Exception as e:
-            logger.error(f"✗ Cannot connect to Ollama: {e}")
-            logger.error("  Please ensure Ollama is running: ollama serve")
+            logger.error(f"Cannot connect to Ollama: {e}")
+            logger.error("Please ensure Ollama is running: ollama serve")
             raise
     
     def _call_ollama(self, prompt: str, system_prompt: str = "", temperature: float = 0.3, max_retries: int = 3) -> Optional[str]:
@@ -172,11 +172,11 @@ class ConceptExtractor:
             
             return valid_concepts if valid_concepts else None
         except json.JSONDecodeError as e:
-            logger.error(f"❌ 概念JSON解析失败 [{chunk_id}]")
-            logger.error(f"   错误类型: {type(e).__name__}")
-            logger.error(f"   错误信息: {str(e)}")
-            logger.error(f"   原始响应前500字符:\n{response[:500]}")
-            logger.warning(f"   ⚠️  返回None继续处理")
+            logger.error(f"概念 JSON 解析失败 [{chunk_id}]")
+            logger.error(f"错误类型: {type(e).__name__}")
+            logger.error(f"错误信息: {str(e)}")
+            logger.error(f"原始响应前500字符:\n{response[:500]}")
+            logger.warning("返回 None 继续处理")
             return None
     
     def extract_relationships(self, text: str, chunk_id: str = "") -> Optional[List[Dict]]:
@@ -348,11 +348,11 @@ class ConceptExtractor:
             return (concepts if concepts else None, 
                     relationships if relationships else None)
         except json.JSONDecodeError as e:
-            logger.error(f"❌ 组合提取JSON解析失败 [{chunk_id}]")
-            logger.error(f"   错误类型: {type(e).__name__}")
-            logger.error(f"   错误信息: {str(e)}")
-            logger.error(f"   原始响应前500字符:\n{response[:500]}")
-            logger.warning(f"   ⚠️  返回None继续处理")
+            logger.error(f"组合提取 JSON 解析失败 [{chunk_id}]")
+            logger.error(f"错误类型: {type(e).__name__}")
+            logger.error(f"错误信息: {str(e)}")
+            logger.error(f"原始响应前500字符:\n{response[:500]}")
+            logger.warning("返回 None 继续处理")
             return None, None
     
     def extract_from_chunks(self, chunks: List[Dict], max_chunks: int = None) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -368,18 +368,18 @@ class ConceptExtractor:
         """
         # Limit chunks if max_chunks is specified
         if max_chunks and len(chunks) > max_chunks:
-            logger.warning(f"⚠️  Limiting processing to {max_chunks} chunks (out of {len(chunks)})")
-            logger.warning(f"    Set max_chunks=None in code to process all chunks")
+            logger.warning(f"Limiting processing to {max_chunks} chunks (out of {len(chunks)})")
+            logger.warning("Set max_chunks=None in code to process all chunks")
             chunks = chunks[:max_chunks]
         
         all_concepts = []
         all_relationships = []
         
-        logger.info(f"🚀 Extracting concepts and relationships from {len(chunks)} chunks...")
-        logger.info(f"⚡ OPTIMIZED: Single LLM call per chunk (2x faster)")
-        logger.info(f"⏱️  Timeout: 120 seconds per request")
-        logger.info(f"🔄 Retry: 3 attempts per chunk")
-        logger.info(f"💡 Estimated time: ~{len(chunks) * 15} seconds (15s per chunk)")
+        logger.info(f"Extracting concepts and relationships from {len(chunks)} chunks...")
+        logger.info("Optimized: single LLM call per chunk (one call per chunk)")
+        logger.info("Timeout: 120 seconds per request")
+        logger.info("Retry: 3 attempts per chunk")
+        logger.info(f"Rough time estimate: ~{len(chunks) * 15} seconds (15s per chunk)")
         
         successful_chunks = 0
         failed_chunks = 0
@@ -398,21 +398,21 @@ class ConceptExtractor:
             
             if concepts:
                 all_concepts.extend(concepts)
-                logger.debug(f"  ✓ Extracted {len(concepts)} concepts")
+                logger.debug(f"Extracted {len(concepts)} concepts")
             else:
-                logger.debug(f"  ⚠ No concepts extracted")
+                logger.debug("No concepts extracted")
                 failed_chunks += 1
                 continue
             
             if relationships:
                 all_relationships.extend(relationships)
-                logger.debug(f"  ✓ Extracted {len(relationships)} relationships")
+                logger.debug(f"Extracted {len(relationships)} relationships")
             
             successful_chunks += 1
         
-        logger.info(f"✓ Extraction complete: {successful_chunks} successful, {failed_chunks} failed")
-        logger.info(f"  Total concepts: {len(all_concepts)}")
-        logger.info(f"  Total relationships: {len(all_relationships)}")
+        logger.info(f"Extraction complete: {successful_chunks} successful, {failed_chunks} failed")
+        logger.info(f"Total concepts: {len(all_concepts)}")
+        logger.info(f"Total relationships: {len(all_relationships)}")
         
         concepts_df = pd.DataFrame(all_concepts) if all_concepts else pd.DataFrame()
         relationships_df = pd.DataFrame(all_relationships) if all_relationships else pd.DataFrame()

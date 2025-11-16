@@ -41,7 +41,7 @@ try:
         
         path_str = ' → '.join(path_parts)
         
-        print("\n✅ 成功找到最短路径:")
+        print("\n成功找到最短路径:")
         print(path_str)
         print(f"路径长度: {len(nodes)} 个节点")
         
@@ -53,7 +53,7 @@ try:
         print(f"关系数量: {len(relationships)}")
         
     else:
-        print("\n❌ 未找到连接路径")
+        print("\n未找到连接路径")
         
         # 尝试备用查询
         print("\n尝试备用查询（检查是否存在连接）...")
@@ -68,16 +68,16 @@ try:
         try:
             result = query_database(backup_query)
             if result:
-                print(f"✅ 存在连接")
+                print("存在连接")
                 print(f"连接数: {result[0]['connections']}")
                 print(f"路径长度: {result[0]['path_length']}")
             else:
-                print("❌ 未找到任何连接")
+                print("未找到任何连接")
         except Exception as backup_error:
-            print(f"❌ 备用查询失败: {backup_error}")
+            print(f"备用查询失败: {backup_error}")
             
 except Exception as e:
-    print(f"\n❌ 查询出错: {e}")
+    print(f"\n查询出错: {e}")
     print("\n可能的解决方案:")
     print("1. 检查节点名称是否正确")
     print("2. 确认数据库中存在这些节点")

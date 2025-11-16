@@ -52,7 +52,7 @@ try:
         
         path_str = ' → '.join(path_parts)
         
-        print("\\n✅ 成功找到最短路径:")
+        print("\\n成功找到最短路径:")
         print(path_str)
         print(f"路径长度: {len(nodes)} 个节点")
         
@@ -64,7 +64,7 @@ try:
         print(f"关系数量: {len(relationships)}")
         
     else:
-        print("\\n❌ 未找到连接路径")
+        print("\\n未找到连接路径")
         
         # 尝试备用查询
         print("\\n尝试备用查询（检查是否存在连接）...")
@@ -79,16 +79,16 @@ try:
         try:
             result = query_database(backup_query)
             if result:
-                print(f"✅ 存在连接")
+                print("存在连接")
                 print(f"连接数: {result[0]['connections']}")
                 print(f"路径长度: {result[0]['path_length']}")
             else:
-                print("❌ 未找到任何连接")
+                print("未找到任何连接")
         except Exception as backup_error:
-            print(f"❌ 备用查询失败: {backup_error}")
+            print(f"备用查询失败: {backup_error}")
             
 except Exception as e:
-    print(f"\\n❌ 查询出错: {e}")
+    print(f"\\n查询出错: {e}")
     print("\\n可能的解决方案:")
     print("1. 检查节点名称是否正确")
     print("2. 确认数据库中存在这些节点")
@@ -223,14 +223,14 @@ try:
         
         path_str = ' → '.join(path_parts)
         
-        print("✅ 找到最短路径:")
+        print("找到最短路径:")
         print(path_str)
         print(f"路径长度: {len(nodes)} 个节点")
     else:
-        print("❌ 未找到连接路径")
+        print("未找到连接路径")
         
 except Exception as e:
-    print(f"❌ 查询出错: {e}")
+    print(f"查询出错: {e}")
     
     # 备用查询
     backup_query = """
@@ -242,9 +242,9 @@ except Exception as e:
     try:
         result = query_database(backup_query)
         if result:
-            print(f"✅ 存在连接: {result[0]['connections']} 条路径")
+            print(f"存在连接: {result[0]['connections']} 条路径")
     except:
-        print("❌ 备用查询也失败")
+        print("备用查询也失败")
 ```
 
 ## 常见问题
@@ -294,7 +294,7 @@ guide = create_guide()
 with open('/Users/lifulin/Desktop/PWD/APOC_ERROR_FIX_GUIDE.md', 'w', encoding='utf-8') as f:
     f.write(guide)
 
-print("✅ 修复文件已生成:")
+print("修复文件已生成:")
 print("1. apoc_fix_notebook.py - 可直接在notebook中运行的修复代码")
 print("2. APOC_ERROR_FIX_GUIDE.md - 完整的问题解决指南")
 print("\n请在Jupyter Notebook中:")

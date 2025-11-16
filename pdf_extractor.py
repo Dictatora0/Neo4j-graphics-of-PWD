@@ -207,9 +207,9 @@ class PDFExtractor:
             text = self.extract_text_from_pdf(pdf_path)
             if text:
                 pdf_texts[pdf_file] = text
-                print(f"✓ {pdf_file}: 提取了 {len(text)} 个字符")
+                print(f"{pdf_file}: 提取了 {len(text)} 个字符")
             else:
-                print(f"✗ {pdf_file}: 提取失败")
+                print(f"提取失败: {pdf_file}")
         
         return pdf_texts
     
@@ -232,9 +232,9 @@ class PDFExtractor:
         for pdf_file, text in zip(pdf_files, results):
             if text:
                 pdf_texts[pdf_file] = text
-                print(f"✓ {pdf_file}: 提取了 {len(text)} 个字符")
+                print(f"{pdf_file}: 提取了 {len(text)} 个字符")
             else:
-                print(f"✗ {pdf_file}: 提取失败")
+                print(f"提取失败: {pdf_file}")
         
         return pdf_texts
     

@@ -92,7 +92,7 @@ with driver.session() as session:
                 updated = result.single()
                 
                 if updated:
-                    print(f"    ✓ {node_name}")
+                    print(f"    已更新: {node_name}")
                     print(f"      标签: {updated['labels']}")
                     total_updated += 1
                 else:
@@ -136,7 +136,7 @@ with driver.session() as session:
         if len(other_nodes) > 10:
             print(f"  ... 还有 {len(other_nodes) - 10} 个")
     else:
-        print("\n✓ 没有 'Other' 类型的节点了！")
+        print("\n没有 'Other' 类型的节点了！")
     
     # 检查关键节点的新标签
     print(f"\n{'='*80}")
@@ -164,12 +164,12 @@ with driver.session() as session:
         record = result.single()
         
         if record:
-            print(f"  ✓ {record['name']:40s}: {record['label']:20s} (度数: {record['degree']})")
+            print(f"  {record['name']:40s}: {record['label']:20s} (度数: {record['degree']})")
         else:
             print(f"  ✗ {node_name:40s}: 未找到")
 
 print(f"\n{'='*80}")
-print("✓ 节点标签优化完成！")
+print("节点标签优化完成。")
 print(f"{'='*80}")
 
 driver.close()

@@ -13,25 +13,96 @@
 
 ---
 
-## 项目简介
+## 项目概述
 
-本项目是知识工程课程第二组的实验项目，从松材线虫病（Pine Wilt Disease，PWD）相关的 PDF 学术论文中自动提取知识实体和关系，构建可导入 Neo4j 的知识图谱。采用多策略实体识别、规则与统计结合的关系抽取方法，实现从文献到知识图谱的端到端自动化处理。
+本项目从松材线虫病（Pine Wilt Disease，PWD）相关 PDF 文献中自动抽取实体和关系，构建可在 Neo4j 中查询和可视化的领域知识图谱。
 
-### 核心功能
+管道核心由三部分组成：
 
-- **智能 PDF 解析**：自动提取 PDF 正文，过滤页眉页脚和参考文献，支持缓存与并行处理
-- **多策略实体识别**：结合 TF-IDF、YAKE、KeyBERT、spaCy NER 等多种方法，支持外部领域词典
-- **关系自动抽取**：基于正则模式匹配和共现分析，支持关系方向校验和置信度分级
-- **数据智能清洗**：去重、同义词合并、质量过滤、实体链接与消歧
-- **Neo4j 集成**：自动生成导入文件（nodes.csv、relations.csv）和 Cypher 脚本
-- **性能优化**：缓存机制、并行处理、增量更新支持
+- 从 PDF 中抽取文本，并做基础清洗
+- 使用本地大模型（通过 Ollama）进行概念与关系抽取、嵌入式去重和邻近性分析
+- 结合规则和统计，对关系进行过滤、语义体检和修正后导入 Neo4j
 
-### 适用场景
+目标是得到一份结构清晰、数据质量可控的松材线虫病知识图谱，支持进一步分析和展示。
 
-- 学术研究中的文献知识整合
-- 生物医学领域知识图谱构建
-- 林业病虫害知识库建设
-- 科研知识管理和检索
+---
+
+## 最终成果概览
+
+### 图谱规模（当前 Neo4j 数据库）
+
+以下数据直接来自当前 Neo4j 默认数据库：
+
+- **节点数**：59
+- **关系数**：365
+- **节点类型**：8 种（Host, Location, Vector, Technology, Control, Disease, Pathogen, Other）
+- **关系类型**：21 种（以 CO_OCCURS_WITH 为主）
+
+### 节点类别（概念层面）
+
+根据节点上 `type` 字段的统计，当前图谱中的节点分布为：
+
+- Other：18 个
+- Host：16 个
+- Location：10 个
+- Vector：5 个
+- Technology：5 个
+- Control：3 个
+- Disease：1 个
+- Pathogen：1 个
+
+从语义上看，这些类型覆盖了疾病、病原体、媒介、寄主、地点、技术方法、防治措施以及少量其他概念。
+
+### 关系类型概况
+
+当前数据库中共有 21 种关系类型，其中：
+
+- `CO_OCCURS_WITH`：299 条（约 81.9%）
+- `RELATED_TO`：12 条（约 3.3%）
+- `PARASITIZES`：6 条
+- `TREATS`、`DISTRIBUTED_IN`：各 5 条
+- `AFFECTS`：4 条
+- `TRANSMITS`、`INFECTS`、`FEEDS_ON`、`LOCATED_IN`、`USED_FOR`、`CONTAINS`、`SYMPTOM_OF`：各 3 条
+- `CARRIES`、`COMPARES_WITH`、`CONTROLS`、`CAUSES`、`APPLIES_TO`：各 2 条
+- `COMPETES_WITH`、`MONITORS`、`COMPONENT_OF`：各 1 条
+
+详细的统计和示例可见：
+
+- `output/statistics_report.txt`
+- `FINAL_REPORT.md`
+
+### 关键输出文件
+
+- `output/concepts_final.csv`：最终概念列表
+- `output/relationships_final.csv`：最终关系列表
+- `output/neo4j_import/nodes_final.csv`：最终节点（导入 Neo4j 的简化版本）
+- `output/neo4j_import/relations_final.csv`：最终关系（导入 Neo4j 的简化版本）
+- `output/neo4j_export_*.csv`：从 Neo4j 导出的最新三元组（带权重与类型）
+- `output/statistics_report.txt`：概念与关系的统计报告
+- `FINAL_REPORT.md`：对最终图谱质量和结构的文字总结
+
+---
+
+## Jupyter Notebook 分析与可视化
+
+项目提供完整的交互式分析 Notebook：
+
+- `PWD_Knowledge_Graph_Analysis.ipynb`：包含数据库连接、统计查询、多跳路径、风险评估、可视化图表、GDS 社区划分与最短路径可视化等十余个章节，可直接运行生成报告用图表与表格。
+
+主要功能：
+
+- 图规模、核心节点、传播链路、防控措施、地理分布等统计查询
+- 病原-宿主-媒介链路、共现网络、风险评估等应用查询
+- Matplotlib/Seaborn 可视化：节点/关系类型分布、宿主风险排序等
+- GDS Louvain 社区检测与社区分布图
+- NetworkX 最短路径可视化（可自定义起止节点）
+
+使用方式：
+
+```bash
+./venv/bin/jupyter notebook
+# 在浏览器打开 PWD_Knowledge_Graph_Analysis.ipynb
+```
 
 ---
 
@@ -40,475 +111,362 @@
 ### 环境要求
 
 - Python 3.8+
-- Neo4j 4.x 或 5.x（可选）
+- Neo4j 4.x 或 5.x
+- 本地 LLM 服务（默认通过 Ollama 调用 `llama3.2:3b`）
 
 ### 安装依赖
 
 ```bash
-# 方法一：使用安装脚本（推荐）
-bash install.sh
-
-# 方法二：手动安装
 pip install -r requirements.txt
 python -m spacy download zh_core_web_sm
 python -m spacy download en_core_web_sm
 ```
 
-### 运行程序
+### 准备数据
+
+1. 将待处理的 PDF 文献放入项目根目录下的 `文献/` 目录
+2. 根据需要调整 `config/config.yaml` 中的参数（见下文“配置说明”）
+
+### 运行构建管道
 
 ```bash
-# 1. 将PDF文件放入 文献/ 目录
-# 2. 运行主程序
+# 方式一：直接运行主程序
 python main.py
+
+# 或使用封装好的脚本
+./run_complete_workflow.sh
 ```
 
-程序将自动执行完整的知识图谱构建流程：
+主程序完成后，会在 `output/` 目录生成：
 
-1. PDF 文本提取
-2. 实体识别
-3. 关系抽取
-4. 数据清洗
-5. 生成 Neo4j 导入文件
+- `concepts.csv` / `relationships.csv`：LLM 抽取和去重后的概念与关系
+- `entities_clean.csv` / `relations_clean.csv`：清洗后的实体和关系
+- `neo4j_import/`：导入 Neo4j 所需的 CSV 与 Cypher 脚本
+- `statistics_report.txt`：抽取与清洗阶段的统计结果
 
 ### 导入 Neo4j
 
-```bash
-# 直接导入数据到 Neo4j
-python import_to_neo4j_final.py
-```
+导入推荐使用两种方式之一：
 
-导入完成后访问：http://localhost:7474
+1. **使用三元组导入脚本（最终图谱）**
 
-**当前数据状态**：
+   ```bash
+   python import_to_neo4j_final.py
+   ```
 
-- 节点数: 59
-- 关系数: 365
-- 数据来源: 松材线虫病相关文献
-- 核心疾病: 松材线虫病（1 个）
-- 实体类型: 8 种（Host, Symptom, ControlMeasure, EnvironmentalFactor, Region, Vector, Disease, Pathogen）
-- 关系类型: 7 种（hasHost, hasSymptom, controlledBy, affectedBy, hasVector, occursIn, hasPathogen）
+   该脚本会：
 
----
+   - 读取 `output/triples_export_semantic_clean.csv`（若存在，否则使用 `triples_export.csv`）
+   - 清空当前数据库
+   - 创建节点与关系，并添加类型、权重、样式等属性
+   - 生成索引和基本统计信息
 
-## 系统架构
+2. **使用 CSV + Cypher 导入脚本**
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  PDF 文献   │ --> │  文本提取   │ --> │  实体识别   │ --> │  关系抽取   │ --> │  数据清洗   │
-└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
-                         PyMuPDF           多策略 NER          模式匹配           去重/规范化
-                                                               共现分析
-                                                                    |
-                                                                    v
-                    ┌──────────────────────────────────────────────────────────┐
-                    │                  Neo4j 知识图谱                                 │
-                    │              (可视化查询 / 知识推理)                        │
-                    └──────────────────────────────────────────────────────────┘
-```
+   ```bash
+   cd output/neo4j_import
+   python import_to_neo4j.py
+   # 或在 Neo4j Browser 中执行 import.cypher
+   ```
+
+   使用 `nodes.csv` / `relations.csv` 构建一个更简化的实体-关系图。
+
+导入完成后，可在浏览器访问 Neo4j：
+
+- 地址：`http://localhost:7474`
+- 用户名：`neo4j`
+- 密码：`12345678`（默认值，见 `config/config.yaml`）
 
 ---
 
-## 数据模型
+## 工作流程
 
-### 实体类型
+整个流程可以分为四个阶段：
 
-| 类型                | 说明     | 示例                                 |
-| ------------------- | -------- | ------------------------------------ |
-| Disease             | 疾病     | 松材线虫病、PWD                      |
-| Pathogen            | 病原体   | 松材线虫、Bursaphelenchus xylophilus |
-| Host                | 宿主     | 马尾松、黑松                         |
-| Vector              | 传播媒介 | 松褐天牛、Monochamus alternatus      |
-| Symptom             | 症状     | 针叶变色、萎蔫                       |
-| ControlMeasure      | 防控措施 | 清理病死树、化学防治                 |
-| Region              | 地区     | 浙江、江苏                           |
-| EnvironmentalFactor | 环境因素 | 温度、湿度                           |
+### 1. 文本抽取与预处理
 
-### 关系类型
+相关代码：`pdf_extractor.py`、`ocr_processor.py`
 
-| 关系         | 说明       | 示例                    |
-| ------------ | ---------- | ----------------------- |
-| hasPathogen  | 有病原体   | 松材线虫病 → 松材线虫   |
-| hasHost      | 有宿主     | 松材线虫病 → 马尾松     |
-| hasVector    | 有传播媒介 | 松材线虫病 → 松褐天牛   |
-| hasSymptom   | 有症状     | 松材线虫病 → 针叶变色   |
-| controlledBy | 被控制     | 松材线虫病 → 清理病死树 |
-| occursIn     | 发生在     | 松材线虫病 → 浙江       |
-| affectedBy   | 受影响     | 松材线虫病 → 温度       |
-| transmits    | 传播       | 松褐天牛 → 松材线虫     |
-| infects      | 感染       | 松材线虫 → 马尾松       |
+- 从 `文献/` 目录读取 PDF
+- 使用 PyMuPDF 提取正文，按章节和页码切分文本
+- 支持基础 OCR（可选），以及对页眉、脚注、参考文献等噪声区域的过滤
+
+### 2. LLM 概念与关系抽取
+
+相关代码：`enhanced_pipeline.py`、`concept_extractor.py`、`concept_deduplicator.py`
+
+- 将抽取的文本按块切分并发送给本地大模型
+- 识别候选概念和概念间的关系
+- 使用向量嵌入进行去重和合并，相似度阈值和过滤规则可在配置中控制
+- 输出到 `output/concepts.csv` 和 `output/relationships.csv`
+
+### 3. 数据清洗与 Neo4j 导入文件生成
+
+相关代码：`data_cleaner.py`、`neo4j_generator.py`
+
+- 按置信度阈值、出现频次、字符过滤等规则清洗关系
+- 规范化实体命名、去除明显噪声概念
+- 生成：
+  - `entities_clean.csv` / `relations_clean.csv`
+  - `output/neo4j_import/nodes.csv` / `relations.csv`
+  - `output/neo4j_import/import.cypher`
+
+### 4. 语义体检与最终图谱构建
+
+相关代码：`bio_semantic_review.py`、`fix_semantic_triples.py`、`refine_node_labels.py`、`fix_remaining_relations.py`、`export_neo4j_to_csv.py`、`verify_neo4j_data.py`、`import_to_neo4j_final.py`
+
+- 对三元组进行领域规则检查：
+  - 按名称和上下文推断节点类别（疾病、病原体、寄主、媒介等）
+  - 检查关系起止点类型是否合理
+  - 识别方向错误、自环、孤立节点等问题
+- 生成语义修正版三元组：
+  - `triples_export_semantic_clean.csv`
+  - `triples_semantic_issues.csv`
+- 调整少量节点标签和剩余关系类型
+- 通过 `import_to_neo4j_final.py` 导入最终版本图谱
+- 使用 `export_neo4j_to_csv.py` 与 `verify_neo4j_data.py` 对最终数据库进行导出和一致性检查
 
 ---
 
-## 数据处理流程
+## 知识图谱设计
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  第 1 步：原始数据提取                                        │
-│  python main.py                                             │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-           ┌──────────────────────┐
-           │  output/entities.csv  │ (原始实体，~1000+条)
-           │  output/relations.csv │ (原始关系，~500+条)
-           └──────────┬───────────┘
-                      ↓
-┌─────────────────────────────────────────────────────────────┐
-│  第 2 步：数据清洗（在 main.py 中完成）                       │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-           ┌──────────────────────────┐
-           │  output/entities_clean.csv │ (清洗后)
-           │  output/relations_clean.csv│ (清洗后)
-           └──────────┬────────────────┘
-                      ↓
-┌─────────────────────────────────────────────────────────────┐
-│  第 3 步：转换为 Neo4j 格式（在 main.py 中自动完成）          │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-           ┌────────────────────────────────┐
-           │  output/neo4j_import/nodes.csv     │ (Neo4j 格式)
-           │  output/neo4j_import/relations.csv │ (Neo4j 格式)
-           └──────────┬─────────────────────────┘
-                      ↓
-┌─────────────────────────────────────────────────────────────┐
-│  第 4 步：导入到 Neo4j                                        │
-│  python import_fixed_data.py                                │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-                 ┌─────────┐
-                 │  Neo4j  │
-                 │ 数据库   │
-                 └─────────┘
-```
+### 实体类型（概念层面）
 
-### 文件说明
+下表为图谱中常见的实体类型及示例：
 
-| 文件                                       | 说明                         | 用途           |
-| ------------------------------------------ | ---------------------------- | -------------- |
-| `output/entities.csv`                      | 原始提取的实体               | 备份           |
-| `output/relations.csv`                     | 原始提取的关系               | 备份           |
-| `output/entities_clean.csv`                | 清洗后的实体                 | 备份           |
-| `output/relations_clean.csv`               | 清洗后的关系                 | 备份           |
-| `output/triples_export.csv`                | 最初导出的三元组             | 语义体检输入   |
-| `output/triples_export_semantic_clean.csv` | 语义体检与规则修正后的三元组 | Neo4j 导入源   |
-| `output/triples_semantic_issues.csv`       | 语义体检中发现的问题及建议   | 人工复核       |
-| `output/neo4j_import/nodes.csv`            | Neo4j 节点文件（最终节点集） | **导入 Neo4j** |
-| `output/neo4j_import/relations.csv`        | Neo4j 关系文件（最终关系集） | **导入 Neo4j** |
-| `output/neo4j_import/queries.cypher`       | Cypher 查询示例              | 参考查询       |
+| 类型       | 说明       | 示例                         |
+| ---------- | ---------- | ---------------------------- |
+| Disease    | 疾病       | pine wilt disease            |
+| Pathogen   | 病原体     | bursaphelenchus xylophilus   |
+| Host       | 寄主       | pinus thunbergii、马尾松     |
+| Vector     | 媒介       | monochamus alternatus 等天牛 |
+| Symptom    | 症状       | 叶片变色、落叶               |
+| Control    | 防治措施   | 诱捕器、生物防治、防治       |
+| Technology | 技术与方法 | Sentinel-2、高光谱数据       |
+| Location   | 地点       | 泰山风景区、巴山、疫区       |
+| Other      | 其他概念   | 林业、光谱、波段选择算法等   |
 
-### 项目结构
+不同脚本和导入方式下，具体的标签命名会略有差异，但整体设计围绕上述几类。
 
-```
+### 关系类型（语义层面）
+
+在最终图谱中，除了共现关系外，还包含多类语义关系，例如：
+
+- `PARASITIZES`（寄生）：媒介或病原体寄生在寄主上
+- `INFECTS`（感染）：病原体对寄主的感染关系
+- `CAUSES` / `SYMPTOM`（引起 / 症状）：疾病与症状之间的联系
+- `TRANSMITS`（传播）：媒介传播病原体或疾病
+- `DISTRIBUTED_IN`（分布于）：疾病或媒介在地区上的分布
+- `AFFECTS`（影响）：环境或技术因素对病害的影响
+- `TREATS` / `CONTROLS`（治疗 / 防治）：防治措施与病害或病原体之间的关系
+- `USED_FOR` / `MONITORS`（用于 / 监测）：技术与监测任务之间的关系
+- `CO_OCCURS_WITH`（共现）：文献中共同出现的概念，用于补充背景连接
+
+---
+
+## 目录结构与核心脚本
+
+项目根目录的主要结构如下（简化）：
+
+```text
 PWD/
-├── main.py                    # 主程序入口
-├── pdf_extractor.py           # PDF 文本提取
-├── entity_recognizer.py      # 实体识别
-├── relation_extractor.py     # 关系抽取
-├── data_cleaner.py           # 数据清洗
-├── neo4j_generator.py        # Neo4j 文件生成
-├── import_fixed_data.py      # Neo4j 数据导入
-├── config/                   # 配置文件目录
-│   ├── config.yaml          # 主配置文件
-│   └── domain_dict.json     # 领域词典
-├── output/                   # 输出目录
-│   └── neo4j_import/        # Neo4j 导入文件
-│       ├── nodes.csv        # 节点文件（44个）
-│       ├── relations.csv    # 关系文件（43条）
-│       └── queries.cypher   # 查询示例
-├── archive/                  # 归档目录（历史脚本和文档）
-│   ├── scripts/             # 临时脚本（28个）
-│   └── docs/                # 过时文档（4个）
-└── 文献/                    # PDF 文献目录
+├── README.md                  # 项目说明（本文件）
+├── QUICK_START.md             # 快速开始与运行参数
+├── NEO4J_USAGE_GUIDE.md       # Neo4j 使用与查询示例
+├── FINAL_REPORT.md            # 最终图谱分析报告
+├── PROJECT_FILES.md           # 文件说明与依赖关系
+├── PROJECT_STRUCTURE.txt      # 最终项目结构概览
+│
+├── main.py                    # 主入口，整合增强管道与 Neo4j 管理
+├── enhanced_pipeline.py       # LLM 概念与关系抽取管道
+├── concept_extractor.py       # 概念与关系抽取
+├── concept_deduplicator.py    # 嵌入式去重与合并
+├── data_cleaner.py            # 数据清洗与规范化
+├── neo4j_generator.py         # 生成 Neo4j 导入文件
+├── neo4j_manager.py           # Neo4j 备份、清空与回滚
+│
+├── bio_semantic_review.py     # 三元组语义体检
+├── fix_semantic_triples.py    # 批量修正规则
+├── refine_node_labels.py      # 节点标签优化
+├── fix_remaining_relations.py # 剩余关系清理
+├── import_to_neo4j_final.py   # 使用三元组导入最终图谱
+├── export_neo4j_to_csv.py     # 从数据库导出 CSV
+├── verify_neo4j_data.py       # 数据质量检查
+│
+├── run_complete_workflow.sh   # 一键运行完整流程
+├── check_progress.sh          # 运行进度检查
+├── view_results.sh            # 结果查看与 Neo4j 浏览
+├── clean_project.sh           # 输出与缓存清理
+├── organize_project.sh        # 项目文件整理
+│
+├── config/
+│   ├── config.yaml            # 主配置文件
+│   ├── domain_dict.json       # 领域词典
+│   └── stopwords.txt          # 停用词
+│
+├── output/
+│   ├── concepts*.csv          # 概念相关中间结果
+│   ├── relationships*.csv     # 关系相关中间结果
+│   ├── entities_clean.csv     # 清洗后实体
+│   ├── relations_clean.csv    # 清洗后关系
+│   ├── neo4j_import/          # Neo4j 导入文件与脚本
+│   ├── triples/               # 三元组相关中间结果
+│   ├── statistics_report.txt  # 抽取/清洗阶段统计
+│   └── *.md/*.json            # 数据检查与导入报告
+│
+├── 文献/                      # PDF 文献目录
+└── venv/                      # 虚拟环境（不纳入版本控制）
 ```
 
-**注意**：`archive/` 目录用于存放开发过程中的临时脚本和历史文档，不影响核心流程。
-
-### 语义体检与最终图谱构建流程
-
-在传统管道的基础上，本项目增加了一套面向松材线虫病领域的语义检查与修正流程，用于得到最终版本的 PWD 图谱：
-
-1. 使用抽取管道生成 `output/triples_export.csv`。
-2. 运行 `bio_semantic_review.py`：
-   - 基于名称规则推断节点类型（Pathogen, Host, Vector, Disease 等）。
-   - 按白名单检查关系三元组的起点/终点类型是否合理。
-   - 在少数关系类型上自动纠正方向，并导出：
-     - `triples_export_semantic_clean.csv`（用于重新导入的三元组）。
-     - `triples_semantic_issues.csv`（问题三元组及建议）。
-3. 根据 `triples_semantic_issues.csv`，结合生物学知识手工/脚本化修正：
-   - 运行 `fix_semantic_triples.py` 对部分典型三元组做批量修正或删除。
-   - 运行 `refine_node_labels.py` 调整 Neo4j 中关键节点的标签（如 Symptom, EnvironmentalFactor, Location 等）。
-   - 运行 `fix_remaining_relations.py` 对少量残余关系类型进行统一处理。
-4. 运行 `import_to_neo4j_final.py`：
-   - 优先导入 `triples_export_semantic_clean.csv`，若不存在则回退到原始导出文件。
-   - 在 Neo4j 中创建节点和关系，并应用可视化样式文件 `neo4j_style.grass`。
-5. 使用 `export_neo4j_to_csv.py` 与 `verify_neo4j_data.py` 对最终数据库进行导出与一致性检查。
+更细致的说明可参考 `PROJECT_FILES.md` 与 `PROJECT_STRUCTURE.txt`。
 
 ---
 
 ## 配置说明
 
-主要配置文件：`config/config.yaml`
+主配置文件位于 `config/config.yaml`，与当前实现保持一致。核心字段示意：
 
 ```yaml
-# PDF 提取配置
+# PDF 提取
 pdf:
   input_directory: ./文献
-  parallel_workers: 4 # 并行处理进程数（null=自动检测）
+  output_directory: ./output/extracted_texts
+  enable_cache: true
+  parallel_workers: 8
 
-# 系统功能开关
-system:
-  enable_cache: true # 缓存机制（推荐启用，速度提升10x）
-  enable_parallel: true # 并行处理（推荐启用）
-  enable_incremental: false # 增量更新（首次运行设为 false）
-
-# 实体识别配置
+# 实体识别
 entity:
-  max_entity_length: 30
-  domain_dict_file: ./config/domain_dict.json # 外部领域词典
+  enable_tfidf: true
+  enable_yake: true
+  enable_keybert: true
+  enable_spacy: true
+  domain_dict_file: ./config/domain_dict.json
 
-# 数据清洗配置
+# 关系抽取
+relation:
+  enable_pattern_matching: true
+  enable_cooccurrence: true
+  window_size: 100
+
+# 数据清洗
 cleaning:
-  confidence_threshold: 0.65 # 关系置信度阈值（0.60-0.70）
-  enable_entity_linking: false # 实体链接与消歧（提升准确率10-15%）
+  confidence_threshold: 0.65
+  similarity_threshold: 0.85
+  enable_entity_linking: true
+
+# Neo4j
+neo4j:
+  uri: neo4j://127.0.0.1:7687
+  user: neo4j
+  password: "12345678"
+  database: PWD
+
+# LLM
+llm:
+  model: llama3.2:3b
+  ollama_host: http://localhost:11434
+  max_chunks: 100
+  timeout: 120
 ```
 
-### 配置建议
+配置建议：
 
-| 场景               | `confidence_threshold` | `enable_entity_linking` | 说明                 |
-| ------------------ | ---------------------- | ----------------------- | -------------------- |
-| 高质量模式（科研） | 0.70                   | true                    | 质量优先，数量较少   |
-| 平衡模式（推荐）   | 0.65                   | false                   | 质量与数量平衡       |
-| 高召回模式（探索） | 0.60                   | false                   | 数量优先，可能有噪声 |
+- 小规模测试：降低 `max_chunks`，或在 `filtering` 中提高 `min_importance`
+- 强调质量：提高 `cleaning.confidence_threshold`，保持 `enable_entity_linking: true`
+- 强调召回：适当降低置信度阈值，但需要结合统计报告人工抽查
 
 ---
 
-## Neo4j 使用指南
+## Neo4j 使用与分析
 
-### 连接信息
+- 基本连接信息和常用查询示例见：`NEO4J_USAGE_GUIDE.md`
+- 导入完成后，可在 Neo4j Browser 中：
+  - 按节点/关系类型浏览整体结构
+  - 查看度数最高的节点、权重较高的关系
+  - 通过最短路径和子图查询分析传播链路
 
-- **Neo4j Browser**: http://localhost:7474
-- **连接 URI**: `neo4j://127.0.0.1:7687`
-- **默认用户**: `neo4j`
-- **默认密码**: `12345678`
-
-### 基础查询
+典型查询示例（节选）：
 
 ```cypher
-// 查看所有节点类型和数量
+// 查看节点类型分布
 MATCH (n)
-RETURN labels(n)[0] AS 类型, count(n) AS 数量
-ORDER BY 数量 DESC;
+RETURN n.type AS node_type, count(*) AS count
+ORDER BY count DESC;
 
-// 查看所有关系类型和数量
+// 查看关系类型分布
 MATCH ()-[r]->()
-RETURN type(r) AS 关系类型, count(r) AS 数量
-ORDER BY 数量 DESC;
+RETURN type(r) AS rel_type, count(*) AS count
+ORDER BY count DESC;
+
+// 查询病原体到寄主的传播路径
+MATCH path = (p:Pathogen)-[*1..4]-(h:Host)
+RETURN p.name, h.name, length(path) AS path_length
+LIMIT 10;
 ```
 
-### 传播链分析
+更完整的查询和可视化建议请参考 `NEO4J_USAGE_GUIDE.md`。
+
+---
+
+## Neo4j 实时统计（示例）
+
+统计时间：2025-11-16（基于当前默认数据库）
+
+查询语句：
 
 ```cypher
-// 完整传播链查询
-MATCH (d:Disease {name: '松材线虫病'})-[:hasPathogen]->(p:Pathogen)
-MATCH (d)-[:hasVector]->(v:Vector)
-MATCH (d)-[:hasHost]->(h:Host)
-MATCH (d)-[:hasSymptom]->(s:Symptom)
-RETURN d.name AS 疾病,
-       p.name AS 病原体,
-       collect(v.name) AS 媒介,
-       collect(h.name) AS 宿主,
-       s.name AS 症状;
+// 节点和关系总数
+MATCH (n) RETURN count(n) AS node_count;
+MATCH ()-[r]->() RETURN count(r) AS rel_count;
+
+// 节点类型分布（按 n.type 或标签）
+MATCH (n)
+RETURN coalesce(n.type, head(labels(n))) AS type, count(*) AS count
+ORDER BY count DESC;
+
+// 关系类型分布
+MATCH ()-[r]->()
+RETURN type(r) AS type, count(*) AS count
+ORDER BY count DESC;
 ```
 
-### 可视化关系网络
+当前结果快照：
 
-```cypher
-// 查看松材线虫病的完整关系网络
-MATCH path = (d:Disease {name: '松材线虫病'})-[*1]-(n)
-RETURN path
-LIMIT 50;
-```
+- 节点总数：59
+- 关系总数：365
 
-### 更多查询示例
+节点类型分布：
 
-完整查询示例请查看：`output/neo4j_import/queries.cypher`
+- Other：18
+- Host：16
+- Location：10
+- Vector：5
+- Technology：5
+- Control：3
+- Disease：1
+- Pathogen：1
+
+关系类型分布（按条数从高到低）：
+
+- CO_OCCURS_WITH：299
+- RELATED_TO：12
+- PARASITIZES：6
+- TREATS：5，DISTRIBUTED_IN：5
+- AFFECTS：4
+- TRANSMITS / INFECTS / FEEDS_ON / LOCATED_IN / USED_FOR / CONTAINS / SYMPTOM_OF：各 3
+- CARRIES / COMPARES_WITH / CONTROLS / CAUSES / APPLIES_TO：各 2
+- COMPETES_WITH / MONITORS / COMPONENT_OF：各 1
 
 ---
 
-## 故障排除
+## 性能与注意事项
 
-### KeyBERT 导入错误
-
-**错误信息**：`ImportError: cannot import name 'cached_download'`
-
-**解决方案**：
-
-```bash
-pip uninstall sentence-transformers huggingface-hub keybert -y
-pip install sentence-transformers==2.3.1 huggingface-hub>=0.19.0 keybert==0.8.5
-```
-
-### spaCy 模型未安装
-
-**错误信息**：`OSError: [E050] Can't find model 'zh_core_web_sm'`
-
-**解决方案**：
-
-```bash
-python -m spacy download zh_core_web_sm
-python -m spacy download en_core_web_sm
-```
-
-### Neo4j 连接失败
-
-**错误信息**：`Connection refused` 或 `Failed to establish connection`
-
-**原因**：Neo4j 服务未启动
-
-**解决方案**：
-
-```bash
-# 方法 1: 使用命令行启动 Neo4j
-neo4j start
-
-# 方法 2: 使用 brew services（macOS）
-brew services start neo4j
-
-# 方法 3: 使用 Neo4j Desktop
-# 打开 Neo4j Desktop 应用，点击数据库的 Start 按钮
-
-# 检查 Neo4j 状态
-neo4j status
-
-# 访问 Neo4j Browser 确认运行
-open http://localhost:7474
-```
-
-**如果未安装 Neo4j**：
-
-```bash
-# macOS 使用 Homebrew 安装
-brew install neo4j
-
-# 或下载 Neo4j Desktop（推荐）
-# 访问: https://neo4j.com/download/
-```
-
-### 关系数量为 0
-
-**原因**：置信度阈值太高
-
-**解决方案**：修改 `config/config.yaml`，设置 `confidence_threshold: 0.65` 或更低
-
-### Neo4j CSV 导入失败
-
-**错误信息**：`Couldn't load the external resource`
-
-**解决方案**：确保 CSV 文件在 Neo4j 的 import 目录下
-
-```bash
-# 查找 Neo4j import 目录
-# Linux/Mac: ~/neo4j/import/ 或 /var/lib/neo4j/import/
-# Windows: C:\Users\YourName\neo4j\import\
-
-# 复制文件
-cp output/neo4j_import/*.csv ~/neo4j/import/
-```
-
-### 内存不足
-
-**解决方案**：减少并行进程数
-
-```yaml
-# config/config.yaml
-pdf:
-  parallel_workers: 2 # 降低从 4
-```
+- 处理规模：当前配置下，处理十几篇 PDF（约几十 MB）在一台普通笔记本上耗时约几十分钟，依赖本地 LLM 推理速度
+- 运行过程中会生成较多中间 CSV/JSON 文件，建议定期使用 `clean_project.sh` 清理
+- LLM 抽取结果难免包含噪声和边缘概念，最终图谱是在多轮过滤和语义体检后得到，关键结论建议结合领域知识复核
 
 ---
 
-## 性能指标
+## 许可证及用途
 
-### 典型处理速度（14 个 PDF，约 50MB）
-
-| 指标     | 首次运行 | 缓存后重运行 |
-| -------- | -------- | ------------ |
-| 处理时间 | 4-8 分钟 | 30-60 秒     |
-
-### 典型数据量
-
-- **原始实体**：~1,071 条 → 清洗后 ~1,021 条
-- **原始关系**：~1,502 条 → 清洗后 ~401 条
-- **最终实体**：44 条（高质量，无孤立节点）
-- **最终关系**：43 条（高质量，所有关系都连接到核心疾病）
-
-### 数据质量指标
-
-- 无孤立节点：所有节点都通过关系连接到核心疾病"松材线虫病"
-- 无自环关系：所有关系都是有效的实体间连接
-- 无重复关系：每条关系都是唯一的
-- 关系类型正确：所有关系类型符合数据模型定义
-- 实体类型完整：包含 8 种实体类型，覆盖疾病知识图谱的核心要素
-
----
-
-## 技术栈
-
-- **语言**：Python 3.8+
-- **PDF 处理**：PyMuPDF
-- **自然语言处理**：spaCy、jieba、YAKE、KeyBERT
-- **数据处理**：pandas、numpy、scikit-learn
-- **图数据库**：Neo4j 4.x / 5.x
-
----
-
-## 注意事项
-
-1. **PDF 格式**：仅支持可提取文本的 PDF（不支持扫描版）
-2. **准确率**：自动提取的准确率约 70-80%，建议人工审核关键数据
-3. **内存需求**：大规模处理（>50 个 PDF）需要 4GB+ 内存
-4. **置信度阈值**：系统生成的关系置信度最高为 0.72，阈值不应超过此值
-5. **项目归档**：临时脚本和过时文档已归档到 `archive/` 目录，不影响核心功能使用
-
----
-
-## 项目信息
-
-- **课程**：知识工程
-- **小组**：第二组
-- **项目主题**：基于文献的松材线虫病知识图谱构建
-- **GitHub 仓库**：[https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git](https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git)
-
----
-
-## 扩展功能
-
-### 增量更新
-
-修改 `config.yaml` 中 `enable_incremental: true`，只处理新增 PDF
-
-### 实体链接
-
-修改 `config.yaml` 中 `enable_entity_linking: true`，提升准确率 10-15%
-
-### 领域词典
-
-编辑 `config/domain_dict.json` 添加领域专业术语
-
-### 关系模式
-
-编辑 `relation_extractor.py` 中的正则模式扩展关系类型
-
----
-
-## 许可证
-
-本项目仅供学术研究使用。
-
----
-
-<div align="center">
-
-**知识工程第二组 - 基于文献的松材线虫病知识图谱项目**
-
-</div>
+本项目仅用于课程学习和学术研究，不用于生产环境部署。

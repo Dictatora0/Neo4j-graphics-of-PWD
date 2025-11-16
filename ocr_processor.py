@@ -661,14 +661,14 @@ if __name__ == "__main__":
     print("测试OCR处理器...")
     
     if OCR_AVAILABLE:
-        print("✓ Tesseract可用")
+        print("Tesseract 可用")
     else:
-        print("✗ Tesseract不可用")
+        print("Tesseract 不可用")
     
     if PADDLE_OCR_AVAILABLE:
-        print("✓ PaddleOCR可用")
+        print("PaddleOCR 可用")
     else:
-        print("✗ PaddleOCR不可用")
+        print("PaddleOCR 不可用")
     
     # 测试PDF类型检测
     test_pdf = "./文献/JItW6-1762148810582-中国森林保护学科发展历程研究_曾凡勇.pdf"

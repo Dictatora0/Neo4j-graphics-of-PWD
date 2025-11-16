@@ -70,7 +70,7 @@ class EnhancedKnowledgeGraphPipeline:
                 model=self.ollama_model,
                 ollama_host=self.ollama_host
             )
-            logger.info("✓ Concept extractor initialized")
+            logger.info("Concept extractor initialized")
         except Exception as e:
             logger.error(f"Failed to initialize concept extractor: {e}")
             logger.error("Make sure Ollama is running: ollama serve")
@@ -83,7 +83,7 @@ class EnhancedKnowledgeGraphPipeline:
                 embedding_provider=embedding_provider,
                 similarity_threshold=self.similarity_threshold
             )
-            logger.info("✓ Concept deduplicator initialized")
+            logger.info("Concept deduplicator initialized")
         except Exception as e:
             logger.warning(f"Failed to initialize embeddings: {e}")
             logger.warning("Deduplication will be skipped")
@@ -146,7 +146,7 @@ class EnhancedKnowledgeGraphPipeline:
         duration = end_time - start_time
         
         logger.info("\n" + "="*60)
-        logger.info("✓ Enhanced Pipeline Completed Successfully!")
+        logger.info("Enhanced Pipeline completed successfully")
         logger.info("="*60)
         logger.info(f"Duration: {duration}")
         logger.info(f"Final concepts: {len(concepts_df)}")
@@ -281,12 +281,12 @@ class EnhancedKnowledgeGraphPipeline:
         # Save concepts
         concepts_path = f"{self.output_dir}/concepts.csv"
         concepts_df.to_csv(concepts_path, index=False, encoding='utf-8-sig')
-        logger.info(f"✓ Saved concepts to {concepts_path}")
+        logger.info(f"Saved concepts to {concepts_path}")
         
         # Save relationships
         relationships_path = f"{self.output_dir}/relationships.csv"
         relationships_df.to_csv(relationships_path, index=False, encoding='utf-8-sig')
-        logger.info(f"✓ Saved relationships to {relationships_path}")
+        logger.info(f"Saved relationships to {relationships_path}")
 
 
 def run_enhanced_pipeline(pdf_dir: str = None, config: Dict = None) -> Tuple[pd.DataFrame, pd.DataFrame]:

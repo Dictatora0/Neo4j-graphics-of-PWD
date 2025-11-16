@@ -25,7 +25,7 @@ class Neo4jGenerator:
         nodes_path = os.path.join(self.output_dir, 'nodes.csv')
         nodes_df.to_csv(nodes_path, index=False, encoding='utf-8-sig')
         
-        print(f"✓ 节点文件已生成: {nodes_path}")
+        print(f"节点文件已生成: {nodes_path}")
         print(f"  共 {len(nodes_df)} 个节点")
         print(f"\n  节点类型分布:")
         for label, count in nodes_df['label'].value_counts().items():
@@ -60,7 +60,7 @@ class Neo4jGenerator:
         rels_path = os.path.join(self.output_dir, 'relations.csv')
         rels_df.to_csv(rels_path, index=False, encoding='utf-8-sig')
         
-        print(f"\n✓ 关系文件已生成: {rels_path}")
+        print(f"\n关系文件已生成: {rels_path}")
         print(f"  共 {len(rels_df)} 个关系")
         print(f"\n  关系类型分布:")
         for relation, count in rels_df['relation'].value_counts().items():
@@ -316,7 +316,7 @@ ORDER BY Count DESC;
         with open(script_path_apoc, 'w', encoding='utf-8') as f:
             f.write(cypher_script)
         
-        print(f"\n✓ Cypher脚本已生成:")
+        print(f"\nCypher 脚本已生成:")
         print(f"  - {script_path} (标准版)")
         print(f"  - {script_path_apoc} (APOC版)")
         
@@ -356,7 +356,7 @@ def import_to_neo4j(uri, user, password, cypher_file):
                     print(f"执行语句 {i}/{len(statements)}...")
                     try:
                         result = session.run(statement)
-                        print(f"✓ 完成")
+                        print("完成")
                     except Exception as e:
                         print(f"✗ 错误: {e}")
         
@@ -387,7 +387,7 @@ if __name__ == "__main__":
         # 设置可执行权限
         os.chmod(script_path, 0o755)
         
-        print(f"\n✓ Python导入脚本已生成: {script_path}")
+        print(f"\nPython 导入脚本已生成: {script_path}")
         
         return script_path
     

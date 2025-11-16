@@ -320,14 +320,14 @@ def main() -> None:
     clean_df = pd.DataFrame(fixed_rows)
     os.makedirs(os.path.dirname(OUTPUT_CLEAN_PATH), exist_ok=True)
     clean_df.to_csv(OUTPUT_CLEAN_PATH, index=False)
-    print(f"\n✓ 已生成语义清洗后的三元组文件: {OUTPUT_CLEAN_PATH} (共 {len(clean_df)} 条)")
+    print(f"\n已生成语义清洗后的三元组文件: {OUTPUT_CLEAN_PATH} (共 {len(clean_df)} 条)")
 
     if issues:
         issues_df = pd.DataFrame(issues)
         issues_df.to_csv(OUTPUT_ISSUES_PATH, index=False)
-        print(f"✓ 检测到 {len(issues)} 条存在语义问题的三元组, 已输出到: {OUTPUT_ISSUES_PATH}")
+        print(f"检测到 {len(issues)} 条存在语义问题的三元组, 已输出到: {OUTPUT_ISSUES_PATH}")
     else:
-        print("✓ 未发现语义问题三元组 (在当前规则下)")
+        print("未发现语义问题三元组 (在当前规则下)")
 
     print("\n完成语义体检。你可以:")
     print("  1. 查看 output/triples_semantic_issues.csv 了解具体问题")
