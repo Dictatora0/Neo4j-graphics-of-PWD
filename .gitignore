@@ -70,6 +70,9 @@ output/*.md
 # PDF files (literature)
 文献/
 
+# Notebook files (temporary)
+PWD_KG_Notebook.ipynb
+
 # 归档目录（保留历史记录）
 # archive/
 
