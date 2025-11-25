@@ -85,7 +85,7 @@
 
 项目提供完整的交互式分析 Notebook：
 
-- `PWD_Knowledge_Graph_Analysis.ipynb`：包含数据库连接、统计查询、多跳路径、风险评估、可视化图表、GDS 社区划分与最短路径可视化等十余个章节，可直接运行生成报告用图表与表格。
+- `notebooks/PWD_Knowledge_Graph_Analysis.ipynb`：包含数据库连接、统计查询、多跳路径、风险评估、可视化图表、GDS 社区划分与最短路径可视化等十余个章节，可直接运行生成报告用图表与表格。
 
 主要功能：
 
@@ -99,7 +99,7 @@
 
 ```bash
 ./venv/bin/jupyter notebook
-# 在浏览器打开 PWD_Knowledge_Graph_Analysis.ipynb
+# 在浏览器打开 notebooks/PWD_Knowledge_Graph_Analysis.ipynb
 ```
 
 ---
@@ -132,7 +132,7 @@ python -m spacy download en_core_web_sm
 python main.py
 
 # 或使用封装好的脚本
-./run_complete_workflow.sh
+./scripts/workflow/run_complete_workflow.sh
 ```
 
 主程序完成后，会在 `output/` 目录生成：
@@ -269,40 +269,54 @@ python main.py
 ```text
 PWD/
 ├── README.md                  # 项目说明（本文件）
-├── QUICK_START.md             # 快速开始与运行参数
-├── NEO4J_USAGE_GUIDE.md       # Neo4j 使用与查询示例
-├── FINAL_REPORT.md            # 最终图谱分析报告
-├── PROJECT_FILES.md           # 文件说明与依赖关系
-├── PROJECT_STRUCTURE.txt      # 最终项目结构概览
+├── requirements.txt           # Python 依赖
+├── .gitignore                 # Git 忽略规则
 │
-├── main.py                    # 主入口，整合增强管道与 Neo4j 管理
-├── enhanced_pipeline.py       # LLM 概念与关系抽取管道
-├── concept_extractor.py       # 概念与关系抽取
-├── concept_deduplicator.py    # 嵌入式去重与合并
-├── data_cleaner.py            # 数据清洗与规范化
-├── neo4j_generator.py         # 生成 Neo4j 导入文件
-├── neo4j_manager.py           # Neo4j 备份、清空与回滚
+├── docs/                      # 文档目录
+│   ├── PROJECT_STRUCTURE.txt  # 项目结构说明
+│   └── PWD_Knowledge_Graph_Analysis.html  # 分析报告HTML版本
 │
-├── bio_semantic_review.py     # 三元组语义体检
-├── fix_semantic_triples.py    # 批量修正规则
-├── refine_node_labels.py      # 节点标签优化
-├── fix_remaining_relations.py # 剩余关系清理
-├── import_to_neo4j_final.py   # 使用三元组导入最终图谱
-├── export_neo4j_to_csv.py     # 从数据库导出 CSV
-├── verify_neo4j_data.py       # 数据质量检查
+├── notebooks/                 # Jupyter Notebooks
+│   ├── PWD_Knowledge_Graph_Analysis.ipynb  # 主分析笔记本
+│   └── PWD_KG_Notebook.ipynb  # 知识图谱笔记本
 │
-├── run_complete_workflow.sh   # 一键运行完整流程
-├── check_progress.sh          # 运行进度检查
-├── view_results.sh            # 结果查看与 Neo4j 浏览
-├── clean_project.sh           # 输出与缓存清理
-├── organize_project.sh        # 项目文件整理
+├── 核心脚本（主流程）
+│   ├── main.py                # 主入口，整合增强管道与 Neo4j 管理
+│   ├── enhanced_pipeline.py   # LLM 概念与关系抽取管道
+│   ├── concept_extractor.py   # 概念与关系抽取
+│   ├── concept_deduplicator.py # 嵌入式去重与合并
+│   ├── data_cleaner.py        # 数据清洗与规范化
+│   ├── neo4j_generator.py     # 生成 Neo4j 导入文件
+│   ├── neo4j_manager.py       # Neo4j 备份、清空与回滚
+│   ├── pdf_extractor.py       # PDF 文本提取
+│   ├── ocr_processor.py       # OCR 处理
+│   ├── entity_linker.py       # 实体链接
+│   ├── parallel_processor.py  # 并行处理
+│   ├── bio_semantic_review.py # 三元组语义体检
+│   └── import_to_neo4j_final.py # 使用三元组导入最终图谱
+│
+├── scripts/                   # 辅助脚本
+│   ├── workflow/              # 工作流脚本
+│   │   ├── run_complete_workflow.sh  # 一键运行完整流程
+│   │   ├── check_progress.sh  # 运行进度检查
+│   │   ├── clean_project.sh   # 输出与缓存清理
+│   │   └── organize_project.sh # 项目文件整理
+│   └── utils/                 # 工具脚本
+│       ├── export_for_review.py  # 导出审查文件
+│       ├── export_triples.py  # 导出三元组
+│       ├── export_neo4j_to_csv.py # 从数据库导出 CSV
+│       ├── auto_disambiguate.py # 自动消歧
+│       ├── cache_manager.py   # 缓存管理
+│       ├── config_loader.py   # 配置加载
+│       ├── logger_config.py   # 日志配置
+│       └── visualize_neo4j_graph.py # Neo4j 图可视化
 │
 ├── config/
 │   ├── config.yaml            # 主配置文件
 │   ├── domain_dict.json       # 领域词典
 │   └── stopwords.txt          # 停用词
 │
-├── output/
+├── output/                    # 输出目录
 │   ├── concepts*.csv          # 概念相关中间结果
 │   ├── relationships*.csv     # 关系相关中间结果
 │   ├── entities_clean.csv     # 清洗后实体
@@ -312,11 +326,15 @@ PWD/
 │   ├── statistics_report.txt  # 抽取/清洗阶段统计
 │   └── *.md/*.json            # 数据检查与导入报告
 │
+├── archive/                   # 开发过程存档
+│   ├── scripts/               # 调试和中间版本脚本
+│   └── docs/                  # 旧文档和报告
+│
 ├── 文献/                      # PDF 文献目录
 └── venv/                      # 虚拟环境（不纳入版本控制）
 ```
 
-更细致的说明可参考 `PROJECT_FILES.md` 与 `PROJECT_STRUCTURE.txt`。
+更细致的说明可参考 `docs/PROJECT_STRUCTURE.txt`。
 
 ---
 
@@ -460,7 +478,7 @@ ORDER BY count DESC;
 ## 性能与注意事项
 
 - 处理规模：当前配置下，处理十几篇 PDF（约几十 MB）在一台普通笔记本上耗时约几十分钟，依赖本地 LLM 推理速度
-- 运行过程中会生成较多中间 CSV/JSON 文件，建议定期使用 `clean_project.sh` 清理
+- 运行过程中会生成较多中间 CSV/JSON 文件，建议定期使用 `scripts/workflow/clean_project.sh` 清理
 - LLM 抽取结果难免包含噪声和边缘概念，最终图谱是在多轮过滤和语义体检后得到，关键结论建议结合领域知识复核
 
 ---
