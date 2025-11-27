@@ -1,322 +1,587 @@
 """
-数据清洗和规范化模块
-对提取的实体和关系进行去重、同义词合并、质量过滤
+数据清洗模块（Markdown结构适配版）
+针对Layout-Aware解析生成的Markdown格式内容进行结构化清洗
+支持智能分块、参考文献剔除、表格文本优化
 """
 
-import pandas as pd
 import re
-from typing import Dict, Set
-from difflib import SequenceMatcher
-from logger_config import get_logger
+import json
+import os
+import logging
+from typing import Dict, List, Optional, Tuple, Set
+from pathlib import Path
+from tqdm import tqdm
+# 移除logger_config依赖，内置日志配置
+import jieba
+import zhconv
+
+# 尝试导入中文分句工具
+try:
+    import pysbd
+    SBD_AVAILABLE = True
+except ImportError:
+    SBD_AVAILABLE = False
+
+try:
+    from zhsegment import segment_sentences  # 自定义中文分句工具
+    ZHSEGMENT_AVAILABLE = True
+except ImportError:
+    ZHSEGMENT_AVAILABLE = False
 
 
-class DataCleaner:
-    """数据清洗器"""
+# 内置日志配置函数
+def _get_logger(name: Optional[str] = None) -> logging.Logger:
+    """内置日志配置，替代 logger_config.get_logger"""
+    logger = logging.getLogger(name or __name__)
+    if not logger.handlers:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+    return logger
+
+
+class MarkdownDataCleaner:
+    """适配Markdown结构的PDF文本清洗器"""
     
-    def __init__(self, confidence_threshold: float = 0.65):
-        self.logger = get_logger('DataCleaner')
-        self.confidence_threshold = confidence_threshold
-        self.min_entity_length = 2
-        self.max_entity_length = 30
-        self.max_spaces = 2
-        self.max_digit_ratio = 0.3
-        self.chinese_punct_pattern = re.compile(r'[，。；！？、【】《》“”『』「」：；…]')
-        self.invalid_token_pattern = re.compile(r'^[\W_]+$')
+    def __init__(self, 
+                 remove_references: bool = True,
+                 clean_tables: bool = True,
+                 normalize_chinese: bool = True,
+                 remove_headers_footers: bool = True,
+                 min_sentence_length: int = 5,
+                 max_sentence_length: int = 500):
+        """
+        初始化清洗器
+        Args:
+            remove_references: 是否移除参考文献部分
+            clean_tables: 是否优化表格转换的文本
+            normalize_chinese: 是否归一化中文（繁转简、全半角等）
+            remove_headers_footers: 是否移除页眉页脚
+            min_sentence_length: 最小句子长度（字符数）
+            max_sentence_length: 最大句子长度（字符数）
+        """
+        self.logger = _get_logger(__name__)
         
-        self.valid_relation_pairs = {
-            ('Disease', 'Pathogen'): 'hasPathogen',
-            ('Disease', 'Host'): 'hasHost',
-            ('Disease', 'Vector'): 'hasVector',
-            ('Disease', 'Symptom'): 'hasSymptom',
-            ('Disease', 'ControlMeasure'): 'controlledBy',
-            ('Disease', 'Region'): 'occursIn',
-            ('Disease', 'EnvironmentalFactor'): 'affectedBy',
-            ('Pathogen', 'Host'): 'infects',
-            ('Pathogen', 'Vector'): 'transmits',
-            ('Vector', 'Host'): 'infects',
-            ('Vector', 'Pathogen'): 'transmits',
+        # 配置参数
+        self.remove_references = remove_references
+        self.clean_tables = clean_tables
+        self.normalize_chinese = normalize_chinese
+        self.remove_headers_footers = remove_headers_footers
+        self.min_sentence_length = min_sentence_length
+        self.max_sentence_length = max_sentence_length
+        
+        # 参考文献关键词（多语言支持）
+        self.reference_keywords = {
+            'zh': ['参考文献', '引用文献', '文献引用', '参考资料'],
+            'en': ['References', 'REFERENCES', 'Bibliography', 'Works Cited', 
+                   'Cited Works', 'Literature Cited', 'Citations']
         }
         
-        # 同义词映射表
-        self.synonym_map = {
-            '松材线虫病': ['PWD', 'Pine Wilt Disease', '松树萎蔫病', '松树枯萎病', '松枯萎病'],
-            '松材线虫': ['Bursaphelenchus xylophilus', '病原线虫', '松树线虫'],
-            '松褐天牛': ['Monochamus alternatus', '松天牛'],
-            '马尾松': ['Pinus massoniana'],
-            '黑松': ['Pinus thunbergii'],
-            '针叶变色': ['针叶褐变', '针叶黄化'],
-            '清理病死树': ['疫木除治', '病死木清理'],
-        }
-        
-        # 构建反向映射
-        self.reverse_synonym_map = {}
-        for standard_term, synonyms in self.synonym_map.items():
-            self.reverse_synonym_map[standard_term] = standard_term
-            for synonym in synonyms:
-                self.reverse_synonym_map[synonym] = standard_term
-    
-    def normalize_entity_name(self, name: str) -> str:
-        """规范化实体名称"""
-        # 查找同义词
-        if name in self.reverse_synonym_map:
-            return self.reverse_synonym_map[name]
-        
-        # 清理无效字符
-        name = re.sub(r'["“”‘’]', '', name)
-        name = name.replace('·', '').replace('_', ' ').replace('—', ' ')
-        name = re.sub(r'\s+', ' ', name).strip()
-        if len(name) > self.max_entity_length:
-            name = name[:self.max_entity_length].strip()
-        return name
-
-    def is_valid_entity(self, name: str) -> bool:
-        if not name:
-            return False
-        if len(name) < self.min_entity_length or len(name) > self.max_entity_length:
-            return False
-        if name.count(' ') > self.max_spaces:
-            return False
-        if self.chinese_punct_pattern.search(name):
-            return False
-        if self.invalid_token_pattern.match(name):
-            return False
-        digits = sum(c.isdigit() for c in name)
-        if digits and digits / len(name) > self.max_digit_ratio:
-            return False
-        return True
-    
-    def similarity(self, a: str, b: str) -> float:
-        """计算字符串相似度"""
-        return SequenceMatcher(None, a.lower(), b.lower()).ratio()
-    
-    def merge_similar_entities(self, entities_df: pd.DataFrame, 
-                               threshold: float = 0.85) -> pd.DataFrame:
-        """合并相似实体"""
-        temp_df = entities_df.copy()
-        temp_df['normalized_name'] = temp_df['name'].apply(self.normalize_entity_name)
-        frequency_map = temp_df.groupby(['type', 'normalized_name']).size().to_dict()
-        merged_entities = []
-        
-        for entity_type in temp_df['type'].unique():
-            type_entities = temp_df[temp_df['type'] == entity_type].copy()
-            
-            # 去重
-            type_entities = type_entities.drop_duplicates(subset=['normalized_name', 'type'])
-            type_entities = type_entities[type_entities['normalized_name'].apply(self.is_valid_entity)]
-            
-            # 查找相似实体
-            processed = set()
-            
-            for idx1, row1 in type_entities.iterrows():
-                if row1['normalized_name'] in processed:
-                    continue
-                
-                group = [row1['normalized_name']]
-                processed.add(row1['normalized_name'])
-                
-                for idx2, row2 in type_entities.iterrows():
-                    if idx1 >= idx2 or row2['normalized_name'] in processed:
-                        continue
-                    
-                    if self.similarity(row1['normalized_name'], row2['normalized_name']) >= threshold:
-                        group.append(row2['normalized_name'])
-                        processed.add(row2['normalized_name'])
-                
-                # 选择出现频次最高且长度较短的名称作为代表
-                representative = max(
-                    group,
-                    key=lambda name: (frequency_map.get((entity_type, name), 0), -len(name))
-                )
-                
-                for name in group:
-                    matched_rows = type_entities[type_entities['normalized_name'] == name]
-                    for _, row in matched_rows.iterrows():
-                        merged_entities.append({
-                            'id': row['id'],
-                            'name': representative,
-                            'original_name': row['name'],
-                            'type': row['type'],
-                            'source_pdf': row['source_pdf']
-                        })
-        
-        result_df = pd.DataFrame(merged_entities)
-        
-        # 重新分配ID
-        result_df = result_df.drop_duplicates(subset=['name', 'type'])
-        result_df = result_df.reset_index(drop=True)
-        result_df['id'] = range(1, len(result_df) + 1)
-        result_df = result_df[['id', 'name', 'type', 'source_pdf']]
-        
-        return result_df
-    
-    def clean_entities(self, entities_df: pd.DataFrame) -> pd.DataFrame:
-        """清洗实体数据"""
-        self.logger.info("开始清洗实体数据...")
-        print("开始清洗实体数据...")
-        
-        original_count = len(entities_df)
-        
-        # 1. 移除空名称
-        entities_df = entities_df[entities_df['name'].notna()]
-        entities_df = entities_df[entities_df['name'].str.strip() != '']
-        self.logger.info(f"  移除空名称后: {len(entities_df)} 个实体")
-        
-        # 2. 移除过长或过短的实体
-        entities_df = entities_df[entities_df['name'].str.len() >= self.min_entity_length]
-        entities_df = entities_df[entities_df['name'].str.len() <= self.max_entity_length]
-        self.logger.info(f"  长度过滤后: {len(entities_df)} 个实体")
-        
-        # 3. 移除纯数字或纯符号的实体
-        entities_df = entities_df[~entities_df['name'].str.match(r'^[\d\W]+$')]
-        self.logger.info(f"  符号过滤后: {len(entities_df)} 个实体")
-        
-        # 4. 规范化实体名称
-        entities_df['name'] = entities_df['name'].apply(self.normalize_entity_name)
-        entities_df = entities_df[entities_df['name'].apply(self.is_valid_entity)]
-        self.logger.info(f"  规范化后: {len(entities_df)} 个实体")
-        
-        # 5. 合并相似实体
-        entities_df = self.merge_similar_entities(entities_df)
-        
-        final_count = len(entities_df)
-        removed_count = original_count - final_count
-        self.logger.info(f"清洗完成: 保留 {final_count} 个实体，移除 {removed_count} 个 ({removed_count/original_count*100:.1f}%)")
-        
-        print(f"清洗后保留 {len(entities_df)} 个实体")
-        print("\n清洗后实体类型分布:")
-        print(entities_df['type'].value_counts())
-        
-        return entities_df
-    
-    def clean_relations(self, relations_df: pd.DataFrame, 
-                       entities_df: pd.DataFrame) -> pd.DataFrame:
-        """清洗关系数据"""
-        self.logger.info("开始清洗关系数据...")
-        print("\n开始清洗关系数据...")
-        
-        original_count = len(relations_df)
-        
-        # 1. 规范化实体名称（先规范化关系中的实体）
-        relations_df = relations_df.copy()
-        relations_df['head'] = relations_df['head'].apply(self.normalize_entity_name)
-        relations_df['tail'] = relations_df['tail'].apply(self.normalize_entity_name)
-        
-        self.logger.info(f"规范化后: {len(relations_df)} 个关系")
-        
-        # 2. 获取有效实体集合和类型映射（使用清洗后的实体）
-        valid_entities = set(entities_df['name'].unique())
-        entity_type_map = dict(zip(entities_df['name'], entities_df['type']))
-        
-        self.logger.info(f"有效实体数: {len(valid_entities)}")
-        self.logger.info(f"实体类型映射数: {len(entity_type_map)}")
-        
-        # 3. 过滤置信度低的关系
-        before_conf = len(relations_df)
-        relations_df = relations_df[relations_df['confidence'] >= self.confidence_threshold]
-        self.logger.info(f"置信度过滤 (>={self.confidence_threshold}): {len(relations_df)} 个关系 (移除 {before_conf - len(relations_df)})")
-        
-        # 4. 移除自环关系
-        before_self = len(relations_df)
-        relations_df = relations_df[relations_df['head'] != relations_df['tail']]
-        self.logger.info(f"移除自环: {len(relations_df)} 个关系 (移除 {before_self - len(relations_df)})")
-        
-        # 5. 只保留有效实体的关系
-        before_valid = len(relations_df)
-        relations_df = relations_df[
-            relations_df['head'].isin(valid_entities) & 
-            relations_df['tail'].isin(valid_entities)
+        # 页眉页脚特征模式
+        self.header_footer_patterns = [
+            # 页码模式
+            re.compile(r'^\s*第?\s*\d+\s*页\s*$', re.IGNORECASE),
+            re.compile(r'^\s*Page\s+\d+(/\d+)?\s*$', re.IGNORECASE),
+            re.compile(r'^\s*\d+\s*/\s*\d+\s*$'),
+            # 版权/水印模式
+            re.compile(r'^\s*版权所有\s*@?\s*\d{4}', re.IGNORECASE),
+            re.compile(r'^\s*Copyright\s*@?\s*\d{4}', re.IGNORECASE),
+            re.compile(r'^\s*All Rights Reserved\s*$', re.IGNORECASE),
+            # 期刊/出版社信息
+            re.compile(r'^\s*[\u4e00-\u9fa5]+学报\s*$'),
+            re.compile(r'^\s*[\u4e00-\u9fa5]+出版社\s*$'),
+            re.compile(r'^\s*Journal\s+of\s+[\w\s]+$', re.IGNORECASE),
+            # 空行/短行
+            re.compile(r'^\s*$'),
+            re.compile(r'^\s*[-=*_]{3,}\s*$')
         ]
-        self.logger.info(f"实体有效性过滤: {len(relations_df)} 个关系 (移除 {before_valid - len(relations_df)})")
         
-        # 5. 验证关系方向
-        def is_valid_relation(row) -> bool:
-            head_type = entity_type_map.get(row['head'])
-            tail_type = entity_type_map.get(row['tail'])
-            expected = self.valid_relation_pairs.get((head_type, tail_type))
-            if expected and expected != row['relation']:
-                return False
-            if row['relation'] in ['hasPathogen', 'hasHost', 'hasVector', 'hasSymptom', 'controlledBy', 'occursIn'] and head_type != 'Disease':
-                return False
-            if row['relation'] == 'affectedBy' and head_type != 'Disease':
-                return False
-            if row['relation'] == 'transmits' and head_type not in ['Pathogen', 'Vector']:
-                return False
-            if row['relation'] == 'infects' and head_type not in ['Pathogen', 'Vector']:
-                return False
-            return True
-
-        relations_df = relations_df[relations_df.apply(is_valid_relation, axis=1)]
+        # Markdown结构特征
+        self.markdown_patterns = {
+            'headers': re.compile(r'^(#{1,6})\s+(.+)$'),  # 标题
+            'tables': re.compile(r'\|.*\|'),  # 原始表格
+            'code_blocks': re.compile(r'```[\s\S]*?```'),  # 代码块
+            'math_blocks': re.compile(r'\$\$[\s\S]*?\$\$'),  # 数学公式块
+            'inline_math': re.compile(r'\$[^$]+\$'),  # 行内公式
+            'links': re.compile(r'\[([^\]]+)\]\([^)]+\)'),  # 链接
+            'images': re.compile(r'!\[([^\]]*)\]\([^)]+\)'),  # 图片
+        }
         
-        self.logger.info(f"关系方向验证后: {len(relations_df)} 个关系")
+        # 初始化分句工具
+        self._init_sentence_segmenter()
         
-        # 检查 DataFrame 结构
-        if len(relations_df) == 0:
-            self.logger.warning("关系验证后 DataFrame 为空")
-            return pd.DataFrame(columns=['head', 'relation', 'tail', 'source_pdf', 'confidence'])
+        # 加载停用词
+        self.stopwords = self._load_stopwords()
         
-        # 确保DataFrame有正确的列
-        required_cols = ['head', 'relation', 'tail', 'source_pdf', 'confidence']
-        missing_cols = [col for col in required_cols if col not in relations_df.columns]
-        if missing_cols:
-            self.logger.error(f"DataFrame缺少必需列: {missing_cols}")
-            self.logger.error(f"实际列: {list(relations_df.columns)}")
-            raise ValueError(f"DataFrame缺少必需列: {missing_cols}")
-        
-        self.logger.info(f"DataFrame列名: {list(relations_df.columns)}")
-        self.logger.info(f"DataFrame形状: {relations_df.shape}")
-
-        # 6. 低频过滤（保留高置信度）
+        self.logger.info("Markdown数据清洗器初始化完成")
+    
+    def _init_sentence_segmenter(self):
+        """初始化分句工具"""
+        if SBD_AVAILABLE:
+            self.zh_segmenter = pysbd.Segmenter(language="zh", clean=False)
+            self.en_segmenter = pysbd.Segmenter(language="en", clean=False)
+            self.logger.info("使用pysbd进行分句")
+        elif ZHSEGMENT_AVAILABLE:
+            self.logger.info("使用自定义中文分句工具")
+        else:
+            self.logger.warning("未检测到专业分句工具，将使用基础正则分句")
+    
+    def _load_stopwords(self) -> Set[str]:
+        """加载停用词表"""
+        stopwords = set()
         try:
-            combo_counts = relations_df.groupby(['head', 'relation', 'tail']).size().to_dict()
-        except KeyError as e:
-            self.logger.error(f"分组操作失败: {e}")
-            self.logger.error(f"DataFrame列: {list(relations_df.columns)}")
-            self.logger.error(f"DataFrame前5行:\n{relations_df.head()}")
-            raise
-        def filter_low_frequency(row):
-            freq = combo_counts.get((row['head'], row['relation'], row['tail']), 0)
-            if freq >= 2:
-                return True
-            return row['confidence'] >= 0.75
-
-        relations_df = relations_df[relations_df.apply(filter_low_frequency, axis=1)]
-
-        # 7. 去重
-        relations_df = relations_df.drop_duplicates(subset=['head', 'relation', 'tail', 'source_pdf'])
+            stopword_files = [
+                'stopwords_zh.txt',
+                os.path.join(os.path.dirname(__file__), 'stopwords_zh.txt')
+            ]
+            
+            for filepath in stopword_files:
+                if os.path.exists(filepath):
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        for line in f:
+                            word = line.strip()
+                            if word:
+                                stopwords.add(word)
+                    break
+        except Exception as e:
+            self.logger.warning(f"加载停用词失败: {e}")
         
-        # 8. 重置索引
-        relations_df = relations_df.reset_index(drop=True)
+        return stopwords
+    
+    def normalize_text(self, text: str) -> str:
+        """文本归一化"""
+        if not text:
+            return ""
         
-        final_count = len(relations_df)
-        removed_count = original_count - final_count
-        self.logger.info(f"清洗完成: 保留 {final_count} 个关系，移除 {removed_count} 个 ({removed_count/original_count*100:.1f}%)")
+        # 1. 繁转简
+        if self.normalize_chinese:
+            text = zhconv.convert(text, 'zh-cn')
         
-        print(f"清洗后保留 {len(relations_df)} 个关系")
-        print("\n清洗后关系类型分布:")
-        print(relations_df['relation'].value_counts())
+        # 2. 全半角转换
+        text = self._full_to_half(text)
         
-        return relations_df
+        # 3. 统一空白字符
+        text = re.sub(r'\s+', ' ', text)
+        
+        # 4. 移除控制字符
+        text = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', text)
+        
+        # 5. 移除特殊符号（保留常用标点）
+        text = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9\s，。！？；：""''（）()【】[]《》<>、·…—\-+=]', '', text)
+        
+        return text.strip()
+    
+    def _full_to_half(self, text: str) -> str:
+        """全角转半角"""
+        result = []
+        for char in text:
+            code = ord(char)
+            # 全角空格
+            if code == 0x3000:
+                result.append(' ')
+            # 全角字符（除空格）
+            elif 0xFF01 <= code <= 0xFF5E:
+                result.append(chr(code - 0xFEE0))
+            else:
+                result.append(char)
+        return ''.join(result)
+    
+    def _is_reference_section(self, line: str, line_num: int, total_lines: int) -> bool:
+        """判断是否为参考文献部分"""
+        # 参考文献通常出现在文档末尾（后20%）
+        if line_num / total_lines < 0.8:
+            return False
+        
+        # 检查关键词
+        line_lower = line.lower()
+        for lang_keywords in self.reference_keywords.values():
+            for keyword in lang_keywords:
+                if keyword in line:
+                    return True
+        
+        # 检查参考文献格式特征
+        ref_patterns = [
+            re.compile(r'^\s*\[\d+\]\s+'),  # [1] 引用格式
+            re.compile(r'^\s*\d+\.\s+[A-Z][a-zA-Z]+\s+,'),  # 英文参考文献格式
+            re.compile(r'^\s*[\u4e00-\u9fa5]+\s+，\s*[\u4e00-\u9fa5]+'),  # 中文参考文献格式
+        ]
+        
+        return any(pattern.match(line) for pattern in ref_patterns)
+    
+    def _clean_table_text(self, text: str) -> str:
+        """优化表格转换的文本"""
+        if not self.clean_tables or not text:
+            return text
+        
+        # 移除表格标记
+        text = re.sub(r'^\|.*\|$', '', text, flags=re.MULTILINE)
+        
+        # 清理表格转换后的冗余描述
+        text = re.sub(r'表格内容：\s*', '', text)
+        
+        # 优化表格数据描述
+        # 匹配 "X为Y；A为B。" 格式
+        table_pattern = re.compile(r'([^；。]+)为([^；。]+)(；|。)')
+        matches = table_pattern.findall(text)
+        
+        # 如果匹配到表格数据，重构更自然的描述
+        if matches and len(matches) > 1:
+            table_data = []
+            for key, value, sep in matches:
+                if key.strip() and value.strip():
+                    table_data.append(f"{key.strip()}是{value.strip()}")
+            
+            if table_data:
+                text = "，".join(table_data) + "。"
+        
+        return text
+    
+    def _is_header_footer(self, line: str) -> bool:
+        """基于内容特征判断页眉页脚（增强版）"""
+        line_stripped = line.strip()
+        if len(line_stripped) < 5 or len(line_stripped) > 50:
+            return False
+        # 结合关键词和模式匹配
+        return (any(pattern.match(line_stripped) for pattern in self.header_footer_patterns) or
+                any(keyword in line_stripped for keyword in ["第页", "页码", "版权所有", "摘要", "Abstract", "目录"]))
+    
+    def _remove_header_footer(self, lines: List[str]) -> List[str]:
+        """移除页眉页脚"""
+        if not self.remove_headers_footers:
+            return lines
+        
+        cleaned_lines = []
+        for line in lines:
+            line_stripped = line.strip()
+            
+            # 检查是否匹配页眉页脚模式
+            if self._is_header_footer(line_stripped):
+                continue
+            
+            if len(line_stripped) > 0:
+                cleaned_lines.append(line)
+        
+        return cleaned_lines
+    
+    def _remove_references(self, lines: List[str]) -> List[str]:
+        """移除参考文献部分"""
+        if not self.remove_references:
+            return lines
+        
+        # 找到参考文献起始位置
+        ref_start_idx = -1
+        total_lines = len(lines)
+        
+        for idx, line in enumerate(lines):
+            if self._is_reference_section(line, idx, total_lines):
+                ref_start_idx = idx
+                break
+        
+        # 如果找到参考文献部分，截断
+        if ref_start_idx != -1:
+            self.logger.info(f"检测到参考文献，从第{ref_start_idx+1}行开始移除")
+            return lines[:ref_start_idx]
+        
+        return lines
+    
+    def _parse_markdown_structure(self, text: str) -> Tuple[List[Dict], str]:
+        """解析Markdown结构，提取结构化信息"""
+        lines = text.split('\n')
+        structured_content = []
+        cleaned_text_lines = []
+        
+        current_section = {
+            'type': 'text',
+            'level': 0,
+            'title': '',
+            'content': [],
+            'line_numbers': []
+        }
+        
+        for line_num, line in enumerate(lines):
+            line_stripped = line.strip()
+            
+            # 跳过空行
+            if not line_stripped:
+                continue
+            
+            # 识别Markdown标题
+            header_match = self.markdown_patterns['headers'].match(line_stripped)
+            if header_match:
+                # 保存当前章节
+                if current_section['content']:
+                    structured_content.append(current_section)
+                    cleaned_text_lines.append(' '.join(current_section['content']))
+                
+                # 开始新章节
+                level = len(header_match.group(1))
+                title = header_match.group(2).strip()
+                current_section = {
+                    'type': 'header',
+                    'level': level,
+                    'title': title,
+                    'content': [],
+                    'line_numbers': [line_num]
+                }
+                cleaned_text_lines.append(f"【标题】{title}")  # 标记标题类型
+                continue
+            
+            # 识别表格行
+            if self.markdown_patterns['tables'].match(line_stripped) and "-|" not in line_stripped:
+                # 转换表格为文本描述
+                table_text = self._clean_table_text(line_stripped)
+                if table_text:
+                    current_section['content'].append(table_text)
+                    current_section['line_numbers'].append(line_num)
+                    cleaned_text_lines.append(table_text)
+                continue
+            
+            # 移除代码块、数学公式等非核心内容
+            if (self.markdown_patterns['code_blocks'].match(line_stripped) or
+                self.markdown_patterns['math_blocks'].match(line_stripped)):
+                continue
+            
+            # 清理行内元素（链接、图片、行内公式）
+            clean_line = line_stripped
+            clean_line = self.markdown_patterns['links'].sub(r'\1', clean_line)  # 保留链接文本
+            clean_line = self.markdown_patterns['images'].sub('', clean_line)   # 移除图片
+            clean_line = self.markdown_patterns['inline_math'].sub('', clean_line)  # 移除行内公式
+            
+            if clean_line:
+                current_section['content'].append(clean_line)
+                current_section['line_numbers'].append(line_num)
+                cleaned_text_lines.append(clean_line)
+        
+        # 添加最后一个章节
+        if current_section['content']:
+            structured_content.append(current_section)
+        
+        return structured_content, '\n'.join(cleaned_text_lines)
+    
+    def segment_sentences(self, text: str) -> List[str]:
+        """智能分句（支持中英文）"""
+        if not text:
+            return []
+        
+        # 使用专业分句工具
+        if SBD_AVAILABLE:
+            # 中文分句
+            if re.search(r'[\u4e00-\u9fa5]', text):
+                sentences = self.zh_segmenter.segment(text)
+            # 英文分句
+            else:
+                sentences = self.en_segmenter.segment(text)
+        elif ZHSEGMENT_AVAILABLE:
+            sentences = segment_sentences(text)  # 修复语法错误：移除多余空格
+        else:
+            # 基础正则分句
+            sentences = self._basic_sentence_segmentation(text)
+        
+        # 过滤和清洗句子
+        filtered_sentences = []
+        for sent in sentences:
+            sent = self.normalize_text(sent)
+            
+            # 过滤长度不符合要求的句子
+            if len(sent) < self.min_sentence_length or len(sent) > self.max_sentence_length:
+                continue
+            
+            # 过滤纯数字/纯符号的句子
+            if re.match(r'^\s*[\d\s]+$', sent):
+                continue
+            
+            # 过滤停用词占比过高的句子
+            if self._stopword_ratio_too_high(sent):
+                continue
+            
+            filtered_sentences.append(sent)
+        
+        return filtered_sentences
+    
+    def _basic_sentence_segmentation(self, text: str) -> List[str]:
+        """基础正则分句"""
+        # 中文分句
+        text = re.sub(r'([。！？；])', r'\1|||', text)
+        # 英文分句
+        text = re.sub(r'([.!?;])\s', r'\1|||', text)
+        
+        sentences = [s.strip() for s in text.split('|||') if s.strip()]
+        return sentences
+    
+    def _stopword_ratio_too_high(self, text: str) -> bool:
+        """检查停用词占比是否过高"""
+        if not text or not self.stopwords:
+            return False
+        
+        words = jieba.lcut(text)
+        if len(words) < 3:
+            return False
+        
+        stopword_count = sum(1 for word in words if word in self.stopwords)
+        ratio = stopword_count / len(words)
+        
+        return ratio > 0.8
+    
+    def clean_markdown_text(self, markdown_text: str) -> Dict[str, any]:
+        """
+        清洗Markdown格式的PDF文本
+        Returns:
+            dict: 包含清洗后的文本、句子列表、结构化信息等
+        """
+        if not markdown_text:
+            return {
+                'raw_text': '',
+                'cleaned_text': '',
+                'sentences': [],
+                'structured_content': [],
+                'metadata': {'cleaned': False, 'error': '空输入'}
+            }
+        
+        try:
+            self.logger.info("开始Markdown文本清洗")
+            
+            # 1. 按行拆分
+            lines = markdown_text.split('\n')
+            
+            # 2. 移除页眉页脚
+            lines = self._remove_header_footer(lines)
+            
+            # 3. 移除参考文献
+            lines = self._remove_references(lines)
+            
+            # 4. 解析Markdown结构（基于标题和表格标记）
+            structured_content, cleaned_text = self._parse_markdown_structure('\n'.join(lines))
+            
+            # 5. 最终文本归一化
+            cleaned_text = self.normalize_text(cleaned_text)
+            
+            # 6. 分句处理
+            sentences = self.segment_sentences(cleaned_text)
+            
+            # 7. 生成元数据
+            metadata = {
+                'cleaned': True,
+                'original_lines': len(markdown_text.split('\n')),
+                'cleaned_lines': len(lines),
+                'sentence_count': len(sentences),
+                'char_count': len(cleaned_text),
+                'sections_count': len(structured_content)
+            }
+            
+            self.logger.info(f"清洗完成 - 原始行数: {metadata['original_lines']}, "
+                             f"清洗后行数: {metadata['cleaned_lines']}, "
+                             f"有效句子数: {metadata['sentence_count']}")
+            
+            return {
+                'raw_text': markdown_text,
+                'cleaned_text': cleaned_text,
+                'sentences': sentences,
+                'structured_content': structured_content,
+                'metadata': metadata
+            }
+        
+        except Exception as e:
+            self.logger.error(f"清洗失败: {e}", exc_info=True)
+            return {
+                'raw_text': markdown_text,
+                'cleaned_text': '',
+                'sentences': [],
+                'structured_content': [],
+                'metadata': {'cleaned': False, 'error': str(e)}
+            }
+    
+    def clean_text_file(self, input_path: str, output_path: str) -> bool:
+        """清洗单个文本文件"""
+        try:
+            # 读取文件
+            with open(input_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 清洗
+            result = self.clean_markdown_text(content)
+            
+            if not result['metadata']['cleaned']:
+                self.logger.error(f"文件清洗失败: {input_path}")
+                return False
+            
+            # 保存清洗结果
+            output_dir = os.path.dirname(output_path)
+            os.makedirs(output_dir, exist_ok=True)
+            
+            # 保存主文本
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(result['cleaned_text'])
+            
+            # 保存句子列表（JSON格式）
+            sentences_path = output_path.replace('.txt', '_sentences.json')
+            with open(sentences_path, 'w', encoding='utf-8') as f:
+                json.dump(result['sentences'], f, ensure_ascii=False, indent=2)
+            
+            # 保存元数据
+            meta_path = output_path.replace('.txt', '_metadata.json')
+            with open(meta_path, 'w', encoding='utf-8') as f:
+                json.dump(result['metadata'], f, ensure_ascii=False, indent=2)
+            
+            self.logger.info(f"文件清洗完成: {input_path} -> {output_path}")
+            return True
+        
+        except Exception as e:
+            self.logger.error(f"处理文件失败 {input_path}: {e}", exc_info=True)
+            return False
+    
+    def clean_directory(self, input_dir: str, output_dir: str) -> Dict[str, bool]:
+        """批量清洗目录下的文本文件"""
+        input_path = Path(input_dir)
+        if not input_path.exists():
+            self.logger.error(f"输入目录不存在: {input_dir}")
+            return {}
+        
+        # 查找所有文本文件
+        text_files = list(input_path.glob('*.txt')) + list(input_path.glob('*.md'))
+        
+        if not text_files:
+            self.logger.warning(f"未找到文本文件: {input_dir}")
+            return {}
+        
+        # 批量处理
+        results = {}
+        for file_path in tqdm(text_files, desc="清洗文件"):
+            # 构建输出路径
+            rel_path = file_path.relative_to(input_path)
+            output_path = Path(output_dir) / rel_path
+            
+            # 清洗文件
+            success = self.clean_text_file(str(file_path), str(output_path))
+            results[str(file_path)] = success
+        
+        # 统计结果
+        success_count = sum(1 for v in results.values() if v)
+        fail_count = len(results) - success_count
+        
+        self.logger.info(f"批量清洗完成 - 成功: {success_count}, 失败: {fail_count}")
+        return results
 
 
+# 示例使用
 if __name__ == "__main__":
-    import os
+    # 初始化清洗器
+    cleaner = MarkdownDataCleaner(
+        remove_references=True,
+        clean_tables=True,
+        normalize_chinese=True,
+        min_sentence_length=6,
+        max_sentence_length=400
+    )
     
-    # 读取原始数据
-    entities_df = pd.read_csv("./output/entities.csv", encoding='utf-8-sig')
-    relations_df = pd.read_csv("./output/relations.csv", encoding='utf-8-sig')
+    # 单文件清洗示例
+    input_file = "./output/extracted_texts/sample.pdf.txt"
+    output_file = "./output/cleaned_texts/sample_cleaned.txt"
     
-    # 清洗数据
-    cleaner = DataCleaner(confidence_threshold=0.65)
+    if os.path.exists(input_file):
+        cleaner.clean_text_file(input_file, output_file)
     
-    entities_clean = cleaner.clean_entities(entities_df)
-    relations_clean = cleaner.clean_relations(relations_df, entities_clean)
-    
-    # 保存清洗后的数据
-    os.makedirs("./output", exist_ok=True)
-    entities_clean.to_csv("./output/entities_clean.csv", index=False, encoding='utf-8-sig')
-    relations_clean.to_csv("./output/relations_clean.csv", index=False, encoding='utf-8-sig')
-    
-    print("\n清洗后的数据已保存:")
-    print("  - ./output/entities_clean.csv")
-    print("  - ./output/relations_clean.csv")
-
+    # 批量清洗示例
+    # input_dir = "./output/extracted_texts"
+    # output_dir = "./output/cleaned_texts"
+    # cleaner.clean_directory(input_dir, output_dir)
