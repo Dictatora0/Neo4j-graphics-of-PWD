@@ -8,7 +8,7 @@ from multiprocessing import Pool, cpu_count
 from typing import Dict, List, Callable, Any
 from functools import partial
 from tqdm import tqdm
-from logger_config import get_logger
+from scripts.utils.logger_config import get_logger
 
 logger = get_logger('ParallelProcessor')
 

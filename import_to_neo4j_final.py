@@ -123,6 +123,7 @@ with driver.session() as session:
         'Technology': {'color': '#95B8D1', 'size': 'small', 'icon': 'TECH'},
         'Control': {'color': '#A8E6CF', 'size': 'medium', 'icon': 'CONTROL'},
         'Other': {'color': '#C7CEEA', 'size': 'small', 'icon': 'OTHER'},
+        'Theme': {'color': '#A78BFA', 'size': 'large', 'icon': 'THEME'},
     }
     
     # 获取所有唯一节点
@@ -266,6 +267,12 @@ with driver.session() as session:
             'style': 'solid',
             'label': '监测'
         },
+        'BELONGS_TO': {
+            'color': '#A78BFA',
+            'width': 1,
+            'style': 'dotted',
+            'label': '归属'
+        },
     }
     
     default_relation_style = {
@@ -313,6 +320,57 @@ with driver.session() as session:
             print(f"  创建关系失败: {source} -> {target}: {str(e)[:50]}")
     
     print(f"  创建了 {created_rels} 个关系")
+
+    theme_csv = 'output/community_summaries.csv'
+    if os.path.exists(theme_csv):
+        print("\n" + "="*80)
+        print("步骤3.1: 导入主题摘要节点")
+        print("="*80)
+        themes_df = pd.read_csv(theme_csv)
+        t_created = 0
+        t_linked = 0
+        for _, r in themes_df.iterrows():
+            cid = int(r.get('community_id', -1))
+            title = str(r.get('title', f'社区{cid}'))
+            summary = str(r.get('summary', ''))
+            keywords = r.get('keywords', '')
+            if isinstance(keywords, float):
+                keywords = ''
+            kw_list = [k.strip() for k in str(keywords).split(',') if k.strip()]
+            session.run(
+                """
+                MERGE (t:Theme {communityId:$cid})
+                ON CREATE SET t.name=$name, t.type='Theme', t.created_at=$ts, t.summary=$summary, t.keywords=$keywords
+                ON MATCH SET t.name=$name, t.summary=$summary, t.keywords=$keywords
+                """,
+                cid=cid,
+                name=title,
+                ts=datetime.now().isoformat(),
+                summary=summary,
+                keywords=kw_list,
+            )
+            t_created += 1
+            nodes = r.get('members', '')
+            if isinstance(nodes, float):
+                nodes = ''
+            for n in str(nodes).split('|'):
+                n = n.strip()
+                if not n:
+                    continue
+                try:
+                    session.run(
+                        """
+                        MATCH (a {name:$n})
+                        MATCH (t:Theme {communityId:$cid})
+                        MERGE (a)-[:BELONGS_TO]->(t)
+                        """,
+                        n=n,
+                        cid=cid,
+                    )
+                    t_linked += 1
+                except Exception:
+                    pass
+        print(f"  主题节点: {t_created}，归属关系: {t_linked}")
     
     # ========================================================================
     # 步骤4: 创建索引以提高查询性能

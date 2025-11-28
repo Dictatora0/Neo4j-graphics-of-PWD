@@ -9,8 +9,8 @@ import re
 import os
 from typing import Dict, List, Optional
 from tqdm import tqdm
-from logger_config import get_logger
-from cache_manager import CacheManager
+from scripts.utils.logger_config import get_logger
+from scripts.utils.cache_manager import CacheManager
 from parallel_processor import ParallelProcessor
 
 # OCR支持（可选）

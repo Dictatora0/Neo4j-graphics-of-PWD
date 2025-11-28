@@ -7,7 +7,7 @@ import os
 import yaml
 from pathlib import Path
 from typing import Dict, Any, Optional
-from logger_config import get_logger
+from .logger_config import get_logger
 
 logger = get_logger('ConfigLoader')
 

@@ -7,7 +7,7 @@ import hashlib
 import pickle
 from pathlib import Path
 from typing import Any, Optional
-from logger_config import get_logger
+from .logger_config import get_logger
 
 logger = get_logger('CacheManager')
 

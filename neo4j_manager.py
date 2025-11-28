@@ -8,7 +8,7 @@ import os
 import shutil
 from datetime import datetime
 from neo4j import GraphDatabase, basic_auth
-from logger_config import get_logger
+from scripts.utils.logger_config import get_logger
 
 logger = get_logger('Neo4jManager')
 
@@ -236,6 +236,58 @@ class Neo4jManager:
         backups.sort(reverse=True)
         
         return [os.path.join(self.backup_dir, b) for b in backups]
+
+    def compute_louvain(self, graph_name: str = "pwd_graph"):
+        if not self.driver:
+            logger.warning("未连接到 Neo4j，跳过聚类")
+            return None
+        try:
+            with self.driver.session() as session:
+                session.run("CALL gds.graph.drop($name, false)", name=graph_name)
+                session.run(
+                    """
+                    CALL gds.graph.project.cypher(
+                      $name,
+                      'MATCH (n) RETURN id(n) AS id, labels(n) AS labels',
+                      'MATCH (n)-[r]->(m) RETURN id(n) AS source, id(m) AS target, type(r) AS type, r.weight AS weight'
+                    )
+                    """,
+                    name=graph_name,
+                )
+                result = session.run(
+                    """
+                    CALL gds.louvain.write($name, {relationshipWeightProperty:'weight', writeProperty:'communityId'})
+                    YIELD communityCount, modularity
+                    """,
+                    name=graph_name,
+                ).single()
+                return {
+                    "communityCount": result.get("communityCount") if result else None,
+                    "modularity": result.get("modularity") if result else None,
+                }
+        except Exception as e:
+            logger.error(f"Louvain 聚类失败: {e}")
+            return None
+
+    def get_communities(self):
+        if not self.driver:
+            return []
+        try:
+            with self.driver.session() as session:
+                result = session.run(
+                    """
+                    MATCH (n)
+                    WITH n.communityId AS community, collect({name:n.name, type:n.type, degree:n.total_degree}) AS members
+                    RETURN community, members ORDER BY community
+                    """
+                )
+                return [
+                    {"community": r["community"], "members": r["members"]}
+                    for r in result
+                ]
+        except Exception as e:
+            logger.error(f"获取社区失败: {e}")
+            return []
 
 
 def main():

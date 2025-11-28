@@ -22,6 +22,40 @@
 import os
 import pandas as pd
 from typing import Dict, List, Tuple
+import requests
+
+def _llm_decide(s: str, rel: str, t: str, s_type: str, t_type: str, weight: float,
+                model: str = "mistral", host: str = "http://localhost:11434", timeout: int = 120) -> bool:
+    try:
+        payload = {
+            "model": model,
+            "prompt": (
+                f"你是一位资深生物学家。判断以下三元组是否合理，回答Yes或No。\n"
+                f"实体1: {s} (类型: {s_type})\n"
+                f"关系: {rel}\n"
+                f"实体2: {t} (类型: {t_type})\n"
+                f"置信度: {weight:.2f}"
+            ),
+            "system": "只回答Yes或No。",
+            "stream": False,
+            "temperature": 0.1,
+            "top_p": 0.9,
+            "top_k": 40,
+        }
+        resp = requests.post(f"{host}/api/generate", json=payload, timeout=timeout)
+        resp.raise_for_status()
+        text = (resp.json().get("response", "") or "").strip().lower()
+        if text.startswith("```"):
+            text = text.strip("`").strip()
+        tokens = text.split()
+        head = tokens[0] if tokens else text
+        if head in {"yes", "是", "同意"}:
+            return True
+        if head in {"no", "否", "不同意"}:
+            return False
+        return True
+    except Exception:
+        return True
 
 
 TRIPLES_PATH = "output/triples_export.csv"
@@ -310,6 +344,23 @@ def main() -> None:
                 "new_node_2_type": t_type,
             })
 
+        if 0.6 <= float(w) <= 0.8:
+            keep = _llm_decide(s, rel, t, s_type, t_type, float(w))
+            if not keep:
+                issues.append({
+                    "node_1": s,
+                    "node_1_type": s_type,
+                    "relationship": rel,
+                    "node_2": t,
+                    "node_2_type": t_type,
+                    "weight": w,
+                    "action": "llm_reject",
+                    "new_node_1": s,
+                    "new_node_1_type": s_type,
+                    "new_node_2": t,
+                    "new_node_2_type": t_type,
+                })
+                continue
         fixed_rows.append({
             "node_1": s,
             "relationship": rel,

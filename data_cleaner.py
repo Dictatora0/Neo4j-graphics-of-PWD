@@ -7,7 +7,7 @@ import pandas as pd
 import re
 from typing import Dict, Set
 from difflib import SequenceMatcher
-from logger_config import get_logger
+from scripts.utils.logger_config import get_logger
 
 
 class DataCleaner:

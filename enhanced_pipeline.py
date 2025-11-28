@@ -20,8 +20,8 @@ from concept_deduplicator import (
 )
 from data_cleaner import DataCleaner
 from neo4j_generator import Neo4jGenerator
-from config_loader import load_config
-from logger_config import get_logger
+from scripts.utils.config_loader import load_config
+from scripts.utils.logger_config import get_logger
 
 logger = get_logger('EnhancedPipeline')
 
