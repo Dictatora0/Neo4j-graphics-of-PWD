@@ -1,0 +1,114 @@
+# 松材线虫病知识图谱构建系统配置文件
+
+# PDF 提取配置
+pdf:
+  input_directory: ./文献
+  output_directory: ./output/extracted_texts
+  enable_cache: true
+  parallel_workers: 8
+  enable_ocr: false # 是否启用OCR（用于扫描版PDF）
+  ocr_engine: tesseract # OCR引擎: tesseract 或 paddle（推荐中文用paddle）
+  ocr_languages: chi_sim+eng # OCR识别语言（tesseract格式）
+  reference_keywords:
+    - 参考文献
+    - References
+    - REFERENCES
+    - 引用文献
+    - Bibliography
+    - Works Cited
+
+# 实体识别配置
+entity:
+  enable_tfidf: true
+  enable_yake: true
+  enable_keybert: true
+  enable_spacy: true
+  max_keywords_tfidf: 50
+  max_keywords_yake: 30
+  max_keywords_keybert: 30
+  min_entity_length: 2
+  max_entity_length: 30
+  max_spaces: 2
+  max_digit_ratio: 0.3
+  stopwords_file: ./config/stopwords.txt
+  domain_dict_file: ./config/domain_dict.json
+
+# 关系抽取配置
+relation:
+  enable_pattern_matching: true
+  enable_cooccurrence: true
+  enable_dependency_parsing: false
+  window_size: 100
+  pattern_file: ./config/relation_patterns.json
+  confidence:
+    hasPathogen: 0.85
+    hasHost: 0.82
+    hasVector: 0.80
+    hasSymptom: 0.78
+    controlledBy: 0.80
+    occursIn: 0.78
+    affectedBy: 0.75
+    transmits: 0.78
+    infects: 0.78
+
+# 数据清洗配置
+cleaning:
+  confidence_threshold: 0.65 # 推荐值：0.60-0.70（关系最高置信度约0.72）
+  similarity_threshold: 0.85
+  min_frequency: 2
+  min_entity_length: 2
+  max_entity_length: 30
+  max_spaces: 2
+  max_digit_ratio: 0.3
+  enable_entity_linking: true
+
+# Neo4j 配置
+neo4j:
+  uri: neo4j://127.0.0.1:7687
+  user: neo4j
+  password: "12345678" # 必须用引号，否则会被解析为数字
+  database: PWD
+
+# 输出配置
+output:
+  base_directory: ./output
+  entities_file: entities.csv
+  relations_file: relations.csv
+  entities_clean_file: entities_clean.csv
+  relations_clean_file: relations_clean.csv
+  neo4j_directory: neo4j_import
+  statistics_file: statistics_report.txt
+  cache_directory: cache
+
+# 日志配置
+logging:
+  level: INFO
+  file: ./output/kg_builder.log
+  max_bytes: 10485760 # 10MB
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# LLM 配置
+llm:
+  model: llama3.2:3b # Llama3.2
+  ollama_host: http://localhost:11434
+  max_chunks: 100 # 减少到100块加速（约需30-40分钟）
+  timeout: 120 # API 超时时间（秒）- 确保稳定性
+  num_ctx: 2048 # 上下文窗口
+  temperature: 0.1 # 降低温度提升稳定性
+
+# 去重配置
+deduplication:
+  similarity_threshold: 0.85
+
+# 过滤配置
+filtering:
+  min_importance: 1 # 降低阈值以保留更多概念
+  min_connections: 0 # 允许孤立概念
+
+# 系统配置
+system:
+  enable_cache: true
+  enable_parallel: true
+  enable_incremental: false
+  max_text_length: 1000000

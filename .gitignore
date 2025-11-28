@@ -1,0 +1,89 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+output/cache/
+output/extracted_texts/
+*.log
+*.pkl
+
+# Neo4j data (keep structure, ignore large files)
+output/neo4j_import/*.csv
+!output/neo4j_import/nodes.csv
+!output/neo4j_import/relations.csv
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+
+# Test files
+test_*.py
+*_test.py
+
+# 归档目录（保留历史记录，但不在git中跟踪）
+archive/
+
+# 临时脚本（已归档到 archive/scripts/）
+# 这些脚本用于数据清理和修复，任务已完成
+
+# 文档报告（保留主要文档）
+output/*.md
+!output/README.md
+
+# PDF files (literature)
+文献/
+
+# Notebook files (temporary)
+PWD_KG_Notebook.ipynb
+
+# 归档目录（保留历史记录）
+# archive/
+
+# 大文件和临时文件（加快推送速度）
+*.zip
+output/triples/*.csv
+output/triples/*.json
+output/triples/*.ntriples
+output/triples/*.tsv
+output/triples/*.turtle
+output/triples/*.txt
+output/*.csv
+output/neo4j_backups/
+PWD_Colab_Upload/
