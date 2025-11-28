@@ -12,6 +12,7 @@ from tqdm import tqdm
 from logger_config import get_logger
 from cache_manager import CacheManager
 from parallel_processor import ParallelProcessor
+from image_captioner import ImageCaptioner
 
 # OCR支持（可选）
 try:
@@ -21,11 +22,22 @@ except ImportError:
     OCR_AVAILABLE = False
 
 
+DEFAULT_IMAGE_PROMPT = (
+    "你是一名熟悉松材线虫病的林业病理专家，请用中文描述图像，"
+    "涵盖场景、关键实体、实验结论、文字/数值和任何与病害传播、防治、"
+    "宿主或媒介相关的细节。"
+)
+
+
 class PDFExtractor:
     """PDF文本提取器"""
     
     def __init__(self, use_cache: bool = True, enable_parallel: bool = True, 
-                 max_workers: int = None, enable_ocr: bool = False, ocr_engine: str = 'tesseract'):
+                 max_workers: int = None, enable_ocr: bool = False, ocr_engine: str = 'tesseract',
+                 enable_image_captions: bool = False, image_output_dir: str = "./output/pdf_images",
+                 max_images_per_pdf: Optional[int] = 25, caption_model: str = "Qwen/Qwen2-VL-7B-Instruct",
+                 caption_provider: str = "transformers", caption_prompt: Optional[str] = None,
+                 caption_device: Optional[str] = None):
         """
         Args:
             use_cache: 是否使用缓存
@@ -53,6 +65,31 @@ class PDFExtractor:
             if enable_ocr and not OCR_AVAILABLE:
                 self.logger.warning("OCR功能不可用，请安装OCR依赖")
         
+        self.enable_image_captions = enable_image_captions
+        self.image_output_dir = image_output_dir
+        self.max_images_per_pdf = max_images_per_pdf
+        self.caption_model = caption_model
+        self.caption_provider = caption_provider
+        self.caption_prompt = caption_prompt or DEFAULT_IMAGE_PROMPT
+        self.caption_device = caption_device
+        self.image_captioner: Optional[ImageCaptioner] = None
+        self.image_metadata: Dict[str, List[Dict]] = {}
+
+        if self.enable_image_captions:
+            try:
+                os.makedirs(self.image_output_dir, exist_ok=True)
+                self.image_captioner = ImageCaptioner(
+                    model_name=self.caption_model,
+                    provider=self.caption_provider,
+                    prompt_prefix=self.caption_prompt,
+                    device=self.caption_device
+                )
+                self.logger.info(f"图像描述已启用，模型: {self.caption_model}")
+            except Exception as e:
+                self.logger.warning(f"图像描述初始化失败，将禁用: {e}")
+                self.enable_image_captions = False
+                self.image_captioner = None
+
         self.reference_keywords = [
             '参考文献', 'References', 'REFERENCES', '引用文献',
             'Bibliography', 'Works Cited'
@@ -131,9 +168,13 @@ class PDFExtractor:
         
         try:
             doc = fitz.open(pdf_path)
-            full_text = []
+            pdf_name = os.path.splitext(os.path.basename(pdf_path))[0]
+            full_text: List[str] = []
             reference_started = False
             total_pages = len(doc)
+            self.image_metadata[pdf_path] = []
+            saved_xrefs = set()
+            image_counter = 0
             
             for page_num in range(total_pages):
                 page = doc[page_num]
@@ -147,12 +188,39 @@ class PDFExtractor:
                 # 如果已经进入参考文献部分，跳过
                 if reference_started:
                     continue
-                
-                cleaned_text = self.clean_text(text)
-                cleaned_text = self.remove_headers_and_footers(cleaned_text)
 
-                sentences = self.split_sentences(cleaned_text)
-                full_text.extend(sentences)
+                page_blocks = page.get_text("dict")
+                for block in page_blocks.get("blocks", []):
+                    block_type = block.get("type")
+                    
+                    if block_type == 0:
+                        block_text = self._extract_block_text(block)
+                        if not block_text.strip():
+                            continue
+                        cleaned_text = self.clean_text(block_text)
+                        cleaned_text = self.remove_headers_and_footers(cleaned_text)
+                        sentences = self.split_sentences(cleaned_text)
+                        full_text.extend(sentences)
+                    
+                    elif block_type == 1 and self.enable_image_captions:
+                        if self.max_images_per_pdf and image_counter >= self.max_images_per_pdf:
+                            continue
+                        xref = block.get("xref") or block.get("image")
+                        if not xref or xref in saved_xrefs:
+                            continue
+                        saved_xrefs.add(xref)
+                        image_sentence = self._process_image_block(
+                            doc=doc,
+                            pdf_name=pdf_name,
+                            pdf_path=pdf_path,
+                            page_num=page_num,
+                            block=block,
+                            xref=xref,
+                            image_counter=image_counter
+                        )
+                        if image_sentence:
+                            full_text.append(image_sentence)
+                            image_counter += 1
             
             doc.close()
             result_text = '\n'.join(full_text)
@@ -237,6 +305,80 @@ class PDFExtractor:
                 print(f"提取失败: {pdf_file}")
         
         return pdf_texts
+    
+    def _extract_block_text(self, block: Dict) -> str:
+        """从文本块结构中提取文本"""
+        lines = []
+        for line in block.get("lines", []):
+            spans = line.get("spans", [])
+            text = ''.join(span.get("text", "") for span in spans)
+            if text.strip():
+                lines.append(text)
+        return '\n'.join(lines)
+    
+    def _process_image_block(
+        self,
+        doc,
+        pdf_name: str,
+        pdf_path: str,
+        page_num: int,
+        block: Dict,
+        xref: int,
+        image_counter: int
+    ) -> Optional[str]:
+        """保存图像并生成描述"""
+        image_path = self._save_image_file(
+            doc, pdf_name, page_num, xref, image_counter
+        )
+        if not image_path:
+            return None
+        
+        caption = self._generate_image_caption(image_path)
+        metadata = {
+            "page": page_num + 1,
+            "image_path": image_path,
+            "caption": caption,
+            "bbox": block.get("bbox"),
+            "xref": xref
+        }
+        self.image_metadata.setdefault(pdf_path, []).append(metadata)
+        
+        if caption:
+            return f"【图像描述|第{page_num + 1}页】{caption}"
+        return None
+    
+    def _save_image_file(self, doc, pdf_name: str, page_num: int, xref: int, image_counter: int) -> Optional[str]:
+        """将 PyMuPDF 图像引用保存为文件"""
+        try:
+            base_image = doc.extract_image(xref)
+            image_bytes = base_image.get("image")
+            image_ext = base_image.get("ext", "png")
+            image_dir = os.path.join(self.image_output_dir, pdf_name)
+            os.makedirs(image_dir, exist_ok=True)
+            image_filename = f"{pdf_name}_p{page_num + 1}_img{image_counter + 1}.{image_ext}"
+            image_path = os.path.join(image_dir, image_filename)
+            with open(image_path, "wb") as img_file:
+                img_file.write(image_bytes)
+            return image_path
+        except Exception as e:
+            self.logger.warning(f"保存图像失败 (xref={xref}): {e}")
+            return None
+    
+    def _generate_image_caption(self, image_path: str) -> str:
+        """生成图像描述，若模型不可用则回退"""
+        caption = ""
+        if self.image_captioner:
+            try:
+                caption = self.image_captioner.caption_image(image_path)
+            except Exception as e:
+                self.logger.warning(f"图像描述失败 {os.path.basename(image_path)}: {e}")
+        
+        if not caption and self.ocr_processor:
+            caption = self.ocr_processor.extract_text_from_image(image_path)
+        
+        if not caption:
+            caption = f"图像内容详见 {os.path.basename(image_path)}"
+        return caption.strip()
     
     def save_extracted_texts(self, pdf_texts: Dict[str, str], output_dir: str):
         """保存提取的文本"""

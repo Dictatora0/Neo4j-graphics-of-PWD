@@ -138,6 +138,15 @@ def get_default_config() -> Dict[str, Any]:
             'output_directory': './output/extracted_texts',
             'enable_cache': True,
             'parallel_workers': 4,
+            'enable_ocr': False,
+            'ocr_engine': 'tesseract',
+            'image_extraction': {
+                'enable': False,
+                'output_directory': './output/pdf_images',
+                'max_images_per_pdf': 25,
+                'caption_model': 'Qwen/Qwen2-VL-7B-Instruct',
+                'caption_provider': 'transformers'
+            }
         },
         'entity': {
             'enable_tfidf': True,

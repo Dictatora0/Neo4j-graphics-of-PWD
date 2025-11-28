@@ -9,6 +9,16 @@ pdf:
   enable_ocr: false # 是否启用OCR（用于扫描版PDF）
   ocr_engine: tesseract # OCR引擎: tesseract 或 paddle（推荐中文用paddle）
   ocr_languages: chi_sim+eng # OCR识别语言（tesseract格式）
+  image_extraction:
+    enable: true
+    output_directory: ./output/pdf_images
+    max_images_per_pdf: 25
+    caption_model: Qwen/Qwen2-VL-7B-Instruct
+    caption_provider: transformers
+    device: auto
+    caption_prompt: >
+      你是一名林业与病理学专家，请用中文详细描述图片内容，尤其强调松材线虫、媒介昆虫、宿主树种、实验环境、
+      数据趋势以及任何与防控措施有关的信息。
   reference_keywords:
     - 参考文献
     - References

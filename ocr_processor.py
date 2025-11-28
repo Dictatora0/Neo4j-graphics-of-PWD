@@ -6,9 +6,9 @@ OCR处理模块
 import os
 import fitz  # PyMuPDF
 from PIL import Image
-import io
 from typing import Dict, List, Tuple, Optional
 from logger_config import get_logger
+from image_captioner import ImageCaptioner
 
 logger = get_logger('OCRProcessor')
 
@@ -34,7 +34,9 @@ except ImportError:
 class OCRProcessor:
     """OCR文本提取处理器"""
     
-    def __init__(self, ocr_engine: str = 'tesseract', lang: str = 'chi_sim+eng'):
+    def __init__(self, ocr_engine: str = 'tesseract', lang: str = 'chi_sim+eng',
+                 enable_vlm: bool = False, vlm_model: str = "Qwen/Qwen2-VL-7B-Instruct",
+                 vlm_provider: str = "transformers", vlm_prompt: Optional[str] = None):
         """初始化OCR处理器
         
         Args:
@@ -44,6 +46,9 @@ class OCRProcessor:
         self.logger = get_logger('OCRProcessor')
         self.ocr_engine = ocr_engine
         self.lang = lang
+        self.enable_vlm = enable_vlm
+        self.vlm_prompt = vlm_prompt
+        self.image_captioner: Optional[ImageCaptioner] = None
         
         # 初始化OCR引擎
         if ocr_engine == 'paddle' and PADDLE_OCR_AVAILABLE:
@@ -58,6 +63,21 @@ class OCRProcessor:
         
         if ocr_engine == 'tesseract' and not OCR_AVAILABLE:
             self.logger.error("Tesseract未安装，OCR功能不可用")
+        
+        if self.enable_vlm:
+            try:
+                self.image_captioner = ImageCaptioner(
+                    model_name=vlm_model,
+                    provider=vlm_provider,
+                    prompt_prefix=vlm_prompt or (
+                        "你是一名林业病理专家，请解释图像内容，突出实验现象、"
+                        "样本、组织细节及与松材线虫病相关的信息。"
+                    )
+                )
+                self.logger.info(f"视觉模型已启用: {vlm_model}")
+            except Exception as e:
+                self.logger.warning(f"视觉模型初始化失败，禁用图像描述: {e}")
+                self.enable_vlm = False
     
     def is_scanned_pdf(self, pdf_path: str, sample_pages: int = 3) -> bool:
         """检测PDF是否为扫描版
@@ -370,7 +390,8 @@ class OCRProcessor:
             'is_scanned': False,
             'images': [],
             'tables': [],
-            'method': 'unknown'
+            'method': 'unknown',
+            'image_captions': []
         }
         
         # 1. 检测是否为扫描版
@@ -398,12 +419,31 @@ class OCRProcessor:
         # 3. 提取图像
         if extract_images:
             result['images'] = self.extract_images_from_pdf(pdf_path)
+            if self.enable_vlm and result['images']:
+                result['image_captions'] = self.generate_image_descriptions(result['images'])
         
         # 4. 提取表格
         if extract_tables:
             result['tables'] = self.extract_tables_from_pdf(pdf_path)
         
         return result
+    
+    def generate_image_descriptions(self, image_paths: List[str], prompt: Optional[str] = None) -> List[Dict[str, str]]:
+        """利用 VLM 为图像生成描述"""
+        descriptions: List[Dict[str, str]] = []
+        if not self.enable_vlm or not self.image_captioner:
+            return descriptions
+        
+        for image_path in image_paths:
+            try:
+                caption = self.image_captioner.caption_image(image_path, prompt)
+                descriptions.append({
+                    'image_path': image_path,
+                    'caption': caption
+                })
+            except Exception as e:
+                self.logger.warning(f"图像描述失败: {image_path}, 错误: {e}")
+        return descriptions
 
 
 class ImageAnalyzer:

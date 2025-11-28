@@ -41,6 +41,8 @@ def main():
     ENABLE_PARALLEL = config.get('system.enable_parallel', True)
     LLM_MODEL = config.get('llm.model', 'mistral')
     MAX_CHUNKS = config.get('llm.max_chunks', 100)
+    IMAGE_CAPTION_ENABLED = config.get('pdf.image_extraction.enable', False)
+    MAX_IMAGES_PER_PDF = config.get('pdf.image_extraction.max_images_per_pdf', 25)
     
     logger.info(f"PDF目录: {PDF_DIR}")
     logger.info(f"输出目录: {OUTPUT_DIR}")
@@ -49,6 +51,11 @@ def main():
     logger.info(f"并行处理: {'启用' if ENABLE_PARALLEL else '禁用'}")
     logger.info(f"LLM 模型: {LLM_MODEL}")
     logger.info(f"处理块数: {MAX_CHUNKS if MAX_CHUNKS else '全部'}")
+    logger.info(
+        "PDF 图片描述: %s (每份文档最多 %s 张图片)",
+        "启用" if IMAGE_CAPTION_ENABLED else "未启用",
+        MAX_IMAGES_PER_PDF if MAX_IMAGES_PER_PDF else "不限"
+    )
     
     # 检查PDF目录
     if not os.path.exists(PDF_DIR):

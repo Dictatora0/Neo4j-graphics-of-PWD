@@ -158,7 +158,17 @@ class EnhancedKnowledgeGraphPipeline:
         """Extract texts from PDFs"""
         extractor = PDFExtractor(
             use_cache=self.config.get('system.enable_cache', True),
-            enable_parallel=self.config.get('system.enable_parallel', True)
+            enable_parallel=self.config.get('system.enable_parallel', True),
+            max_workers=self.config.get('pdf.parallel_workers', None),
+            enable_ocr=self.config.get('pdf.enable_ocr', False),
+            ocr_engine=self.config.get('pdf.ocr_engine', 'tesseract'),
+            enable_image_captions=self.config.get('pdf.image_extraction.enable', False),
+            image_output_dir=self.config.get('pdf.image_extraction.output_directory', './output/pdf_images'),
+            max_images_per_pdf=self.config.get('pdf.image_extraction.max_images_per_pdf', 25),
+            caption_model=self.config.get('pdf.image_extraction.caption_model', 'Qwen/Qwen2-VL-7B-Instruct'),
+            caption_provider=self.config.get('pdf.image_extraction.caption_provider', 'transformers'),
+            caption_prompt=self.config.get('pdf.image_extraction.caption_prompt', None),
+            caption_device=self.config.get('pdf.image_extraction.device', None)
         )
         return extractor.extract_from_directory(pdf_dir)
     
