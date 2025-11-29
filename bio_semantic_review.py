@@ -22,6 +22,73 @@
 import os
 import pandas as pd
 from typing import Dict, List, Tuple
+import requests
+
+
+def _llm_decide(s: str, rel: str, t: str, s_type: str, t_type: str, weight: float,
+                model: str = "qwen2.5-coder:14b", host: str = "http://localhost:11434", 
+                timeout: int = 120) -> bool:
+    """
+    v2.3 Agentic Workflow: LLM 审稿人 Agent
+    对置信度在 0.6-0.8 之间的三元组进行二次判断
+    
+    Args:
+        s, t: 起点和终点实体
+        rel: 关系类型
+        s_type, t_type: 实体类型
+        weight: 关系置信度
+        model: LLM 模型
+        host: Ollama 服务地址
+        timeout: 超时时间
+    
+    Returns:
+        True: 保留三元组, False: 拒绝三元组
+    """
+    try:
+        payload = {
+            "model": model,
+            "prompt": (
+                f"你是一位资深松材线虫病领域专家。判断以下知识三元组是否合理，只回答 Yes 或 No。\n\n"
+                f"【实体1】{s} (类型: {s_type})\n"
+                f"【关系】 {rel}\n"
+                f"【实体2】{t} (类型: {t_type})\n"
+                f"【置信度】{weight:.2f}\n\n"
+                f"判断依据:\n"
+                f"1. 生物学逻辑是否正确\n"
+                f"2. 实体类型与关系是否匹配\n"
+                f"3. 是否符合松材线虫病的专业知识\n\n"
+                f"只回答 Yes 或 No："
+            ),
+            "system": "你是松材线虫病专家。只回答 Yes 或 No，不要解释。",
+            "stream": False,
+            "temperature": 0.1,
+            "top_p": 0.9,
+            "top_k": 40,
+        }
+        resp = requests.post(f"{host}/api/generate", json=payload, timeout=timeout)
+        resp.raise_for_status()
+        text = (resp.json().get("response", "") or "").strip().lower()
+        
+        # 清理可能的 markdown 格式
+        if text.startswith("```"):
+            text = text.strip("`").strip()
+        
+        # 提取第一个词
+        tokens = text.split()
+        head = tokens[0] if tokens else text
+        
+        # 判断结果
+        if head in {"yes", "是", "同意", "correct", "true"}:
+            return True
+        if head in {"no", "否", "不同意", "incorrect", "false"}:
+            return False
+        
+        # 默认保留（保守策略）
+        return True
+    except Exception as e:
+        # 出错时默认保留
+        print(f"LLM 校验失败: {e}")
+        return True
 
 
 TRIPLES_PATH = "output/triples_export.csv"

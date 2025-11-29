@@ -145,3 +145,15 @@ system:
   enable_parallel: true
   enable_incremental: false
   max_text_length: 1000000
+
+# v2.3 Agentic Workflow 配置
+agentic:
+  # LLM 审稿人 Agent
+  enable_llm_review: false # 是否启用 LLM 二次校验（耗时）
+  review_confidence_range: [0.6, 0.8] # 需要审查的置信度范围
+  review_model: qwen2.5-coder:14b # 审稿人模型
+
+  # GraphRAG 社区摘要
+  enable_graph_rag: false # 是否启用图谱社区检测和摘要
+  community_algorithm: louvain # 社区检测算法: louvain 或 leiden
+  summary_model: qwen2.5-coder:14b # 摘要生成模型
