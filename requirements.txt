@@ -32,9 +32,10 @@ Pillow==10.4.0
 # paddlepaddle==2.5.2
 # paddleocr==2.7.0
 
-# 视觉模型（可选）
-# transformers==4.35.2
-# torch==2.1.1
+# 视觉模型（v2.1 Multimodal 支持）
+transformers==4.35.2
+torch==2.1.1
+sentencepiece==0.1.99  # Qwen2-VL 依赖
 
 # LLM 支持（可选）
 # openai==1.6.1

@@ -9,6 +9,15 @@ pdf:
   enable_ocr: false # 是否启用OCR（用于扫描版PDF）
   ocr_engine: tesseract # OCR引擎: tesseract 或 paddle（推荐中文用paddle）
   ocr_languages: chi_sim+eng # OCR识别语言（tesseract格式）
+
+  # v2.1 Multimodal 图片描述配置
+  enable_image_captions: false # 是否启用图片描述生成（需要VLM模型）
+  image_output_dir: ./output/pdf_images # 图片保存目录
+  max_images_per_pdf: 25 # 每个PDF最多提取图片数
+  caption_model: Qwen/Qwen2-VL-7B-Instruct # 视觉模型
+  caption_provider: transformers # 提供方: transformers 或 ollama
+  caption_prompt: "你是松材线虫病专家，请描述图片中与病害、寄主、媒介相关的内容"
+
   reference_keywords:
     - 参考文献
     - References
