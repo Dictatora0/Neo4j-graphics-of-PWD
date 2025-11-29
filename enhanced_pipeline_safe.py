@@ -43,13 +43,13 @@ class EnhancedKnowledgeGraphPipelineSafe:
     - 异常保护：Ctrl+C 或崩溃时自动保存
     """
     
-    def __init__(self, config: Dict = None, checkpoint_interval: int = 10):
+    def __init__(self, config: Dict = None, checkpoint_interval: int = 5):
         """
         初始化安全管道
         
         Args:
             config: 配置字典
-            checkpoint_interval: 每处理多少个块保存一次（默认 10）
+            checkpoint_interval: 每处理多少个块保存一次（默认 5）
         """
         if config is None:
             config = load_config()
@@ -384,16 +384,16 @@ class EnhancedKnowledgeGraphPipelineSafe:
 
 
 def run_safe_pipeline(pdf_dir: str = None, config: Dict = None,
-                     checkpoint_interval: int = 10,
+                     checkpoint_interval: int = 5,
                      resume: bool = True,
                      clear_checkpoint: bool = False) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    运行安全管道（便捷函数）
+    运行安全版知识图谱构建管道（支持断点续传）
     
     Args:
         pdf_dir: PDF 目录
         config: 配置字典
-        checkpoint_interval: checkpoint 间隔（默认 10 个块）
+        checkpoint_interval: checkpoint 间隔（默认 5 个块）
         resume: 是否断点续传（默认 True）
         clear_checkpoint: 是否清除旧 checkpoint（默认 False）
     
