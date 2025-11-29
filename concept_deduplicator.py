@@ -66,9 +66,17 @@ class BGE_M3_Embedder(EmbeddingProvider):
     def __init__(self, model_name: str = "BAAI/bge-m3", device=None):
         try:
             from sentence_transformers import SentenceTransformer
+            import os
+            
+            # 设置离线模式环境变量（避免网络检查）
+            os.environ['HF_HUB_OFFLINE'] = '1'
+            os.environ['TRANSFORMERS_OFFLINE'] = '1'
+            
+            # 尝试从本地缓存加载
+            logger.info(f"Loading BGE-M3 model (offline mode): {model_name}")
             self.model = SentenceTransformer(model_name, device=device)
             self.model_name = model_name
-            logger.info(f"Loaded BGE-M3 model: {model_name}")
+            logger.info(f"✓ Loaded BGE-M3 model successfully from local cache")
         except Exception as e:
             logger.error(f"Failed to load BGE-M3: {e}")
             raise

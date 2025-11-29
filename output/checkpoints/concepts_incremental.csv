@@ -1,0 +1,257 @@
+﻿entity,importance,category,chunk_id,type
+松材线虫,5,pathogen,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+bursaphelenchus xylophilus,5,pathogen,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+赤松,4,host,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+红松,4,host,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+无人机,4,treatment,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+sentinel-2 卫星影像,4,environment,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+红边波段,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+短波红外波段,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+绿光波段,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+蓝边拐点,4,mechanism,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+黄边拐点,4,mechanism,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+植被指数,3,mechanism,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_0,concept
+bursaphelenchus xylophilus,5,pathogen,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_1,concept
+马尾松,4,host,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_1,concept
+无人机,3,技术,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_1,concept
+sentinel-2,3,技术,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_1,concept
+叶级高光谱数据,3,数据,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_1,concept
+诊断性光谱特征,4,特性,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_1,concept
+松材线虫病,5,disease,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+红边波段,4,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+近红外波段,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+短波红外波段,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+绿色波段,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+蓝边拐点,4,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+黄边拐点,4,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+随机森林,3,treatment,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+线性判别分析,3,treatment,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+sentinel-2卫星图像,4,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+无人机超谱数据,4,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_2,concept
+松材线虫病,5,disease,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+松褐天牛,4,vector,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+马尾松,4,host,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+sentinel-2 bands,3,technology,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+uav hyperspectral data,3,technology,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+lda algorithm,3,method,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+shortwave infrared band,3,spectral feature,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+red band,3,spectral feature,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+blue band,3,spectral feature,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+red-edge bands,3,spectral feature,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+vegetation index ndwi,3,index,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+beip and yeip,2,index,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_3,concept
+松材线虫,5,pathogen,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+马尾松,4,host,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+高光谱技术,3,technology,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+遥感监测,3,monitoring,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+无人机,3,equipment,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+卫星影像,3,imagery,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+光谱响应特征,4,characteristic,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+分类模型,4,model,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+生理参数,3,parameter,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_4,concept
+松材线虫,5,pathogen,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_5,concept
+无人机高光谱影像,4,treatment,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_5,concept
+单波段,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_5,concept
+植被指数,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_5,concept
+叶片一阶导数光谱,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_5,concept
+遥感数据,4,treatment,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_5,concept
+sentinel-2 波段,3,compound,ZGds6-1762148816090-松材线虫病害早期星-机-地遥感诊断光谱特征研究_李霓雯.pdf_5,concept
+泰山风景区,5,location,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+松材线虫,5,pathogen,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+美国白蛾,5,pathogen,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+冷逆境指数,3,environment,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+热逆境指数,3,environment,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+干逆境指数,3,environment,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+湿逆境指数,3,environment,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+生态气候指数,4,environment,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+温度指标,3,environment,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_6,concept
+松材线虫,5,pathogen,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_7,concept
+泰山风景区,4,location,4ERGo-1762148839583-泰山松材线虫病、美国白蛾风险分析评估与预警技术研究_申卫星.pdf_7,concept
+松材线虫病,5,disease,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+bursaphelenchus xylophilus,5,pathogen,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+马尾松,4,host,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+monochamus alternatus,4,vector,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+温度,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+湿度,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+降水,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+风速,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+江西省全南县,2,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+江西省德兴市,2,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_8,concept
+松材线虫,5,pathogen,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+bursaphelenchus xylophilus,5,pathogen,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+马尾松,4,host,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+温度,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+湿度,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+降水,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+风速,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+松褐天牛,5,vector,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+monochamus alternatus,5,vector,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+江西,4,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+全南县,3,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+德兴市,3,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_9,concept
+松材线虫,5,pathogen,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_10,concept
+最高气温,4,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_10,concept
+平均气温,4,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_10,concept
+降水量,4,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_10,concept
+全南县,3,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_10,concept
+德兴市,3,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_10,concept
+松材线虫病,5,disease,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_11,concept
+温度,4,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_11,concept
+湿度,4,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_11,concept
+降水,4,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_11,concept
+相对湿度,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_11,concept
+风速,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_11,concept
+全南县,3,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_11,concept
+德兴市,3,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_11,concept
+松材线虫,5,pathogen,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+bursaphelenchus xylophilus,4,pathogen,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+马尾松,4,host,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+松褐天牛,5,vector,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+风速,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+气温,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+湿度,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+降水,3,environment,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+全南县,4,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+德兴市,4,location,基于灰色关联度分析气候因素对江西省松材线虫病的影响.pdf_12,concept
+松材线虫病,5,pathogen,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+内蒙古东部林区,4,location,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+松褐天牛,4,vector,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+樟子松,4,host,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+森林生态平衡,4,symptom,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+木材资源与经济安全,4,symptom,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+北方生态安全屏障,4,symptom,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+检疫体系,3,treatment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+数字化监测网络,3,treatment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+疫木管理流程,3,treatment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_13,concept
+松材线虫病,5,pathogen,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+松褐天牛,4,vector,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+内蒙古东部林区,4,location,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+木材产业,4,host,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+检疫,3,treatment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+监测,3,treatment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+处置,3,treatment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+防治,4,treatment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+抚育,3,treatment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+林地碳汇,3,environment,内蒙古东部林区松材线虫病危害及防治策略_王伟.pdf_14,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_15,concept
+松墨天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_15,concept
+褐梗天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_15,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_15,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_16,concept
+松褐天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_16,concept
+黑松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_16,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_17,concept
+松褐天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_17,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_17,concept
+细胞色素c血红素裂合酶基因(hccs),4,compound,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_17,concept
+脂肪酸分解代谢,3,symptom,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_17,concept
+碳代谢,3,symptom,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_17,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+松褐天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+云杉花墨天牛,4,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+monochamus alternatus,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+aromia bungii,3,compound,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+acanthocenus griseus,3,compound,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+arhopalus rusticus,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+monochamus nigromaculatus,4,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+monochamus saltuarius,3,compound,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+uraecha angusta,4,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+semanotus sinoauster,3,compound,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+黄山,3,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+四川,3,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+安徽,3,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+陕西,3,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+山东,3,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+辽宁,3,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+大连,2,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+甘南,2,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+汉中,2,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+商洛,2,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+青岛,2,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+遵义,2,location,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_18,concept
+monochamus alternatus,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_19,concept
+arhopalus rusticus,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_19,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_19,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_20,concept
+a. rusticus,4,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_20,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_20,concept
+云杉花墨天牛,4,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_20,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_21,concept
+松褐天牛,4,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_21,concept
+马尾松,3,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_21,concept
+成虫,3,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_21,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_22,concept
+松褐天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_22,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_22,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_23,concept
+松褐天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_23,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_23,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_24,concept
+松褐天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_24,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_24,concept
+伴生细菌,3,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_24,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_25,concept
+松褐天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_25,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_25,concept
+氧化磷酸化,3,mechanism,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_25,concept
+氧气,3,compound,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_25,concept
+呼吸作用,3,mechanism,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_25,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_26,concept
+松褐天牛,5,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_26,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_26,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_27,concept
+松褐天牛,4,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_27,concept
+马尾松,4,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_27,concept
+松材线虫,5,pathogen,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_28,concept
+松褐天牛,4,vector,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_28,concept
+马尾松,3,host,Pc5Bj-1762148820023-松材线虫病媒介天牛种类调查及其传播机制研究_王洋.pdf_28,concept
+气候变化,5,environment,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_29,concept
+松材线虫病,5,pathogen,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_29,concept
+松褐天牛,5,vector,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_29,concept
+马尾松,4,host,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_29,concept
+郁南县,3,location,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_29,concept
+温度,4,environment,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_29,concept
+降水,4,environment,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_29,concept
+松材线虫病,5,pathogen,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_30,concept
+温湿度,4,environment,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_30,concept
+疫情发生,4,symptom,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_30,concept
+松墨天牛,4,vector,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_30,concept
+病死树,3,symptom,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_30,concept
+疫区北界,3,location,气候变化对松材线虫病扩散风险的影响分析——以郁南县为例_雷志华.pdf_30,concept
+松材线虫病外部症状表现与病害治疗效果的关系,5,study,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_31,concept
+松材线虫,5,pathogen,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_31,concept
+马尾松、黑松、20年生自然感病松树,4,host,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_31,concept
+注药治疗技术,4,treatment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_31,concept
+bursaphelenchus xylophilus,5,pathogen,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_32,concept
+monochamus alternatus,4,vector,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_32,concept
+pinus massoniana,4,host,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_32,concept
+pinus thunbergii,4,host,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_32,concept
+松材线虫,5,pathogen,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+bursaphelenchus xylophilus,4,pathogen,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+伴生细菌,3,pathogen,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+松褐天牛,5,vector,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+云杉花墨天牛,3,vector,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+monochamus alternatus,4,vector,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+马尾松,5,host,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+黑松,5,host,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+湿地松,3,host,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+赤松,4,host,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+云南松,2,host,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+萎蔫,5,symptom,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+针叶变色,4,symptom,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+树脂分泌异常,3,symptom,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+枯死,5,symptom,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+阿维菌素,4,treatment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+噻虫啉,3,treatment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+诱捕器,2,treatment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+生物防治,4,treatment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+温度,5,environment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+湿度,4,environment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+降水,3,environment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+海拔,2,environment,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+疫区,5,location,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+省份,4,location,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+分布区,3,location,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+侵染途径,5,mechanism,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
+致病机理,4,mechanism,松材线虫病外部症状表现与病害治疗效果的关系_程浩.pdf_33,concept
