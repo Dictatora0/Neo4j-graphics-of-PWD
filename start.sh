@@ -13,7 +13,7 @@ NC='\033[0m'
 export HF_ENDPOINT=https://hf-mirror.com
 export HF_HUB_OFFLINE=1  # 强制离线模式
 export TRANSFORMERS_OFFLINE=1  # 禁用联网检查
-echo "✓ 已设置 HuggingFace 离线模式" >&2
+echo "[INFO] 已设置 HuggingFace 离线模式" >&2
 
 # 使用已安装依赖的 Python 3.10.13
 PYTHON_BIN="$HOME/.pyenv/versions/3.10.13/bin/python"
@@ -27,7 +27,7 @@ echo ""
 
 # 检查 Python 是否存在
 if [ ! -f "$PYTHON_BIN" ]; then
-    echo -e "${YELLOW}⚠️  Python 3.10.13 未找到，尝试使用系统 Python${NC}"
+    echo -e "${YELLOW}[WARN] Python 3.10.13 未找到，尝试使用系统 Python${NC}"
     PYTHON_BIN="python3"
 fi
 
@@ -38,7 +38,7 @@ echo ""
 
 # 检查进度
 if [ -f "output/checkpoints/.progress.json" ]; then
-    echo -e "${GREEN}✓${NC} 发现 checkpoint，将从断点继续"
+    echo -e "${GREEN}[INFO] 发现 checkpoint，将从断点继续${NC}"
     processed=$($PYTHON_BIN -c "import json; print(len(json.load(open('output/checkpoints/.progress.json'))['processed_chunks']))" 2>/dev/null || echo "?")
     if [ "$processed" != "?" ]; then
         echo -e "  已处理块数: $processed"
@@ -47,16 +47,16 @@ if [ -f "output/checkpoints/.progress.json" ]; then
 fi
 
 # 运行管道
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}启动安全模式管道...${NC}"
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BLUE}====================================================================${NC}"
+echo -e "${GREEN}启动安全模式管道${NC}"
+echo -e "${BLUE}====================================================================${NC}"
 echo ""
 echo "提示:"
-echo "  • 按 Ctrl+C 可安全退出并保存进度"
-echo "  • 在另一个终端运行 './monitor.sh' 查看进度"
-echo "  • 日志文件: output/kg_builder.log"
+echo "  - 按 Ctrl+C 可安全退出并保存进度"
+echo "  - 在另一个终端运行 './monitor.sh' 查看进度"
+echo "  - 日志文件: output/kg_builder.log"
 echo ""
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BLUE}====================================================================${NC}"
 echo ""
 
 # 执行主程序

@@ -1,7 +1,6 @@
 # 松材线虫病知识图谱构建系统 - 核心技术挑战与解决方案
 
 > 项目：基于大语言模型的领域知识图谱自动化构建系统  
-> 时间跨度：2025-11  
 > 技术栈：Python, Ollama (Qwen2.5), Neo4j, PyTorch
 
 ---
@@ -69,7 +68,7 @@ save_to_file(all_results)  # 最后统一保存
 1. **增量保存** - 每处理 N 个块保存一次
 2. **进度追踪** - JSON 记录已处理的块 ID
 3. **断点续传** - 启动时恢复未完成的工作
-4. **优雅退出** - Ctrl+C 保存当前进度
+4. **安全退出** - Ctrl+C 保存当前进度
 
 #### 实现架构
 
@@ -169,12 +168,11 @@ class SafePipeline:
 
 ### 效果评估
 
-| 指标         | 改进前   | 改进后    | 提升        |
-| ------------ | -------- | --------- | ----------- |
-| 数据丢失风险 | 100%     | 0%        | ✅ 消除     |
-| 最大损失时间 | 7-8 小时 | < 10 分钟 | **40x+**    |
-| 可中断性     | ❌ 否    | ✅ 是     | ✅ 支持     |
-| 用户信心     | 低       | 高        | ✅ 显著提升 |
+| 指标         | 改进前   | 改进后    | 提升     |
+| ------------ | -------- | --------- | -------- |
+| 最大损失时间 | 7-8 小时 | < 10 分钟 | 40x+     |
+| 可中断性     | 否       | 是        | 支持     |
+| 用户信心     | 低       | 高        | 显著提升 |
 
 ### 技术亮点
 
@@ -212,11 +210,11 @@ llm:
 
 #### 1. 模型规模与速度的矛盾
 
-| 模型              | 参数量 | 单块耗时 | 质量       | 总时间(500 块)    |
-| ----------------- | ------ | -------- | ---------- | ----------------- |
-| qwen2.5-coder:32b | 32B    | 180-240s | ⭐⭐⭐⭐⭐ | **25-33 小时** ❌ |
-| qwen2.5-coder:14b | 14B    | 80-120s  | ⭐⭐⭐⭐   | 11-16 小时 ⚠️     |
-| qwen2.5-coder:7b  | 7B     | 30-50s   | ⭐⭐⭐     | **4-7 小时** ✅   |
+| 模型              | 参数量 | 单块耗时 | 质量 | 总时间(500 块) |
+| ----------------- | ------ | -------- | ---- | -------------- |
+| qwen2.5-coder:32b | 32B    | 180-240s | 高   | 25-33 小时     |
+| qwen2.5-coder:14b | 14B    | 80-120s  | 中高 | 11-16 小时     |
+| qwen2.5-coder:7b  | 7B     | 30-50s   | 中   | 4-7 小时       |
 
 #### 2. 超时策略问题
 
@@ -243,14 +241,14 @@ llm:
 
 ### 解决方案：多维度优化
 
-#### 方案 1: 模型降级 ⭐⭐⭐⭐⭐
+#### 方案 1: 模型降级
 
 **决策逻辑**：
 
 ```
 质量 vs 速度权衡:
 - 32B: 质量 100%, 速度 20%  → 总价值 = 120
-- 7B:  质量 85%,  速度 100% → 总价值 = 185  ✅ 更优
+- 7B:  质量 85%,  速度 100% → 总价值 = 185 (更优)
 ```
 
 **实施**：
@@ -258,7 +256,7 @@ llm:
 ```yaml
 llm:
   model: qwen2.5-coder:7b # 从 32b 降级
-  timeout: 300 # 增加容错空间
+  timeout: 600 # 增加超时上限，避免慢块失败
 ```
 
 **效果**：
@@ -319,7 +317,7 @@ def process_batch(chunks):
 ├─ 500块: 27.8小时
 └─ 超时率: 40%
 
-优化后（7B + timeout=300）:
+优化后（7B + timeout=600）:
 ├─ 单块: 40s        (-80%)
 ├─ 500块: 5.5小时   (-80%)
 └─ 超时率: <5%      (-87.5%)
@@ -546,15 +544,15 @@ def _extract_with_checkpoints(self, chunks):
 import logging
 
 # 分级日志
-logger.info(f"✓ Checkpoint: {i+1}/{len(chunks)} chunks processed")
+logger.info(f"Checkpoint: {i+1}/{len(chunks)} chunks processed")
 logger.debug(f"Saved results for chunk: {chunk_id}")
 logger.warning(f"Chunk {chunk_id}: LLM returned None")
 logger.error(f"Failed to process chunk {chunk_id}: {e}")
 
 # 日志输出
-INFO - ✓ Checkpoint: 30/507 chunks processed
-INFO -   - Concepts: 202
-INFO -   - Relationships: 153
+INFO - Checkpoint: 30/507 chunks processed
+INFO -   Concepts: 202
+INFO -   Relationships: 153
 ```
 
 #### 3. 状态监控脚本
@@ -563,8 +561,8 @@ INFO -   - Relationships: 153
 #!/bin/bash
 # status.sh - 快速查看状态
 
-echo "📊 知识图谱构建状态"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "知识图谱构建状态"
+echo "========================================"
 
 # 读取进度
 if [ -f "output/checkpoints/.progress.json" ]; then
@@ -572,18 +570,18 @@ if [ -f "output/checkpoints/.progress.json" ]; then
     concepts=$(jq '.total_concepts' output/checkpoints/.progress.json)
     relationships=$(jq '.total_relationships' output/checkpoints/.progress.json)
 
-    echo "✓ 已处理块数: $processed"
-    echo "✓ 提取概念: $concepts"
-    echo "✓ 提取关系: $relationships"
+    echo "[INFO] 已处理块数: $processed"
+    echo "[INFO] 提取概念: $concepts"
+    echo "[INFO] 提取关系: $relationships"
 else
-    echo "⚠️  未找到进度文件"
+    echo "[WARN] 未找到进度文件"
 fi
 
 # 检查进程
 if pgrep -f "enhanced_pipeline" > /dev/null; then
-    echo "✓ 管道正在运行"
+    echo "[INFO] 管道正在运行"
 else
-    echo "⚠️  管道未运行"
+    echo "[WARN] 管道未运行"
 fi
 ```
 
@@ -596,14 +594,14 @@ fi
 watch -n 5 './status.sh'
 
 # 每5秒刷新显示:
-# ┌─────────────────────────────────────┐
-# │ 📊 知识图谱构建状态                  │
-# │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━       │
-# │ ✓ 已处理块数: 36                    │
-# │ ✓ 提取概念: 241                     │
-# │ ✓ 提取关系: 187                     │
-# │ ✓ 管道正在运行                      │
-# └─────────────────────────────────────┘
+# =====================================
+# 知识图谱构建状态
+# =====================================
+# [INFO] 已处理块数: 36
+# [INFO] 提取概念: 241
+# [INFO] 提取关系: 187
+# [INFO] 管道正在运行
+# =====================================
 ```
 
 #### 5. 统一启动入口
@@ -624,35 +622,37 @@ python enhanced_pipeline_safe.py
 #!/bin/bash
 # start.sh - 唯一推荐的启动方式
 
-echo "╔══════════════════════════════════════╗"
-echo "║  松材线虫病知识图谱构建系统 v2.5      ║"
-echo "╚══════════════════════════════════════╝"
+echo "====================================="
+echo "知识图谱构建系统 v2.5"
+echo "====================================="
 
 # 环境检查
 if [ ! -f "$PYTHON_BIN" ]; then
-    echo "❌ Python 3.10.13 未找到"
+    echo "Python 3.10.13 未找到"
     exit 1
 fi
 
 # 进度恢复
 if [ -f "output/checkpoints/.progress.json" ]; then
     processed=$(python -c "import json; print(len(json.load(open('output/checkpoints/.progress.json'))['processed_chunks']))")
-    echo "✓ 发现 checkpoint，将从断点继续"
+    echo "[INFO] 发现 checkpoint, 将从断点继续"
     echo "  已处理块数: $processed"
 fi
 
 # 启动
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "====================================="
 echo "提示:"
-echo "  • 按 Ctrl+C 可安全退出并保存进度"
-echo "  • 在另一个终端运行 './monitor.sh' 查看进度"
-echo "  • 日志文件: output/kg_builder.log"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  - 按 Ctrl+C 可安全退出并保存进度"
+echo "  - 在另一个终端运行 './monitor.sh' 查看进度"
+echo "  - 日志文件: output/kg_builder.log"
+echo "====================================="
 
 exec "$PYTHON_BIN" enhanced_pipeline_safe.py "$@"
 ```
 
 **START_HERE.md 文档**：
+
+`````
 
 ````markdown
 # 快速开始
@@ -661,7 +661,8 @@ exec "$PYTHON_BIN" enhanced_pipeline_safe.py "$@"
 
 ```bash
 ./start.sh
-```
+`````
+
 ````
 
 ## 状态查看
@@ -683,13 +684,13 @@ A: 再次运行 ./start.sh，自动从断点继续
 
 ### 效果对比
 
-| 维度 | 改进前 | 改进后 | 提升 |
-|------|--------|--------|------|
-| 进度可见性 | ❌ 无 | ✅ 实时进度条 | ∞ |
-| 状态查询 | ❌ 无 | ✅ status.sh | ∞ |
-| 实时监控 | ❌ 无 | ✅ monitor.sh | ∞ |
-| 启动复杂度 | 5种方式 | 1种方式 | 5x |
-| 用户满意度 | 低 | 高 | ✅ |
+| 维度       | 改进前   | 改进后     | 提升 |
+| ---------- | -------- | ---------- | ---- |
+| 进度可见性 | 无       | 实时进度条 | 显著 |
+| 状态查询   | 无       | status.sh  | 显著 |
+| 实时监控   | 无       | monitor.sh | 显著 |
+| 启动复杂度 | 5 种方式 | 1 种方式   | 5x   |
+| 用户满意度 | 低       | 高         | 提升 |
 
 ---
 
@@ -698,13 +699,14 @@ A: 再次运行 ./start.sh，自动从断点继续
 ### 问题背景
 
 **错误现象**：
+
 ```bash
 $ python3 enhanced_pipeline_safe.py
 Traceback (most recent call last):
   File "enhanced_pipeline_safe.py", line 3, in <module>
     import pandas as pd
 ModuleNotFoundError: No module named 'pandas'
-````
+```
 
 **困惑**：
 
@@ -739,7 +741,7 @@ pyenv Python (~/.pyenv/versions/3.10.13/bin/python)
 
 ### 解决方案
 
-#### 方案 1: 启动脚本指定完整路径 ⭐⭐⭐⭐⭐
+#### 方案 1: 启动脚本指定完整路径
 
 ```bash
 #!/bin/bash
@@ -750,7 +752,7 @@ PYTHON_BIN="$HOME/.pyenv/versions/3.10.13/bin/python"
 
 # 检查存在性
 if [ ! -f "$PYTHON_BIN" ]; then
-    echo "❌ Python 3.10.13 未找到"
+    echo "[ERROR] Python 3.10.13 未找到"
     exit 1
 fi
 
@@ -820,9 +822,9 @@ PDF → 文本提取 → LLM 抽取 → 一次性保存 → Neo4j
 
 **问题**：
 
-- ❌ 无容错
-- ❌ 数据易丢失
-- ❌ 不可中断
+- 无容错
+- 数据易丢失
+- 不可中断
 
 ### v2.0: 增加 Checkpoint
 
@@ -834,9 +836,9 @@ PDF → 文本提取 → LLM 抽取 → 增量保存 → Neo4j
 
 **改进**：
 
-- ✅ 断点续传
-- ✅ 数据安全
-- ✅ 可中断
+- 断点续传
+- 数据安全
+- 可中断
 
 ### v2.5: 完整优化 (当前)
 
@@ -849,10 +851,10 @@ PDF → 文本提取 → 分块 → LLM 抽取(7B) → 去重 → 保存 → Neo
 
 **特性**：
 
-- ✅ 多层容错
-- ✅ 性能优化 (5x)
-- ✅ 完整可观测性
-- ✅ 用户友好
+- 多层容错
+- 性能优化 (5x)
+- 完整可观测性
+- 用户友好
 
 ---
 
@@ -896,13 +898,13 @@ PDF → 文本提取 → 分块 → LLM 抽取(7B) → 去重 → 保存 → Neo
 
 ### 性能指标
 
-| 指标       | 目标  | 实际 | 状态        |
-| ---------- | ----- | ---- | ----------- |
-| 总运行时间 | < 8h  | 5.5h | ✅ 超额完成 |
-| 数据丢失率 | 0%    | 0%   | ✅ 达标     |
-| 错误容忍   | > 95% | 95%  | ✅ 达标     |
-| 可中断恢复 | 支持  | 支持 | ✅ 达标     |
-| 用户满意度 | 高    | 高   | ✅ 达标     |
+| 指标       | 目标  | 实际 | 状态     |
+| ---------- | ----- | ---- | -------- |
+| 总运行时间 | < 8h  | 5.5h | 超额完成 |
+| 数据丢失率 | 0%    | 0%   | 达标     |
+| 错误容忍   | > 95% | 95%  | 达标     |
+| 可中断恢复 | 支持  | 支持 | 达标     |
+| 用户满意度 | 高    | 高   | 达标     |
 
 ### 未来优化方向
 
@@ -931,12 +933,12 @@ PDF → 文本提取 → 分块 → LLM 抽取(7B) → 去重 → 保存 → Neo
 
 ### 技术层面
 
-1. **过早优化是魔鬼**
+1. **不宜过早优化**
 
    - 先保证可用性，再追求性能
    - 32B → 7B 的决策证明正确
 
-2. **用户反馈最重要**
+2. **重视使用体验**
 
    - "这是卡死了吗" → 加进度条
    - "怎么启动" → 统一入口
@@ -962,8 +964,3 @@ PDF → 文本提取 → 分块 → LLM 抽取(7B) → 去重 → 保存 → Neo
    - 不是程序员的用户也能轻松使用
    - 一个命令完成所有操作
 
----
-
-**文档版本**: v1.0  
-**最后更新**: 2025-11-29  
-**作者**: Knowledge Graph Pipeline Team

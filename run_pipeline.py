@@ -36,7 +36,7 @@ def print_banner():
 def check_environment():
     """环境检查"""
     print("\n" + "="*70)
-    print(" 🔍 环境检查")
+    print(" 环境检查")
     print("="*70)
     
     checks = []
@@ -111,10 +111,8 @@ def check_environment():
     # 打印检查结果
     all_ok = True
     for name, status, ok in checks:
-        icon = "✓" if ok else "✗"
-        color = "\033[92m" if ok else "\033[91m"
-        reset = "\033[0m"
-        print(f"  {color}{icon}{reset} {name:<20} {status}")
+        icon = "[OK]" if ok else "[FAIL]"
+        print(f"  {icon} {name:<20} {status}")
         if not ok:
             all_ok = False
     
@@ -125,13 +123,13 @@ def check_environment():
 def show_config_info():
     """显示配置信息"""
     print("="*70)
-    print(" ⚙️  运行配置")
+    print(" 运行配置")
     print("="*70)
     
     config = load_config()
     
     # LLM 配置
-    print("\n📝 LLM 配置:")
+    print("\nLLM 配置:")
     print(f"  • 模型: {config['llm']['model']}")
     print(f"  • 主机: {config['llm']['ollama_host']}")
     print(f"  • 处理块数: {config['llm'].get('max_chunks', 'ALL')}")
@@ -140,7 +138,7 @@ def show_config_info():
     print(f"  • 温度: {config['llm']['temperature']}")
     
     # 去重配置
-    print("\n🔄 去重配置:")
+    print("\n去重配置:")
     use_bge = config['deduplication']['use_bge_m3']
     print(f"  • 引擎: {'BGE-M3 (混合检索)' if use_bge else 'MiniLM'}")
     if use_bge:
@@ -149,17 +147,17 @@ def show_config_info():
     print(f"  • 相似度阈值: {config['deduplication']['similarity_threshold']}")
     
     # 过滤配置
-    print("\n🎯 过滤配置:")
+    print("\n过滤配置:")
     print(f"  • 最小重要性: {config['filtering']['min_importance']}")
     print(f"  • 最小连接数: {config['filtering']['min_connections']}")
     
     # 输入输出
-    print("\n📁 文件配置:")
+    print("\n文件配置:")
     print(f"  • 输入目录: {config['pdf']['input_directory']}")
     print(f"  • 输出目录: {config['output']['base_directory']}")
     
     # 安全特性
-    print("\n🔒 安全特性:")
+    print("\n安全特性:")
     print(f"  • Checkpoint 间隔: 10 个块")
     print(f"  • 断点续传: 启用")
     print(f"  • 异常保护: 启用")
@@ -171,7 +169,7 @@ def show_config_info():
 def estimate_time():
     """估算运行时间"""
     print("="*70)
-    print(" ⏱️  时间估算")
+    print(" 时间估算")
     print("="*70)
     
     config = load_config()
@@ -208,7 +206,7 @@ def estimate_time():
 def show_progress_tips():
     """显示进度查看提示"""
     print("="*70)
-    print(" 💡 进度监控")
+    print(" 进度监控")
     print("="*70)
     
     print("""
@@ -227,9 +225,9 @@ def show_progress_tips():
    top | grep python
 
 提示:
-  • 每 10 个块会看到 "✓ Checkpoint: X/Y chunks processed"
-  • 可随时按 Ctrl+C 安全退出（会自动保存进度）
-  • 重新运行会自动从断点继续
+  - 每 10 个块会看到 "Checkpoint: X/Y chunks processed"
+  - 可随时按 Ctrl+C 安全退出(会自动保存进度)
+  - 重新运行会自动从断点继续
     """)
     print("="*70)
 
@@ -237,7 +235,7 @@ def show_progress_tips():
 def run_with_monitoring():
     """运行管道并监控"""
     print("\n" + "="*70)
-    print(" 🚀 启动知识图谱构建")
+    print(" 启动知识图谱构建")
     print("="*70)
     
     start_time = datetime.now()
@@ -258,56 +256,56 @@ def run_with_monitoring():
         
         # 显示结果
         print("\n" + "="*70)
-        print(" ✅ 构建完成")
+        print(" 构建完成")
         print("="*70)
         
         print(f"\n结束时间: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"总耗时: {duration}")
         
-        print(f"\n📊 结果统计:")
+        print(f"\n结果统计:")
         print(f"  • 概念总数: {len(concepts_df)}")
         print(f"  • 关系总数: {len(relationships_df)}")
         
         if not concepts_df.empty:
-            print(f"\n🏆 TOP 10 重要概念:")
+            print(f"\nTOP 10 重要概念:")
             top_concepts = concepts_df.nlargest(10, 'importance')
             for idx, (_, row) in enumerate(top_concepts.iterrows(), 1):
                 print(f"  {idx:2d}. {row['entity']:<30} (重要性: {row.get('importance', 0):.1f})")
         
         if not relationships_df.empty:
-            print(f"\n🔗 TOP 5 高权重关系:")
+            print(f"\nTOP 5 高权重关系:")
             top_rels = relationships_df.nlargest(5, 'weight')
             for idx, (_, row) in enumerate(top_rels.iterrows(), 1):
                 print(f"  {idx}. {row['node_1']} --[{row['edge']}]-> {row['node_2']} ({row['weight']:.2f})")
         
         # 输出文件
-        print(f"\n📁 输出文件:")
+        print(f"\n输出文件:")
         print(f"  • 概念文件: output/concepts.csv")
         print(f"  • 关系文件: output/relationships.csv")
         print(f"  • 日志文件: output/kg_builder.log")
         print(f"  • Checkpoint: output/checkpoints/")
         
         print("\n" + "="*70)
-        print(" 🎉 知识图谱构建成功！")
+        print(" 知识图谱构建成功")
         print("="*70 + "\n")
         
         return True
         
     except KeyboardInterrupt:
         print("\n\n" + "="*70)
-        print(" ⚠️  用户中断")
+        print(" 用户中断")
         print("="*70)
-        print("\n✓ 进度已自动保存到: output/checkpoints/")
+        print("\n进度已自动保存到: output/checkpoints/")
         print("\n要继续处理，请重新运行此脚本")
         print("\n" + "="*70 + "\n")
         return False
         
     except Exception as e:
         print("\n\n" + "="*70)
-        print(f" ❌ 发生错误")
+        print(f" 发生错误")
         print("="*70)
         print(f"\n错误信息: {e}")
-        print("\n✓ 已处理的数据已保存（如果有）")
+        print("\n已处理的数据已保存(如果有)")
         print("\n查看详细日志: output/kg_builder.log")
         print("\n" + "="*70 + "\n")
         
@@ -325,11 +323,11 @@ def main():
     env_ok, has_model, model_name = check_environment()
     
     if not env_ok:
-        print("⚠️  环境检查发现问题，请先解决上述问题再运行")
+        print("环境检查发现问题，请先解决上述问题再运行")
         
         # 提供解决建议
         print("\n" + "="*70)
-        print(" 🔧 解决建议")
+        print(" 解决建议")
         print("="*70)
         print("""
 如果 Ollama 服务未运行:
@@ -355,7 +353,7 @@ def main():
     
     # 确认开始
     print("\n" + "="*70)
-    print(" ⚡ 准备就绪")
+    print(" 准备就绪")
     print("="*70)
     print("\n按 Enter 开始运行，或按 Ctrl+C 取消...")
     

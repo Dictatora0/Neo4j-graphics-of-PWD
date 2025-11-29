@@ -155,7 +155,7 @@ class CheckpointManager:
             relationships_df.to_csv(checkpoint_relationships, index=False, 
                                    encoding='utf-8-sig')
             
-            logger.info(f"✓ Checkpoint saved at chunk {chunk_index}")
+            logger.info(f"Checkpoint saved at chunk {chunk_index}")
             logger.info(f"  - Concepts: {len(concepts_df)}")
             logger.info(f"  - Relationships: {len(relationships_df)}")
         except Exception as e:

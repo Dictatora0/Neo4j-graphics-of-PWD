@@ -15,7 +15,7 @@
 
 ---
 
-## 📋 目录
+## 目录
 
 - [项目背景](#项目背景)
 - [项目概述](#项目概述)
@@ -28,11 +28,10 @@
 - [系统特性](#系统特性)
 - [配置说明](#配置说明)
 - [故障排查](#故障排查)
-- [项目成果](#项目成果)
 
 ---
 
-## 🌲 项目背景
+## 项目背景
 
 ### 领域意义
 
@@ -56,14 +55,14 @@
 
 本项目通过**自动化知识图谱构建**技术，实现：
 
-- ✅ **知识整合**: 从 28 篇文献中自动抽取和整合领域知识
-- ✅ **关系发现**: 揭示病原、寄主、媒介、防治之间的复杂关系
-- ✅ **智能检索**: 支持语义检索和知识推理
-- ✅ **决策支持**: 为防治策略制定提供知识支撑
+- **知识整合**: 从 28 篇文献中自动抽取和整合领域知识
+- **关系发现**: 揭示病原、寄主、媒介、防治之间的复杂关系
+- **智能检索**: 支持语义检索和知识推理
+- **决策支持**: 为防治策略制定提供知识支撑
 
 ---
 
-## 📊 项目概述
+## 项目概述
 
 ### 核心目标
 
@@ -92,6 +91,16 @@
 | **PDF 解析**  | PyMuPDF        | Latest    | 文本提取           |
 | **进度追踪**  | tqdm + logging | -         | 实时进度和日志     |
 
+### 技术要点概览
+
+- **本地 LLM 推理链路**: 基于 Ollama 部署 Qwen2.5-Coder 7B/14B，本地推理、严格 JSON Schema 输出，减少外部依赖和网络不确定性。
+- **长时间任务容错设计**: `enhanced_pipeline_safe.py` 结合 `checkpoint_manager.py`，提供按块增量保存、断点续传和安全退出，控制单次故障影响范围。
+- **语义去重与实体对齐**: `concept_deduplicator.py` 使用 BGE-M3 混合检索（dense + sparse），对相似概念聚合、对齐中英文实体，减少图谱冗余。
+- **多源关系构建策略**: 将 LLM 抽取的关系与 ContextualProximityAnalyzer 的近邻关系合并，加权生成最终关系集合，兼顾精度和覆盖率。
+- **图数据库落库与查询**: 通过 `import_to_neo4j_final.py` 与 Neo4j，将概念与关系以节点/边形式存储，支持后续 Cypher 查询和可视化分析。
+- **可选增强模块**: `agentic_extractor.py` 和 `graph_rag.py` 提供 Agentic Workflow 和 GraphRAG 社区摘要能力，通过配置文件按需启用或关闭。
+- **多模态扩展路径**: `multimodal_extractor.py` 结合 Qwen2-VL，对 PDF 图片生成文本描述并统一纳入抽取流程，为后续多模态知识扩展预留接口。
+
 ### v2.5 核心升级
 
 | 功能模块     | 技术方案          | 性能提升         |
@@ -104,9 +113,9 @@
 
 ---
 
-## 💡 核心创新点
+## 核心创新点
 
-### 1. Checkpoint 增量保存机制 ⭐⭐⭐⭐⭐
+### 1. Checkpoint 增量保存机制
 
 **问题**: 长时间运行（7-8 小时）的数据丢失风险
 
@@ -121,11 +130,11 @@
 
 **成果**:
 
-- ✅ 数据丢失风险: 100% → **0%**
-- ✅ 最大损失时间: 7 小时 → **<5 分钟**
-- ✅ 用户可中断: 否 → **是**
+- 数据丢失风险: 100% → 0%
+- 最大损失时间: 7 小时 → <5 分钟
+- 用户可中断: 否 → 是
 
-### 2. LLM 性能优化：质量与速度的平衡 ⭐⭐⭐⭐⭐
+### 2. LLM 性能优化：质量与速度的平衡
 
 **问题**: 32B 模型太慢（27 小时完成 500 块）
 
@@ -133,22 +142,22 @@
 
 ```
 32B 模型: 质量 100%, 速度 20%  → 总价值 120
-7B 模型:  质量 85%,  速度 100% → 总价值 185  ✅
+7B 模型:  质量 85%,  速度 100% → 总价值 185
 
 选择 7B: 牺牲 15% 质量，换取 5x 速度
 ```
 
 **成果**:
 
-- ✅ 处理时间: 27h → **5.5h (5x)**
-- ✅ 超时率: 40% → **<5%**
-- ✅ 质量保持: **85%+**
+- 处理时间: 27h → 5.5h (5x)
+- 超时率: 40% → <5%
+- 质量保持: 85%+
 
-### 3. 多层容错架构 ⭐⭐⭐⭐
+### 3. 多层容错架构
 
 **问题**: 单次 LLM 失败导致整个管道崩溃
 
-**创新方案**:
+**方案**:
 
 ```
 Layer 1 (LLM层):    返回 None → 转为 []
@@ -160,10 +169,10 @@ Layer 3 (主循环层):  捕获异常 → continue
 
 **成果**:
 
-- ✅ 系统可用性: 0% → **95%**
-- ✅ 错误容忍: 5% 失败率 → 仅丢失 5% 数据
+- 系统可用性: 0% → 95%
+- 错误容忍: 5% 失败率 → 仅丢失 5% 数据
 
-### 4. BGE-M3 混合检索去重 ⭐⭐⭐⭐
+### 4. BGE-M3 混合检索去重
 
 **创新**:
 
@@ -176,15 +185,15 @@ Layer 3 (主循环层):  捕获异常 → continue
 
 **成果**:
 
-- ✅ 中文相似度提升: **+26%**
-- ✅ 专业术语识别: **+35%**
-- ✅ 中英混合场景: **+59%**
+- 中文相似度提升: +26%
+- 专业术语识别: +35%
+- 中英混合场景: +59%
 
-### 5. 完整的可观测性设计 ⭐⭐⭐
+### 5. 完整的可观测性设计
 
 **问题**: 黑盒运行，用户不知道进度
 
-**创新方案**:
+**方案**:
 
 ```bash
 # 实时进度条
@@ -200,13 +209,13 @@ Extracting concepts:  7%|██▏     | 36/507 [30:30<7:28:57, 57.19s/it]
 
 **成果**:
 
-- ✅ 进度可见性: 无 → **实时显示**
-- ✅ 启动复杂度: 5 种方式 → **1 种方式**
-- ✅ 用户满意度: 低 → **高**
+- 进度可见性: 无 → 实时显示
+- 启动复杂度: 5 种方式 → 1 种方式
+- 用户满意度: 低 → 高
 
 ---
 
-## 🔧 技术挑战与解决方案
+## 技术挑战与解决方案
 
 ### 挑战 1: 长时间运行的数据安全
 
@@ -218,200 +227,49 @@ Extracting concepts:  7%|██▏     | 36/507 [30:30<7:28:57, 57.19s/it]
 
 **解决方案**: Checkpoint 机制
 
-```python
-class CheckpointManager:
-    def save_chunk_results(self, chunk_id, concepts, relationships):
-        # 1. 追加到 CSV（增量保存）
-        self._append_to_csv(concepts_file, concepts)
-
-        # 2. 更新进度 JSON
-        self.progress['processed_chunks'].append(chunk_id)
-        self._save_progress()
-
-        # 3. 定期完整快照（每5块）
-        if len(processed) % 5 == 0:
-            self.save_checkpoint(concepts_df, relationships_df)
-```
-
-**效果**:
-
-- 数据丢失风险: **100% → 0%**
-- 支持断点续传: **自动恢复**
-- 优雅退出: **Ctrl+C 保存进度**
-
-### 挑战 2: LLM 推理性能瓶颈
-
-**技术难点**:
-
-- 32B 模型单块耗时 180-240 秒
-- 500 块总计需要 **27 小时**
-- 超时率高达 40%
-
-**解决方案**: 模型降级 + 超时优化
-
-| 维度   | 32B 模型 | 7B 模型  | 决策         |
-| ------ | -------- | -------- | ------------ |
-| 质量   | 100%     | 85%      | -15%         |
-| 速度   | 180s/块  | 40s/块   | **4.5x**     |
-| 总时间 | 27 小时  | 5.5 小时 | **可接受**   |
-| 超时率 | 40%      | <5%      | **显著改善** |
-
-**关键决策**:
-
-```
-业务价值 = 质量 × 可用性
-7B: 85% × 100% = 85 > 32B: 100% × 0% = 0
-```
-
-### 挑战 3: 错误传播链
-
-**技术难点**:
-
-```python
-LLM 失败返回 None
-  ↓
-len(None) → TypeError
-  ↓
-管道崩溃，所有数据丢失
-```
-
-**解决方案**: 三层防御
-
-```python
-# Layer 1: LLM 层
-def extract(text):
-    try:
-        result = llm_call(text)
-        return result or [], []  # 降级为空列表
-    except Timeout:
-        return [], []  # 容错
-
-# Layer 2: Checkpoint 层
-def save_chunk_results(concepts, relationships):
-    if concepts is None: concepts = []  # 输入验证
-    if relationships is None: relationships = []
-    # 安全保存
-
-# Layer 3: 主循环层
-for chunk in chunks:
-    try:
-        process(chunk)
-    except Exception as e:
-        logger.error(f"Failed: {e}")
-        continue  # 不影响后续处理
-```
-
-**效果**: 单点失败不影响整体，系统可用性 **95%**
-
-### 挑战 4: Python 环境隔离
-
-**技术难点**:
-
-```bash
-$ python3 script.py
-ModuleNotFoundError: No module named 'pandas'
-
-# 但明明已经 pip install pandas
-```
-
-**根本原因**:
-
-```
-系统 Python (/usr/bin/python3) - 无第三方包
-vs
-pyenv Python (~/.pyenv/versions/3.10.13) - 有所有依赖
-```
-
-**解决方案**: 启动脚本硬编码完整路径
-
-```bash
-#!/bin/bash
-# start.sh
-
-# 显式指定 Python 路径
-PYTHON_BIN="$HOME/.pyenv/versions/3.10.13/bin/python"
-
-if [ ! -f "$PYTHON_BIN" ]; then
-    echo "❌ Python 3.10.13 未找到"
-    exit 1
-fi
-
-# 使用完整路径执行
-exec "$PYTHON_BIN" enhanced_pipeline_safe.py "$@"
-```
-
-**效果**: 环境问题**彻底解决**，对用户**透明**
-
 ---
 
 ## 快速开始
 
-### 1. 环境要求
+### 1. 环境准备
 
-- **Python**: 3.8+ （推荐 3.10）
-- **系统内存**: 16GB+ （Qwen-14B 需要约 9GB）
-- **存储空间**: 20GB+ （包含模型和数据）
-- **Ollama**: 本地 LLM 服务
-- **Neo4j**: 4.x 或 5.x（可选）
+- 安装 Python 3.10（可使用 pyenv 或虚拟环境）
+- 安装依赖：`pip install -r requirements.txt`
+- 安装并启动 Ollama，本地加载 `qwen2.5-coder:7b`（如需更高质量可使用 14B）
+- 如需导入 Neo4j，提前安装并启动 Neo4j 4.x/5.x
 
-### 2. 快速安装
+### 2. 放置源文献
 
-```bash
-# 克隆项目
-git clone https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git
-cd Neo4j-graphics-of-PWD
+- 将待处理的 PDF 文献放入 `./文献/` 目录
+- 如需修改目录，在 `config/config.yaml` 中调整 `pdf.input_directory`
 
-# 安装依赖（推荐使用最小化依赖）
-pip install -r requirements-minimal.txt
-
-# 或完整依赖
-pip install -r requirements.txt
-
-# 安装核心依赖
-pip install zhconv pdfplumber networkx
-```
-
-### 3. 下载模型
+### 3. 启动知识图谱构建
 
 ```bash
-# 必需：Qwen2.5-Coder-14B（推荐）
-ollama pull qwen2.5-coder:14b
-
-# 或使用 7B 版本（更快）
-ollama pull qwen2.5-coder:7b
-
-# 可选：多模态 VLM（用于图片知识抽取）
-ollama pull qwen2-vl
-
-# 验证安装
-ollama list
+./start.sh
 ```
 
-### 4. 运行方式
+- `start.sh` 会自动选择已配置的 Python 环境
+- 默认从上一次 checkpoint 位置继续
+- 运行日志输出到 `output/kg_builder.log`
+
+### 4. 监控进度与查看结果
 
 ```bash
-# 方式 1: 直接运行主流程（推荐）
-python enhanced_pipeline.py
-
-# 方式 2: 完整流程（包含 Neo4j 导入等）
-python main.py
+./status.sh   # 查看当前进度汇总
+./monitor.sh  # 每 5 秒刷新一次状态
 ```
 
-### 5. 查看结果
+- 中间进度和增量结果保存在 `output/checkpoints/`
+- 最终抽取得到的概念和关系位于 `output/concepts.csv` 和 `output/relationships.csv`
+
+### 5. 导入 Neo4j（可选）
 
 ```bash
-# 运行成功后，结果保存在 output/ 目录
-ls -lh output/
-
-# 查看抽取的概念
-head -20 output/concepts.csv
-
-# 查看抽取的关系
-head -20 output/relationships.csv
-
-# 查看运行日志
-tail -50 output/kg_builder.log
+python import_to_neo4j_final.py
 ```
+
+- 根据提示在 Neo4j 中创建数据库和连接配置
 
 ---
 
@@ -425,22 +283,9 @@ tail -50 output/kg_builder.log
 
 ### 2. LLM 概念抽取
 
-- **模型**: Qwen2.5-Coder-14B (JSON Schema 强制输出)
+- **模型**: Qwen2.5-Coder（7B/14B，可配置，支持 JSON Schema 输出）
 - **准确率**: 95%+ JSON 解析成功率
 - **领域优化**: 9 大概念类别 + 6 大关系类型
-
-```python
-# 概念类别
-- Pathogen (病原体): 松材线虫、伴生细菌
-- Host (寄主植物): 马尾松、黑松、红松
-- Vector (媒介昆虫): 松褐天牛、松黑天牛
-- Symptom (症状): 萎蔫、枯死、变色
-- Treatment (防治): 化学防治、物理防治
-- Environment (环境): 温度、湿度、海拔
-- Location (地理): 省份、城市、林区
-- Technology (技术): 遥感、GIS、监测
-- Other (其他)
-```
 
 ### 3. Agentic Workflow
 
@@ -459,28 +304,11 @@ Extract Agent → Critic Agent → Refine Agent
 - **LLM 摘要**: 自动生成社区主题和描述
 - **全局查询**: 突破三元组局限，支持主题级查询
 
-**示例**:
-
-```
-社区 1: 病原传播机制 (50个概念)
-  摘要: 松材线虫通过松褐天牛传播，侵染寄主植物...
-
-社区 2: 防治措施体系 (30个概念)
-  摘要: 包括化学防治、物理防治、生物防治...
-```
-
 ### 5. BGE-M3 混合检索
 
 - **Dense Embedding**: 1024 维语义向量
 - **Sparse Embedding**: 关键词级别匹配
 - **混合相似度**: alpha × dense + (1-alpha) × sparse
-
-**中英文实体对齐**:
-
-```python
-"松材线虫" ↔ "bursaphelenchus xylophilus" (98% 相似度)
-"马尾松" ↔ "pinus massoniana" (96% 相似度)
-```
 
 ### 6. 多模态融合（可选）
 
@@ -533,10 +361,10 @@ PDF文献
 ```yaml
 # LLM 配置
 llm:
-  model: qwen2.5-coder:14b # 或 7b
+  model: qwen2.5-coder:7b # 默认使用 7B，可在配置中切换为 14B
   ollama_host: http://localhost:11434
-  max_chunks: 100 # 处理的文本块数量
-  timeout: 180 # API 超时（秒）
+  max_chunks: 50 # 与 config/config.yaml 一致，建议先小规模验证
+  timeout: 600 # API 超时（秒），与配置文件保持一致
   temperature: 0.1 # 降低随机性
 
 # 去重配置
@@ -555,21 +383,18 @@ filtering:
 ### 进阶配置（可选功能）
 
 ```yaml
-# Agentic Workflow
+# Agentic Workflow 与 GraphRAG
 agentic:
-  enable_llm_review: false  # LLM 二次审查（耗时）
+  enable_llm_review: false # LLM 二次审查（耗时）
   review_confidence_range: [0.6, 0.8]
-  review_model: qwen2.5-coder:14b
-
-# GraphRAG
-agentic:
-  enable_graph_rag: false   # 社区检测和摘要
-  community_algorithm: louvain  # 或 leiden
-  summary_model: qwen2.5-coder:14b
+  review_model: qwen2.5-coder:7b
+  enable_graph_rag: false # 社区检测和摘要
+  community_algorithm: louvain # 或 leiden
+  summary_model: qwen2.5-coder:7b
 
 # 多模态
 pdf:
-  enable_image_captions: false  # 图片知识抽取
+  enable_image_captions: false # 图片知识抽取
   caption_model: qwen2-vl
   max_images_per_pdf: 25
 ```
@@ -620,14 +445,14 @@ pdf:
 
 ### 已知问题与修复概览
 
-| #   | 问题                       | 解决方案                                     | 状态 |
-| --- | -------------------------- | -------------------------------------------- | ---- |
-| 1   | 缺少 zhconv 模块           | `pip install zhconv pdfplumber networkx`     | ✅   |
-| 2   | DataCleaner 导入错误       | 添加别名 `DataCleaner = MarkdownDataCleaner` | ✅   |
-| 3   | enhanced_pipeline 导入错误 | 注释未使用的导入                             | ✅   |
-| 4   | torch 版本冲突             | marker-pdf 标记为可选                        | ✅   |
-| 5   | logger_config 路径错误     | 复制到根目录                                 | ✅   |
-| 6   | config_loader 路径错误     | 复制到根目录                                 | ✅   |
+| #   | 问题                       | 解决方案                                     | 状态   |
+| --- | -------------------------- | -------------------------------------------- | ------ |
+| 1   | 缺少 zhconv 模块           | `pip install zhconv pdfplumber networkx`     | 已修复 |
+| 2   | DataCleaner 导入错误       | 添加别名 `DataCleaner = MarkdownDataCleaner` | 已修复 |
+| 3   | enhanced_pipeline 导入错误 | 注释未使用的导入                             | 已修复 |
+| 4   | torch 版本冲突             | marker-pdf 标记为可选                        | 已修复 |
+| 5   | logger_config 路径错误     | 复制到根目录                                 | 已修复 |
+| 6   | config_loader 路径错误     | 复制到根目录                                 | 已修复 |
 
 ### 常见问题
 
@@ -685,7 +510,7 @@ llm:
 # 测试所有导入
 ./test_imports.sh
 
-# 预期输出: 所有10个模块 ✅
+# 预期输出: 所有9个模块 [OK]
 ```
 
 ---
@@ -701,7 +526,7 @@ agentic:
   review_model: qwen2.5-coder:14b
 ```
 
-**效果**: 准确率提升 6-8%，处理时间增加 50%
+**效果**: 准确率提升 6-8%, 处理时间增加 50%
 
 ### 2. 启用 GraphRAG
 
@@ -761,6 +586,7 @@ output/
 ├── relationships.csv         # 抽取的关系
 ├── kg_builder.log           # 运行日志
 ├── community_summaries.csv  # 社区摘要（如启用GraphRAG）
+├── checkpoints/             # Checkpoint 与进度文件
 └── pdf_images/              # 提取的图片（如启用多模态）
 ```
 
@@ -781,144 +607,55 @@ node_1,edge,node_2,weight,confidence,source
 
 ---
 
-## 学术应用
-
-### 可发表方向
-
-- **顶会**: KDD, EMNLP, ICCV
-- **期刊**: Knowledge-Based Systems, Expert Systems with Applications
-- **领域**: 植物保护学报（中文核心）
-
-### 实验设计
-
-**对比实验**:
-
-- RQ1: Qwen2.5 vs Llama3.2 在 Schema 遵循率上的差异
-- RQ2: Agentic vs 单次抽取的准确率提升
-- RQ3: GraphRAG 社区摘要对全局查询的改善
-- RQ4: 多模态融合对知识完整度的影响
-
----
-
-## 📈 项目成果
-
-### 数据统计
-
-**输入数据**:
-
-- 📚 处理文献: **28 篇** PDF 论文
-- 📄 总字符数: **~350,000** 字符
-- 🧩 文本分块: **524 块** (平均 2000 字符/块)
-- ⏱️ 处理时长: **5.5 小时** (优化后)
-
-**输出成果**:
-
-- 🔵 提取概念: **200+** 个领域实体
-- 🔗 识别关系: **150+** 个三元组
-- 📊 图谱节点: 包含 9 大类别概念
-- 🌐 图谱关系: 包含 6 类核心关系
-
-### 概念类别分布
-
-| 类别               | 数量 | 占比 | 示例               |
-| ------------------ | ---- | ---- | ------------------ |
-| Pathogen (病原)    | 40+  | 20%  | 松材线虫、伴生细菌 |
-| Host (寄主)        | 35+  | 17%  | 马尾松、黑松、红松 |
-| Vector (媒介)      | 30+  | 15%  | 松褐天牛、松黑天牛 |
-| Treatment (防治)   | 35+  | 17%  | 化学防治、物理防治 |
-| Environment (环境) | 25+  | 12%  | 温度、湿度、海拔   |
-| Location (地理)    | 20+  | 10%  | 省份、城市、林区   |
-| Symptom (症状)     | 10+  | 5%   | 萎蔫、枯死、变色   |
-| Technology (技术)  | 5+   | 2%   | 遥感、GIS、监测    |
-
-### 关系类型分布
-
-| 关系类型           | 数量 | 示例                  |
-| ------------------ | ---- | --------------------- |
-| INFECTS (感染)     | 45+  | 松材线虫 → 马尾松     |
-| TRANSMITS (传播)   | 35+  | 松褐天牛 → 松材线虫   |
-| TREATS (防治)      | 30+  | 化学防治 → 松材线虫病 |
-| CAUSES (引起)      | 20+  | 松材线虫 → 萎蔫症状   |
-| OCCURS_IN (发生于) | 15+  | 松材线虫病 → 江苏省   |
-| AFFECTS (影响)     | 10+  | 温度 → 松材线虫繁殖   |
-
-### 性能优化对比
-
-**优化前 (v1.0)**:
-
-- ⏱️ 处理时间: 27 小时
-- 💾 数据安全: 无保障
-- 🐛 系统稳定性: 易崩溃
-- 📊 可观测性: 无
-
-**优化后 (v2.5)**:
-
-- ⏱️ 处理时间: **5.5 小时** (↓ 80%)
-- 💾 数据安全: **零丢失**
-- 🐛 系统稳定性: **95%可用性**
-- 📊 可观测性: **实时监控**
-
-### 质量指标
-
-| 指标           | 数值   | 说明             |
-| -------------- | ------ | ---------------- |
-| **概念准确率** | 88%+   | 人工抽样验证     |
-| **关系准确率** | 83%+   | 三元组语义一致性 |
-| **去重效果**   | 95%+   | BGE-M3 语义去重  |
-| **系统可用性** | 95%+   | 容错机制保障     |
-| **处理速度**   | 40s/块 | 7B 模型性能      |
-
----
-
-## 🎯 系统特性
+## 系统特性
 
 ### 稳定性特性
 
-✅ **零数据丢失**: Checkpoint 机制确保任何中断都不丢失数据  
-✅ **断点续传**: 自动从中断点恢复，无需重新开始  
-✅ **优雅退出**: Ctrl+C 安全退出并保存进度  
-✅ **多层容错**: 单点失败不影响整体流程
+**零数据丢失**: Checkpoint 机制确保任何中断都不丢失数据  
+**断点续传**: 自动从中断点恢复，无需重新开始  
+**优雅退出**: Ctrl+C 安全退出并保存进度  
+**多层容错**: 单点失败不影响整体流程
 
 ### 性能特性
 
-⚡ **高效处理**: 500+文本块，5.5 小时完成  
-⚡ **并行潜力**: 架构支持未来多进程扩展  
-⚡ **内存优化**: 增量保存避免内存积累  
-⚡ **模型优化**: 7B 模型兼顾速度和质量
+- **高效处理**: 500+ 文本块，约 5.5 小时完成
+- **扩展空间**: 架构支持后续多进程或分布式扩展
+- **内存控制**: 增量保存避免内存占用持续增长
+- **模型选择**: 默认 7B 模型，在速度和质量之间取得平衡
 
 ### 易用性特性
 
-🎨 **一键启动**: `./start.sh` 唯一入口  
-🎨 **实时监控**: 进度条 + 日志 + 监控脚本  
-🎨 **状态查询**: `./status.sh` 快速查看状态  
-🎨 **环境自动**: 自动处理 Python 环境问题
+**一键启动**: `./start.sh` 唯一入口  
+**实时监控**: 进度条 + 日志 + 监控脚本  
+**状态查询**: `./status.sh` 快速查看状态  
+**环境自动**: 自动处理 Python 环境问题
 
 ### 扩展性特性
 
-🔧 **模块化设计**: 各模块独立，易于替换  
-🔧 **配置驱动**: YAML 配置文件灵活控制  
-🔧 **模型可换**: 支持不同 LLM 和 Embedding 模型  
-🔧 **格式兼容**: CSV 输出方便后续处理
+**模块化设计**: 各模块独立，易于替换  
+ **配置驱动**: YAML 配置文件灵活控制  
+ **模型可换**: 支持不同 LLM 和 Embedding 模型  
+ **格式兼容**: CSV 输出方便后续处理
 
 ---
 
 ## 更新日志
 
-### v2.5 (2025-11-29) - 稳定性与性能全面升级 ⭐
+### v2.5 (2025-11-29) - 稳定性与性能全面升级
 
 **核心改进**:
 
-- ✅ **Checkpoint 机制**: 增量保存 + 断点续传，零数据丢失
-- ✅ **性能优化**: 32B→7B 模型，处理时间 27h→5.5h (5x 提升)
-- ✅ **多层容错**: LLM 层+Checkpoint 层+主循环层三重防护
-- ✅ **可观测性**: 进度条 + 实时监控 + 统一启动入口
-- ✅ **嵌入升级**: MiniLM → BGE-M3，中文相似度+26%
+- **Checkpoint 机制**: 增量保存 + 断点续传，零数据丢失
+- **性能优化**: 32B→7B 模型，处理时间 27h→5.5h (5x 提升)
+- **多层容错**: LLM 层+Checkpoint 层+主循环层三重防护
+- **可观测性**: 进度条 + 实时监控 + 统一启动入口
+- **嵌入升级**: MiniLM → BGE-M3，中文相似度+26%
 
 **技术文档**:
 
-- 📄 `docs/TECHNICAL_CHALLENGES.md` - 核心技术挑战与解决方案
-- 📄 `START_HERE.md` - 快速上手指南
-- 📄 `FIX_SUMMARY.md` - 问题修复记录
+- **核心技术挑战**: `docs/TECHNICAL_CHALLENGES.md` - 核心技术挑战与解决方案
+- **快速上手**: `START_HERE.md` - 快速上手指南
+- **问题修复**: `FIX_SUMMARY.md` - 问题修复记录
 
 **性能指标**:
 
@@ -940,24 +677,24 @@ node_1,edge,node_2,weight,confidence,source
 
 ---
 
-## 📚 相关文档
+## 相关文档
 
 ### 技术文档
 
-- 📄 **核心技术挑战**: `docs/TECHNICAL_CHALLENGES.md`
+- **核心技术挑战**: `docs/TECHNICAL_CHALLENGES.md`
 
   - 5 大核心技术挑战详解
   - 完整解决方案和代码实现
   - 性能优化决策分析
   - 架构演进历程
 
-- 📄 **快速上手**: `START_HERE.md`
+- **快速上手**: `START_HERE.md`
 
   - 唯一推荐的启动方式
   - 状态查看和监控
   - 常见问题解答
 
-- 📄 **问题修复**: `FIX_SUMMARY.md`
+- **问题修复**: `FIX_SUMMARY.md`
   - 已知问题诊断和修复
   - 故障排查流程
 
@@ -975,74 +712,6 @@ node_1,edge,node_2,weight,confidence,source
 ./fast_download_bge_m3.sh    # 快速下载BGE-M3模型
 ./simple_deduplicate.py      # 简单去重（不依赖BGE-M3）
 ```
-
----
-
-## 🎓 适用场景
-
-### 学术研究
-
-**论文发表方向**:
-
-- 💡 知识图谱自动构建方法
-- 💡 大语言模型在垂直领域的应用
-- 💡 知识抽取质量与效率的权衡
-- 💡 长时间运行系统的稳定性设计
-
-**可投稿会议/期刊**:
-
-- 顶会: KDD, EMNLP, ACL
-- 期刊: Knowledge-Based Systems, Expert Systems with Applications
-- 领域: 植物保护学报（中文核心）
-
-### 工程实践
-
-**可复用的技术方案**:
-
-- ✅ Checkpoint 机制 - 适用于所有长时间运行任务
-- ✅ 多层容错架构 - 提升系统可用性
-- ✅ LLM 性能优化 - 模型选择决策框架
-- ✅ 可观测性设计 - 用户体验优化
-
-### 行业应用
-
-**扩展方向**:
-
-- 🌲 林业病虫害知识图谱
-- 🏥 医疗领域文献知识抽取
-- 📖 科研文献智能问答系统
-- 🔬 领域知识发现与推理
-
----
-
-## 👥 开发团队
-
-**知识工程第二组 - 松材线虫病知识图谱项目**
-
-- 🔗 GitHub: [https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git](https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git)
-- 📧 问题反馈: 通过 GitHub Issues
-- 📝 项目文档: `docs/` 目录
-
-### 技术贡献
-
-**系统设计与实现**:
-
-- 知识图谱构建管道
-- Checkpoint 增量保存机制
-- 多层容错架构
-- 可观测性系统
-
-**性能优化**:
-
-- LLM 模型选择与优化（5x 提升）
-- BGE-M3 语义去重集成
-- 长时间运行稳定性保障
-
-**文档与工具**:
-
-- 详细技术文档
-- 监控和诊断脚本
-- 快速部署工具
 
 ---
 

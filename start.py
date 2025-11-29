@@ -27,7 +27,7 @@ def main():
     env_ok, has_model, model_name = check_environment()
     
     if not env_ok:
-        print("\n⚠️  环境检查发现问题，请先解决上述问题再运行\n")
+        print("\n环境检查发现问题，请先解决上述问题再运行\n")
         print("解决方法:")
         print("  • Ollama 未运行: ollama serve")
         print("  • 模型未安装: ollama pull qwen2.5-coder:7b")
@@ -43,12 +43,12 @@ def main():
     
     # 显示监控提示
     print("="*70)
-    print(" 💡 提示")
+    print(" 提示")
     print("="*70)
     print("""
-• 在另一个终端运行监控: bash monitor.sh
-• 实时查看日志: tail -f output/kg_builder.log  
-• 按 Ctrl+C 可安全退出并保存进度
+- 在另一个终端运行监控: bash monitor.sh
+- 实时查看日志: tail -f output/kg_builder.log  
+- 按 Ctrl+C 可安全退出并保存进度
 """)
     print("="*70)
     

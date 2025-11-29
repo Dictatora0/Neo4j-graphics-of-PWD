@@ -55,6 +55,7 @@ class EnhancedKnowledgeGraphPipeline:
         self.min_concept_importance = config.get('filtering.min_importance', 2)
         self.min_connections = config.get('filtering.min_connections', 1)
         self.max_chunks = config.get('llm.max_chunks', 100)  # Limit chunks for faster processing
+        self.llm_timeout = config.get('llm.timeout', 600)
         
         # Initialize components
         self.concept_extractor = None
@@ -69,9 +70,10 @@ class EnhancedKnowledgeGraphPipeline:
             logger.info("Initializing concept extractor...")
             self.concept_extractor = ConceptExtractor(
                 model=self.ollama_model,
-                ollama_host=self.ollama_host
+                ollama_host=self.ollama_host,
+                timeout=self.llm_timeout
             )
-            logger.info("Concept extractor initialized")
+            logger.info(f"Concept extractor initialized (timeout: {self.llm_timeout}s)")
         except Exception as e:
             logger.error(f"Failed to initialize concept extractor: {e}")
             logger.error("Make sure Ollama is running: ollama serve")

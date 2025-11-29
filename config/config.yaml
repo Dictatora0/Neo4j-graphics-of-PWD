@@ -113,8 +113,8 @@ llm:
 
   ollama_host: http://localhost:11434
   max_chunks: 50 # 先处理50块测试（实际耗时比预期长）
-  timeout: 300 # API 超时时间（秒）- 7B 模型实际需要 160-220 秒/块
-  num_ctx: 8192 # Qwen 支持更大上下文窗口 (最高32k)
+  timeout: 600 # API 超时时间（秒）- 增加到10分钟防止慢块超时
+  num_ctx: 4096 # 上下文窗口（降低到4096提升速度，对2000字符文本块足够）
   temperature: 0.1 # 降低温度提升稳定性和 JSON 格式准确性
 
   # Qwen 专用配置

@@ -17,17 +17,19 @@ logger = logging.getLogger(__name__)
 class ConceptExtractor:
     """Extract concepts and relationships using LLM (Ollama)"""
     
-    def __init__(self, model: str = "mistral", ollama_host: str = "http://localhost:11434"):
+    def __init__(self, model: str = "mistral", ollama_host: str = "http://localhost:11434", timeout: int = 600):
         """
         Initialize concept extractor
         
         Args:
             model: Model name (mistral, zephyr, neural-chat, etc.)
             ollama_host: Ollama server URL
+            timeout: Request timeout in seconds (default: 600s = 10min)
         """
         self.model = model
         self.ollama_host = ollama_host
         self.api_endpoint = f"{ollama_host}/api/generate"
+        self.timeout = timeout
         self._verify_ollama_connection()
     
     def _verify_ollama_connection(self):
@@ -78,8 +80,8 @@ class ConceptExtractor:
                 if json_mode and 'qwen' in self.model.lower():
                     payload["format"] = "json"  # Ollama JSON mode
                 
-                # 超时时间 180 秒 (Qwen 14B 需要更长时间)
-                response = requests.post(self.api_endpoint, json=payload, timeout=180)
+                # 使用配置的超时时间（默认600秒，支持大模型）
+                response = requests.post(self.api_endpoint, json=payload, timeout=self.timeout)
                 response.raise_for_status()
                 
                 result = response.json()

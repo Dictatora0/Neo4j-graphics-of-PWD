@@ -62,6 +62,7 @@ class EnhancedKnowledgeGraphPipelineSafe:
         self.min_concept_importance = config.get('filtering.min_importance', 2)
         self.min_connections = config.get('filtering.min_connections', 1)
         self.max_chunks = config.get('llm.max_chunks', 100)
+        self.llm_timeout = config.get('llm.timeout', 600)
         
         # Checkpoint 设置
         self.checkpoint_interval = checkpoint_interval
@@ -82,9 +83,10 @@ class EnhancedKnowledgeGraphPipelineSafe:
             logger.info("Initializing concept extractor...")
             self.concept_extractor = ConceptExtractor(
                 model=self.ollama_model,
-                ollama_host=self.ollama_host
+                ollama_host=self.ollama_host,
+                timeout=self.llm_timeout
             )
-            logger.info("Concept extractor initialized")
+            logger.info(f"Concept extractor initialized (timeout: {self.llm_timeout}s)")
         except Exception as e:
             logger.error(f"Failed to initialize concept extractor: {e}")
             logger.error("Make sure Ollama is running: ollama serve")
@@ -211,7 +213,7 @@ class EnhancedKnowledgeGraphPipelineSafe:
         
         except KeyboardInterrupt:
             logger.warning("\n" + "="*60)
-            logger.warning("⚠️  User interrupted (Ctrl+C)")
+            logger.warning("User interrupted (Ctrl+C)")
             logger.warning("="*60)
             logger.info("Checkpoint已自动保存，下次运行将从中断处继续")
             logger.info(f"进度保存位置: {self.checkpoint_manager.checkpoint_dir}")
@@ -219,7 +221,7 @@ class EnhancedKnowledgeGraphPipelineSafe:
         
         except Exception as e:
             logger.error("\n" + "="*60)
-            logger.error(f"❌ Error occurred: {e}")
+            logger.error(f"Error occurred: {e}")
             logger.error("="*60)
             logger.info("Checkpoint已自动保存，可尝试重新运行恢复")
             logger.info(f"进度保存位置: {self.checkpoint_manager.checkpoint_dir}")
@@ -269,7 +271,7 @@ class EnhancedKnowledgeGraphPipelineSafe:
                         i + 1, temp_concepts_df, temp_relationships_df
                     )
                     
-                    logger.info(f"✓ Checkpoint: {i+1}/{len(chunks)} chunks processed")
+                    logger.info(f"Checkpoint: {i+1}/{len(chunks)} chunks processed")
             
             except Exception as e:
                 logger.error(f"Failed to process chunk {chunk_id}: {e}")
