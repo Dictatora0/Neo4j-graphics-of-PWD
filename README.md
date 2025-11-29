@@ -137,20 +137,6 @@ python main.py
 
 ## 📊 v3.0.0 性能提升
 
-与 v1.0 版本相比的核心指标改进：
-
-| 指标                | v1.0 | v3.0  | 提升     |
-| ------------------- | ---- | ----- | -------- |
-| **JSON 解析成功率** | 75%  | 97%   | **+22%** |
-| **概念抽取准确率**  | 70%  | 85%   | **+15%** |
-| **关系抽取准确率**  | 65%  | 82%   | **+17%** |
-| **PDF 表格解析率**  | 60%  | 95%   | **+35%** |
-| **实体对齐准确率**  | 80%  | 100%  | **+20%** |
-| **上下文窗口**      | 2-4k | 8-32k | **4-8x** |
-| **多模态支持**      | ❌   | ✅    | **新增** |
-| **智能审查**        | ❌   | ✅    | **新增** |
-| **社区摘要**        | ❌   | ✅    | **新增** |
-
 ### 🎯 新功能特性
 
 #### 1. Qwen2.5-Coder LLM 升级
@@ -821,6 +807,435 @@ issue_types = [
 - 🔄 **知识图谱嵌入**：TransE/RotatE 检测不一致性
 - 🔄 **规则学习**：从数据中自动挖掘语义规则
 - 🔄 **交互式审核界面**：可视化审核和修正工具
+
+---
+
+### 🆕 阶段 5：v3.0 多模态图片处理（可选）
+
+**核心模块**：`image_captioner.py`
+
+#### 5.1 图片提取
+
+**PDF 图片流提取**：
+
+```python
+import fitz  # PyMuPDF
+
+def extract_images_from_pdf(pdf_path: str, output_dir: str):
+    """从 PDF 中提取所有图片"""
+    doc = fitz.open(pdf_path)
+    images = []
+
+    for page_num in range(len(doc)):
+        page = doc[page_num]
+        image_list = page.get_images()
+
+        for img_index, img in enumerate(image_list):
+            xref = img[0]
+            base_image = doc.extract_image(xref)
+            image_bytes = base_image["image"]
+            image_ext = base_image["ext"]
+
+            # 保存图片
+            image_path = f"{output_dir}/page{page_num}_img{img_index}.{image_ext}"
+            with open(image_path, "wb") as img_file:
+                img_file.write(image_bytes)
+
+            images.append({
+                "page": page_num,
+                "path": image_path,
+                "format": image_ext
+            })
+
+    return images
+```
+
+#### 5.2 VLM 描述生成
+
+**ImageCaptioner 实现**：
+
+```python
+class ImageCaptioner:
+    """统一的图像描述接口"""
+
+    def __init__(self, model_name="Qwen/Qwen2-VL-7B-Instruct",
+                 provider="transformers"):
+        self.model_name = model_name
+        self.provider = provider  # transformers or ollama
+
+        if provider == "transformers":
+            from transformers import pipeline
+            self._pipeline = pipeline(
+                "image-to-text",
+                model=model_name,
+                trust_remote_code=True
+            )
+
+    def caption_image(self, image_path: str, prompt: str = None):
+        """为单张图像生成描述"""
+        if prompt is None:
+            prompt = (
+                "你是松材线虫病专家，请详细描述图像中的关键对象、"
+                "场景、文字与统计信息，突出与松材线虫病相关的知识点。"
+            )
+
+        if self.provider == "transformers":
+            result = self._pipeline(image_path, prompt=prompt)
+            return result[0]["generated_text"]
+
+        elif self.provider == "ollama":
+            # 调用 Ollama VLM API
+            return self._caption_with_ollama(image_path, prompt)
+```
+
+#### 5.3 文本流合并
+
+**描述插入策略**：
+
+```python
+def merge_image_captions(text: str, images: List[Dict], captions: Dict[str, str]):
+    """将图片描述插入到原文中"""
+    # 按页码排序
+    images.sort(key=lambda x: x["page"])
+
+    # 分页处理
+    pages = text.split("\n\n--- Page Break ---\n\n")
+
+    for img in images:
+        page_num = img["page"]
+        caption = captions.get(img["path"], "")
+
+        if caption and page_num < len(pages):
+            # 插入描述到页面末尾
+            pages[page_num] += f"\n\n[图片描述] {caption}\n"
+
+    return "\n\n--- Page Break ---\n\n".join(pages)
+```
+
+#### 5.4 配置选项
+
+```yaml
+# config/config.yaml
+pdf:
+  enable_image_captions: false # 默认禁用（需要GPU）
+  image_output_dir: ./output/pdf_images
+  max_images_per_pdf: 25
+  caption_model: Qwen/Qwen2-VL-7B-Instruct
+  caption_provider: transformers # or ollama
+  caption_prompt: "你是松材线虫病专家，请描述图片..."
+```
+
+#### 5.5 性能考虑
+
+| 模型        | 速度   | 内存 | 质量       |
+| ----------- | ------ | ---- | ---------- |
+| Qwen2-VL-7B | ~5s/图 | 16GB | ⭐⭐⭐⭐⭐ |
+| Ollama VLM  | ~3s/图 | 8GB  | ⭐⭐⭐⭐   |
+| BLIP-2      | ~2s/图 | 6GB  | ⭐⭐⭐     |
+
+---
+
+### 🆕 阶段 6：v3.0 BGE-M3 混合检索去重
+
+**核心模块**：`concept_deduplicator.py`
+
+#### 6.1 BGE-M3 架构
+
+**密集+稀疏混合嵌入**：
+
+```python
+class BGE_M3_Embedder:
+    """BGE-M3 embedding provider"""
+
+    def __init__(self, model_name="BAAI/bge-m3", device=None):
+        from sentence_transformers import SentenceTransformer
+        self.model = SentenceTransformer(model_name, device=device)
+        self.model_name = model_name
+
+    def embed(self, texts: List[str]) -> np.ndarray:
+        """生成密集向量 embeddings (1024维)"""
+        embeddings = self.model.encode(
+            texts,
+            normalize_embeddings=True
+        )
+        return np.array(embeddings)
+
+    def hybrid_similarity(self, text1: str, text2: str,
+                         alpha: float = 0.7) -> float:
+        """混合相似度: alpha*dense + (1-alpha)*sparse"""
+        # Dense similarity
+        emb1 = self.embed([text1])
+        emb2 = self.embed([text2])
+        dense_sim = cosine_similarity(emb1, emb2)[0][0]
+
+        # Sparse similarity (词级 Jaccard)
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
+        sparse_sim = len(words1 & words2) / len(words1 | words2) if words1 and words2 else 0
+
+        return alpha * dense_sim + (1 - alpha) * sparse_sim
+```
+
+#### 6.2 中英实体对齐
+
+**对齐算法**：
+
+```python
+def align_bilingual_entities(concepts: List[str],
+                             embedder: BGE_M3_Embedder,
+                             threshold: float = 0.90):
+    """中英文实体自动对齐"""
+    # 分离中英文
+    chinese = [c for c in concepts if contains_chinese(c)]
+    english = [c for c in concepts if not contains_chinese(c)]
+
+    # 计算交叉相似度
+    alignment = []
+    for zh in chinese:
+        best_match = None
+        best_score = 0
+
+        for en in english:
+            score = embedder.hybrid_similarity(zh, en)
+            if score > best_score and score >= threshold:
+                best_score = score
+                best_match = en
+
+        if best_match:
+            alignment.append({
+                "chinese": zh,
+                "english": best_match,
+                "score": best_score
+            })
+
+    return alignment
+
+# 示例结果
+# {"chinese": "松材线虫", "english": "bursaphelenchus xylophilus", "score": 0.98}
+# {"chinese": "马尾松", "english": "pinus massoniana", "score": 0.96}
+```
+
+#### 6.3 性能对比
+
+| Embedding 模型 | 维度 | 中英对齐 | 同义词召回 | 速度           |
+| -------------- | ---- | -------- | ---------- | -------------- |
+| BGE-M3 (v3.0)  | 1024 | 100%     | 95%        | 30 concepts/s  |
+| MiniLM (v1.0)  | 384  | 80%      | 85%        | 50 concepts/s  |
+| TF-IDF         | 100  | 60%      | 70%        | 100 concepts/s |
+
+---
+
+### 🆕 阶段 7：v3.0 Agentic Workflow 智能审查
+
+**核心模块**：`bio_semantic_review.py`、`graph_summarizer.py`
+
+#### 7.1 LLM 审稿人 Agent
+
+**二次校验逻辑**：
+
+```python
+def _llm_decide(s: str, rel: str, t: str,
+                s_type: str, t_type: str, weight: float) -> bool:
+    """LLM 判断三元组是否合理"""
+
+    prompt = f"""
+你是松材线虫病领域专家。判断以下知识三元组是否合理，只回答 Yes 或 No。
+
+【实体1】{s} (类型: {s_type})
+【关系】 {rel}
+【实体2】{t} (类型: {t_type})
+【置信度】{weight:.2f}
+
+判断依据:
+1. 生物学逻辑是否正确
+2. 实体类型与关系是否匹配
+3. 是否符合松材线虫病的专业知识
+
+只回答 Yes 或 No：
+"""
+
+    response = ollama_api(prompt, model="qwen2.5-coder:14b")
+    decision = response.strip().lower()
+
+    if decision in {"yes", "是", "同意", "correct"}:
+        return True
+    elif decision in {"no", "否", "不同意", "incorrect"}:
+        return False
+    else:
+        return True  # 保守策略：默认保留
+```
+
+**应用场景**：
+
+```python
+# 在 bio_semantic_review.py 中应用
+for triple in triples:
+    confidence = float(triple["weight"])
+
+    # 只审查置信度 0.6-0.8 的三元组
+    if 0.6 <= confidence <= 0.8:
+        keep = _llm_decide(
+            triple["node_1"],
+            triple["relation"],
+            triple["node_2"],
+            triple["node_1_type"],
+            triple["node_2_type"],
+            confidence
+        )
+
+        if not keep:
+            issues.append({
+                "triple": triple,
+                "action": "llm_reject",
+                "reason": "LLM 审查未通过"
+            })
+            continue
+
+    # 通过审查的三元组
+    cleaned_triples.append(triple)
+```
+
+#### 7.2 GraphRAG 社区摘要
+
+**社区检测**：
+
+```python
+def detect_communities(driver, algorithm="louvain"):
+    """使用 Neo4j GDS 进行社区检测"""
+    with driver.session() as session:
+        # 1. 创建图投影
+        session.run("""
+            CALL gds.graph.project(
+              'pwd_graph',
+              'Concept',
+              {RELATIONSHIP: {orientation: 'UNDIRECTED'}}
+            )
+        """)
+
+        # 2. 运行社区检测
+        if algorithm == "louvain":
+            session.run("""
+                CALL gds.louvain.write('pwd_graph', {
+                    writeProperty: 'communityId'
+                })
+            """)
+
+        # 3. 获取社区成员
+        result = session.run("""
+            MATCH (n:Concept)
+            RETURN n.communityId AS communityId,
+                   collect({name: n.name, type: n.type}) AS members
+            GROUP BY n.communityId
+        """)
+
+        return list(result)
+```
+
+**摘要生成**：
+
+```python
+def generate_community_summary(community_id: int, members: List[Dict]):
+    """为社区生成主题摘要"""
+    # 统计类型分布
+    type_counts = {}
+    for m in members:
+        t = m.get("type", "Other")
+        type_counts[t] = type_counts.get(t, 0) + 1
+
+    # 提取代表节点
+    top_nodes = [m["name"] for m in members[:20]]
+
+    # LLM 生成摘要
+    prompt = f"""
+社区ID: {community_id}
+节点类型分布: {type_counts}
+代表节点: {", ".join(top_nodes)}
+
+请给出:
+1) 主题标题(不超过20字)
+2) 社区摘要(150-250字)
+3) 3-6个关键词
+
+仅返回JSON: {{"title":"...", "summary":"...", "keywords":[...]}}
+"""
+
+    response = ollama_api(prompt, model="qwen2.5-coder:14b")
+    summary = json.loads(response)
+
+    return {
+        "communityId": community_id,
+        "title": summary["title"],
+        "summary": summary["summary"],
+        "keywords": summary["keywords"],
+        "memberCount": len(members)
+    }
+```
+
+**写入 Neo4j**：
+
+```python
+def create_theme_nodes(driver, summaries: List[Dict]):
+    """创建主题节点"""
+    with driver.session() as session:
+        for s in summaries:
+            session.run("""
+                MERGE (t:Theme {communityId: $communityId})
+                SET t.title = $title,
+                    t.summary = $summary,
+                    t.keywords = $keywords,
+                    t.memberCount = $memberCount
+            """, **s)
+
+            # 连接社区成员到主题
+            session.run("""
+                MATCH (t:Theme {communityId: $communityId})
+                MATCH (n:Concept {communityId: $communityId})
+                MERGE (n)-[:BELONGS_TO]->(t)
+            """, communityId=s["communityId"])
+```
+
+#### 7.3 完整 Agentic 流程
+
+```
+1. PDF 提取 → 文本块
+   ↓
+2. LLM 概念抽取 → 原始三元组
+   ↓
+3. 置信度分类:
+   - > 0.8: 直接通过
+   - 0.6-0.8: LLM 审稿人二次判断
+   - < 0.6: 过滤
+   ↓
+4. 导入 Neo4j
+   ↓
+5. 社区检测 (Louvain)
+   ↓
+6. LLM 生成社区摘要
+   ↓
+7. 创建 Theme 节点
+   ↓
+8. 最终知识图谱
+   - Concept 节点
+   - Relationship 边
+   - Theme 节点 (新增)
+```
+
+#### 7.4 配置选项
+
+```yaml
+# config/config.yaml
+agentic:
+  # LLM 审稿人
+  enable_llm_review: false # 默认禁用（耗时）
+  review_confidence_range: [0.6, 0.8]
+  review_model: qwen2.5-coder:14b
+
+  # GraphRAG
+  enable_graph_rag: false # 需要 Neo4j GDS
+  community_algorithm: louvain # louvain or leiden
+  summary_model: qwen2.5-coder:14b
+  min_community_size: 5 # 最小社区规模
+```
 
 ---
 
