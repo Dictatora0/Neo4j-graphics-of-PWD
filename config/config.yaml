@@ -90,12 +90,31 @@ logging:
 
 # LLM 配置
 llm:
-  model: llama3.2:3b # Llama3.2
+  # 推荐模型优先级:
+  # 1. qwen2.5-coder:14b (推荐) - 强大的代码和结构化输出能力
+  # 2. qwen2.5-coder:7b - 性能与速度平衡
+  # 3. deepseek-r1:7b-distill - DeepSeek 蒸馏版
+  model: qwen2.5-coder:14b # 默认使用 Qwen2.5-Coder-14B-Instruct
+
+  # 备选模型列表 (如果默认模型不可用)
+  fallback_models:
+    - qwen2.5-coder:7b
+    - deepseek-r1:7b-distill
+    - llama3.2:3b
+
   ollama_host: http://localhost:11434
   max_chunks: 100 # 减少到100块加速（约需30-40分钟）
-  timeout: 120 # API 超时时间（秒）- 确保稳定性
-  num_ctx: 2048 # 上下文窗口
-  temperature: 0.1 # 降低温度提升稳定性
+  timeout: 180 # API 超时时间（秒）- Qwen 模型可能需要更长时间
+  num_ctx: 8192 # Qwen 支持更大上下文窗口 (最高32k)
+  temperature: 0.1 # 降低温度提升稳定性和 JSON 格式准确性
+
+  # Qwen 专用配置
+  qwen_config:
+    enable_strict_json: true # 启用严格 JSON 输出模式
+    max_tokens: 2048 # 最大生成 token 数
+    top_p: 0.8 # 核采样参数
+    top_k: 20 # Top-K 采样
+    repeat_penalty: 1.1 # 重复惩罚
 
 # 去重配置
 deduplication:
