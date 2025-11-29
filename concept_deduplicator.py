@@ -57,6 +57,62 @@ class EmbeddingProvider:
         raise NotImplementedError
 
 
+class BGE_M3_Embedder(EmbeddingProvider):
+    """
+    BGE-M3 embedding provider supporting dense+sparse hybrid retrieval
+    v2.2 feature: 升级至 BAAI/bge-m3 以支持混合检索
+    """
+    
+    def __init__(self, model_name: str = "BAAI/bge-m3", device=None):
+        try:
+            from sentence_transformers import SentenceTransformer
+            self.model = SentenceTransformer(model_name, device=device)
+            self.model_name = model_name
+            logger.info(f"Loaded BGE-M3 model: {model_name}")
+        except Exception as e:
+            logger.error(f"Failed to load BGE-M3: {e}")
+            raise
+    
+    def embed(self, texts: List[str]) -> np.ndarray:
+        """生成密集向量 embeddings"""
+        if not texts:
+            return np.array([])
+        embeddings = self.model.encode(texts, normalize_embeddings=True)
+        return np.array(embeddings)
+    
+    def embed_sparse(self, texts: List[str]) -> List[Dict]:
+        """生成稀疏向量 embeddings (BGE-M3 特有)"""
+        # 简化实现：使用 encode 获取稀疏表示
+        # 实际 BGE-M3 可以通过特定参数获取 sparse embedding
+        dense_embeddings = self.embed(texts)
+        # 这里返回密集向量，实际应用可以调用 BGE-M3 的 sparse 接口
+        return [{"dense": emb} for emb in dense_embeddings]
+    
+    def hybrid_similarity(self, text1: str, text2: str, alpha: float = 0.7) -> float:
+        """
+        混合相似度计算: alpha * dense_sim + (1-alpha) * sparse_sim
+        
+        Args:
+            text1, text2: 待比较文本
+            alpha: 密集向量权重 (0-1)
+        """
+        # Dense similarity
+        emb1 = self.embed([text1])
+        emb2 = self.embed([text2])
+        dense_sim = cosine_similarity(emb1, emb2)[0][0]
+        
+        # Sparse similarity (简化版，实际可用 BM25 等)
+        # 这里使用词级别的 Jaccard 相似度作为稀疏替代
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
+        if not words1 or not words2:
+            sparse_sim = 0.0
+        else:
+            sparse_sim = len(words1 & words2) / len(words1 | words2)
+        
+        return alpha * dense_sim + (1 - alpha) * sparse_sim
+
+
 class SentenceTransformerEmbedding(EmbeddingProvider):
     """Embedding provider using sentence-transformers"""
     

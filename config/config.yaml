@@ -129,6 +129,11 @@ llm:
 deduplication:
   similarity_threshold: 0.85
 
+  # v2.2 BGE-M3 Embedding 配置
+  use_bge_m3: true # 使用 BGE-M3 (vs 默认 MiniLM)
+  embedding_model: BAAI/bge-m3 # BGE-M3 模型
+  hybrid_alpha: 0.7 # 混合检索权重 (dense vs sparse)
+
 # 过滤配置
 filtering:
   min_importance: 1 # 降低阈值以保留更多概念
