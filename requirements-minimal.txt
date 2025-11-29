@@ -1,0 +1,28 @@
+# PWD 知识图谱系统 - 最小化依赖
+# 仅包含核心功能所需的包，避免依赖冲突
+
+# 核心依赖
+PyMuPDF==1.24.1
+pandas==2.1.4
+numpy==1.26.2
+tqdm==4.66.4
+pyyaml==6.0.2
+
+# NLP 依赖
+jieba==0.42.1
+zhconv==1.4.3  # 中文简繁转换
+
+# Ollama 支持
+requests==2.32.3
+
+# Neo4j
+neo4j==5.15.0
+
+# 嵌入模型（核心功能）
+sentence-transformers>=2.3.1
+
+# PDF 处理
+pdfplumber>=0.10.3
+
+# GraphRAG 社区检测
+networkx>=3.2.1

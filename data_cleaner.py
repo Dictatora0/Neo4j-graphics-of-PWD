@@ -585,3 +585,7 @@ if __name__ == "__main__":
     # input_dir = "./output/extracted_texts"
     # output_dir = "./output/cleaned_texts"
     # cleaner.clean_directory(input_dir, output_dir)
+
+
+# 向后兼容别名
+DataCleaner = MarkdownDataCleaner

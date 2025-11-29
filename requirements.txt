@@ -10,6 +10,7 @@ spacy==3.7.4
 jieba==0.42.1
 scikit-learn==1.7.2
 yake==0.4.8
+zhconv==1.4.3  # 中文简繁转换
 
 # KeyBERT（可选）
 keybert==0.8.5
@@ -33,8 +34,8 @@ Pillow==10.4.0
 # paddleocr==2.7.0
 
 # 视觉模型（v2.1 Multimodal 支持）
-transformers==4.35.2
-torch==2.1.1
+transformers>=4.35.2
+torch>=2.1.1  # 放宽版本要求以兼容 marker-pdf
 sentencepiece==0.1.99  # Qwen2-VL 依赖
 
 # LLM 支持（可选）
@@ -46,9 +47,30 @@ requests==2.32.3
 # 嵌入模型（用于概念去重）
 sentence-transformers==2.3.1
 
-# PDF处理备选（可选）
-# pdfplumber==0.10.3
-
-# 智能文档解析
-marker-pdf==1.10.1  # 用于Layout-Aware解析
+# 智能文档解析（可选，需要 GPU 和 torch>=2.7.0）
+# marker-pdf>=1.10.1  # 用于Layout-Aware解析（暂时禁用以避免依赖冲突）
 python-multipart>=0.0.6  # 文件处理
+pdfplumber>=0.10.3  # PDF 表格提取（轻量级替代方案）
+
+# ===== v2.2 升级: BGE-M3 嵌入模型 =====
+# BGE-M3 支持混合检索 (dense + sparse)
+# 已包含在 sentence-transformers 中,确保版本 >= 2.3.0
+
+# ===== v2.3 升级: GraphRAG 社区检测 =====
+networkx==3.2.1  # 图分析和社区检测 (Louvain, Label Propagation)
+python-igraph==0.11.3  # Leiden 算法 (可选,性能更优)
+# 注意: igraph 需要 C 编译器,如果安装失败可跳过
+
+# ===== v2.4 升级: 多模态 VLM 支持 =====
+# 视觉-语言模型用于图片知识抽取
+# 方案1: Ollama VLM (推荐,无需额外依赖)
+#   - 模型: llava, qwen2-vl
+#   - 命令: ollama pull llava
+
+# 方案2: Transformers 本地 VLM (需要 GPU)
+# transformers>=4.35.2  # 已在上方定义
+# torch>=2.1.1  # 已在上方定义
+# pillow>=10.4.0  # 已在上方定义 (用于图片处理)
+
+# ===== v2.5 升级: Agentic Workflow =====
+# 无需额外依赖,使用 Ollama API

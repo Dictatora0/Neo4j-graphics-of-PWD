@@ -16,10 +16,11 @@ from concept_deduplicator import (
     ConceptDeduplicator, 
     RelationshipDeduplicator,
     ConceptImportanceFilter,
-    SentenceTransformerEmbedding
+    SentenceTransformerEmbedding,
+    BGE_M3_Embedder
 )
-from data_cleaner import DataCleaner
-from neo4j_generator import Neo4jGenerator
+# from data_cleaner import DataCleaner  # 未使用,已注释
+# from neo4j_generator import Neo4jGenerator  # 未使用,已注释
 from config_loader import load_config
 from logger_config import get_logger
 
@@ -78,7 +79,17 @@ class EnhancedKnowledgeGraphPipeline:
         
         try:
             logger.info("Initializing concept deduplicator...")
-            embedding_provider = SentenceTransformerEmbedding()
+            # 根据配置选择嵌入模型 (BGE-M3 vs MiniLM)
+            use_bge_m3 = self.config.get('deduplication.use_bge_m3', True)
+            
+            if use_bge_m3:
+                logger.info("Using BGE-M3 for hybrid dense+sparse retrieval")
+                embedding_model = self.config.get('deduplication.embedding_model', 'BAAI/bge-m3')
+                embedding_provider = BGE_M3_Embedder(model_name=embedding_model)
+            else:
+                logger.info("Using default SentenceTransformer embedding")
+                embedding_provider = SentenceTransformerEmbedding()
+            
             self.deduplicator = ConceptDeduplicator(
                 embedding_provider=embedding_provider,
                 similarity_threshold=self.similarity_threshold
