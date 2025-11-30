@@ -18,7 +18,7 @@
 
 ### 技术难点
 
-1. **长时间运行的稳定性** - 预计 7-8 小时处理时间
+1. **长时间运行的稳定性** - 预计需要数小时处理时间
 2. **LLM 推理性能** - 平衡速度与质量
 3. **数据一致性** - 增量保存与断点续传
 4. **用户体验** - 可观测性与易用性
@@ -43,7 +43,7 @@ save_to_file(all_results)  # 最后统一保存
 
 **问题暴露**：
 
-- 处理 500+ 文本块需要 7-8 小时
+- 处理大量文本块需要数小时
 - 中途任何错误（断电、网络、程序崩溃）导致**全部数据丢失**
 - 用户无法中途停止（Ctrl+C 会丢失所有进度）
 
@@ -57,7 +57,7 @@ save_to_file(all_results)  # 最后统一保存
 
 **影响评估**：
 
-- 时间成本：每次失败需重新运行 7-8 小时
+- 时间成本：每次失败需重新运行数小时
 - 用户体验：无法容忍，项目不可用
 - 资源浪费：计算资源和时间的双重浪费
 
@@ -168,11 +168,11 @@ class SafePipeline:
 
 ### 效果评估
 
-| 指标         | 改进前   | 改进后    | 提升     |
-| ------------ | -------- | --------- | -------- |
-| 最大损失时间 | 7-8 小时 | < 10 分钟 | 40x+     |
-| 可中断性     | 否       | 是        | 支持     |
-| 用户信心     | 低       | 高        | 显著提升 |
+| 指标         | 改进前 | 改进后    | 提升     |
+| ------------ | ------ | --------- | -------- |
+| 最大损失时间 | 数小时 | < 10 分钟 | 显著提升 |
+| 可中断性     | 否     | 是        | 支持     |
+| 用户信心     | 低     | 高        | 显著提升 |
 
 ### 技术亮点
 
@@ -196,7 +196,7 @@ llm:
   max_chunks: 50
 ```
 
-**性能表现**：
+**性能表现**（基于早期测试数据）：
 
 ```
 实测单块耗时: 180-240秒
@@ -205,6 +205,8 @@ llm:
 ```
 
 **不可接受**：用户无法等待一天完成。
+
+> 注：以上数据基于项目早期使用 32B 模型的测试，详见 README.md 中的优化决策
 
 ### 问题分析
 
@@ -216,6 +218,8 @@ llm:
 | qwen2.5-coder:14b | 14B    | 80-120s  | 中高 | 11-16 小时     |
 | qwen2.5-coder:7b  | 7B     | 30-50s   | 中   | 4-7 小时       |
 
+> 注：以上数据基于项目早期性能测试，详见 IMPLEMENTATION_DETAILS.md 中的性能分析章节
+
 #### 2. 超时策略问题
 
 **根本矛盾**：
@@ -223,13 +227,15 @@ llm:
 - 设置太短 → 正常请求被杀死
 - 设置太长 → 卡死情况等待时间长
 
-**实测数据**：
+**实测数据**（基于项目早期测试）：
 
 ```
 32B 模型实际需要: 180-240秒
 配置 timeout=120: 导致 40% 超时
 调整 timeout=300: 解决超时，但速度仍慢
 ```
+
+> 注：以上数据记录在项目早期测试阶段，具体测试环境见 IMPLEMENTATION_DETAILS.md
 
 #### 3. Ollama 本地推理的限制
 
@@ -259,11 +265,13 @@ llm:
   timeout: 600 # 增加超时上限，避免慢块失败
 ```
 
-**效果**：
+**效果**（基于 README.md 中的优化决策）：
 
 - 单块耗时：180s → **40s** (4.5x 提升)
 - 总时间：25 小时 → **5.5 小时** (可接受)
 - 超时率：40% → **<5%**
+
+> 注：具体性能数据详见 README.md 的"LLM 性能优化"章节
 
 #### 方案 2: 自适应超时
 
@@ -483,7 +491,7 @@ def _extract_with_checkpoints(self, chunks):
 
 - 单点失败 → 记录并继续
 - 错误率 5% → 仅丢失 5% 数据
-- **可用性从 0% 提升到 95%**
+- **可用性显著提升，系统稳定可靠**
 
 ---
 
@@ -496,7 +504,7 @@ def _extract_with_checkpoints(self, chunks):
 ```bash
 $ python main.py
 Processing...
-(无输出，运行 7 小时)
+(无输出，运行数小时)
 ```
 
 **用户困惑**：
@@ -906,6 +914,8 @@ PDF → 文本提取 → 分块 → LLM 抽取(7B) → 去重 → 保存 → Neo
 | 可中断恢复 | 支持  | 支持 | 达标     |
 | 用户满意度 | 高    | 高   | 达标     |
 
+> 注：具体性能数据基于 README.md 中的优化结果
+
 ### 未来优化方向
 
 1. **并行处理**
@@ -952,7 +962,7 @@ PDF → 文本提取 → 分块 → LLM 抽取(7B) → 去重 → 保存 → Neo
 
 1. **文档驱动开发**
 
-   - START_HERE.md 降低上手成本
+   - README.md 整合关键信息，降低上手成本
    - FIX_SUMMARY.md 记录问题历程
 
 2. **渐进式交付**
@@ -964,3 +974,279 @@ PDF → 文本提取 → 分块 → LLM 抽取(7B) → 去重 → 保存 → Neo
    - 不是程序员的用户也能轻松使用
    - 一个命令完成所有操作
 
+---
+
+## 附录：代码位置与日志速查
+
+### A. 核心挑战与源码映射表
+
+| 挑战编号 | 技术挑战             | 核心文件                    | 关键类/函数                                                    | 日志关键词                                      |
+| -------- | -------------------- | --------------------------- | -------------------------------------------------------------- | ----------------------------------------------- | --- | ---------------------------------- |
+| 挑战一   | 长时间运行的数据安全 | `checkpoint_manager.py`     | `CheckpointManager.save_chunk_results`                         | `Checkpoint saved at chunk`, `processed_chunks` |
+|          |                      | `enhanced_pipeline_safe.py` | `EnhancedKnowledgeGraphPipelineSafe._extract_with_checkpoints` | `RESUMING from previous checkpoint`             |
+| 挑战二   | LLM 推理性能优化     | `concept_extractor.py`      | `ConceptExtractor._call_ollama`                                | `Ollama timeout`, `Processing chunks`, `s/it`   |
+|          |                      | `config/config.yaml`        | `llm.model`, `llm.timeout`                                     | `Model: qwen2.5-coder:7b`, `timeout: 600s`      |
+| 挑战三   | 错误处理与容错设计   | `enhanced_pipeline_safe.py` | `_extract_with_checkpoints` (try-except-continue)              | `Failed to process chunk`, `LLM returned None`  |
+|          |                      | `checkpoint_manager.py`     | `save_chunk_results` (None 检查与标准化)                       | `Saved results for chunk: X with 0 concepts`    |
+|          |                      | `concept_extractor.py`      | `extract_concepts_and_relationships` (降级返回空列表)          | `JSON 解析失败`, `返回 empty results`           |
+| 挑战四   | 用户体验与可观测性   | `run_pipeline.py`           | `main()`, `check_environment()`                                | `环境检查`, `预计总耗时`, `按 Enter 开始运行`   |
+|          |                      | `status.sh`, `monitor.sh`   | shell 脚本读取`.progress.json`                                 | `已处理块数: X`, `剩余时间: 约 Y 分钟`          |
+|          |                      | `enhanced_pipeline_safe.py` | `tqdm(chunks, desc="Extracting concepts")`                     | `7%                                             | ██▏ | 36/507 [30:30<7:28:57, 57.19s/it]` |
+| 挑战五   | Python 环境管理      | `start.sh`                  | shell 脚本指定完整 Python 路径                                 | `Python 3.10.13 未找到`, `使用完整路径执行`     |
+
+### B. 典型日志模式与对应代码
+
+#### 1. 正常启动与进度日志
+
+**日志片段**：
+
+```
+2025-11-29 19:30:00 - SafePipeline - INFO - Starting Safe Enhanced Pipeline with Checkpoint Support
+2025-11-29 19:30:01 - SafePipeline - INFO - [Step 3/6] Extracting concepts with checkpoint support...
+2025-11-29 19:32:18 - CheckpointManager - INFO - Saved results for chunk: paper1.pdf_0
+2025-11-29 20:30:10 - SafePipeline - INFO - Checkpoint: 40/507 chunks processed
+```
+
+**对应代码**：
+
+- `enhanced_pipeline_safe.py` - `EnhancedKnowledgeGraphPipelineSafe.run()` 方法：
+  ```python
+  logger.info("Starting Safe Enhanced Pipeline with Checkpoint Support")
+  ```
+- `enhanced_pipeline_safe.py` - `run()` 方法中的 Step 3：
+  ```python
+  logger.info("\n[Step 3/6] Extracting concepts with checkpoint support...")
+  ```
+- `checkpoint_manager.py` - `CheckpointManager.save_chunk_results()` 方法：
+  ```python
+  logger.debug(f"Saved results for chunk: {chunk_id}")
+  ```
+- `enhanced_pipeline_safe.py` - `_extract_with_checkpoints()` 方法：
+  ```python
+  logger.info(f"Checkpoint: {i+1}/{len(chunks)} chunks processed")
+  ```
+
+#### 2. 断点续传恢复日志
+
+**日志片段**：
+
+```
+============================================================
+RESUMING from previous checkpoint:
+  - Processed chunks: 45
+  - Total concepts: 352
+  - Total relationships: 280
+============================================================
+Skipping 45 already processed chunks
+Remaining chunks to process: 462
+```
+
+**对应代码**：
+
+- `enhanced_pipeline_safe.py` - `run()` 方法中的断点续传逻辑：
+  ```python
+  if summary['processed_chunks'] > 0:
+      logger.info("RESUMING from previous checkpoint:")
+      logger.info(f"  - Processed chunks: {summary['processed_chunks']}")
+      # ... 显示概念与关系统计
+  ```
+- `enhanced_pipeline_safe.py` - `run()` 方法中的块过滤逻辑：
+  ```python
+  if skipped > 0:
+      logger.info(f"Skipping {skipped} already processed chunks")
+      logger.info(f"Remaining chunks to process: {len(chunks)}")
+  ```
+
+#### 3. 异常处理与容错日志
+
+**日志片段（LLM 超时）**：
+
+```
+WARNING - Ollama timeout (attempt 1/3), retrying...
+WARNING - Ollama timeout (attempt 2/3), retrying...
+ERROR - Ollama API timeout after 3 attempts
+WARNING - Chunk paper5.pdf_23: LLM returned None, using empty results
+INFO - Saved results for chunk: paper5.pdf_23 with 0 concepts, 0 relationships
+```
+
+**对应代码**：
+
+- `concept_extractor.py` - `ConceptExtractor._call_ollama()` 方法（重试逻辑）：
+  ```python
+  except requests.exceptions.Timeout:
+      if attempt < max_retries - 1:
+          logger.warning(f"Ollama timeout (attempt {attempt + 1}/{max_retries}), retrying...")
+          continue
+      else:
+          logger.error(f"Ollama API timeout after {max_retries} attempts")
+          return None
+  ```
+- `concept_extractor.py` - `extract_concepts()` 方法（降级处理）：
+  ```python
+  if not response:
+      return None  # 降级返回，不中断流程
+  ```
+- `enhanced_pipeline_safe.py` - `_extract_with_checkpoints()` 方法（主循环容错）：
+  ```python
+  except Exception as e:
+      logger.error(f"Failed to process chunk {chunk_id}: {e}")
+      continue  # 跳过失败块，继续处理
+  ```
+
+#### 4. 用户中断（Ctrl+C）日志
+
+**日志片段**：
+
+```
+WARNING - ============================================================
+WARNING - User interrupted (Ctrl+C)
+WARNING - ============================================================
+INFO - Checkpoint已自动保存，下次运行将从中断处继续
+INFO - 进度保存位置: output/checkpoints
+```
+
+**对应代码**：
+
+- `enhanced_pipeline_safe.py` - `run()` 方法中的 KeyboardInterrupt 异常处理：
+  ```python
+  except KeyboardInterrupt:
+      logger.warning("User interrupted (Ctrl+C)")
+      logger.info("Checkpoint已自动保存，下次运行将从中断处继续")
+      logger.info(f"进度保存位置: {self.checkpoint_manager.checkpoint_dir}")
+      raise  # 重新抛出，确保程序正常退出
+  ```
+
+### C. 关键配置文件与参数说明
+
+#### config/config.yaml 核心参数
+
+```yaml
+llm:
+  model: qwen2.5-coder:7b # 模型选择：7b(快)、14b(平衡)、32b(慢但准)
+  ollama_host: http://localhost:11434
+  timeout: 600 # API超时（秒），大模型需更长
+  temperature: 0.1 # 降低随机性，提高JSON稳定性
+  num_ctx: 8192 # 上下文窗口大小
+
+deduplication:
+  use_bge_m3: true # 启用BGE-M3混合检索
+  similarity_threshold: 0.85 # 概念聚类阈值
+  hybrid_alpha: 0.7 # dense与sparse权重（0.7表示70% dense）
+
+filtering:
+  min_importance: 2 # 最低重要性得分（1-5）
+  min_connections: 1 # 最低连接数（度数）
+
+system:
+  enable_cache: true # PDF提取缓存
+  enable_parallel: false # 并行处理（当前禁用）
+```
+
+**调优建议**：
+
+- 速度优先：`model: qwen2.5-coder:7b`, `timeout: 300`
+- 质量优先：`model: qwen2.5-coder:14b`, `timeout: 600`, `temperature: 0.05`
+- 中文优化：`use_bge_m3: true`, `hybrid_alpha: 0.7`
+
+### D. 输出文件结构与格式
+
+#### 1. 进度文件（.progress.json）
+
+**路径**：`output/checkpoints/.progress.json`
+
+**格式**：
+
+```json
+{
+  "processed_chunks": ["paper1.pdf_0", "paper1.pdf_1", "paper2.pdf_0"],
+  "total_concepts": 352,
+  "total_relationships": 280,
+  "started_at": "2025-11-29T19:30:00",
+  "last_update": "2025-11-29T20:30:10"
+}
+```
+
+**用途**：
+
+- 断点续传：读取`processed_chunks`判断哪些块已处理
+- 状态监控：`status.sh`/`monitor.sh`读取展示进度
+
+#### 2. 最终概念文件（concepts.csv）
+
+**路径**：`output/concepts.csv`
+
+**格式示例**：
+
+```csv
+entity,importance,category,chunk_id,type
+松材线虫,5,pathogen,paper1.pdf_0,concept
+马尾松,4,host,paper1.pdf_2,concept
+松褐天牛,5,vector,paper1.pdf_1,concept
+```
+
+**字段说明**：
+
+- `entity`：概念名称（已去重对齐）
+- `importance`：1-5 分，LLM 评估的重要性
+- `category`：概念类别（pathogen, host, vector 等）
+- `chunk_id`：来源文本块
+- `type`：固定为`concept`
+
+#### 3. 最终关系文件（relationships.csv）
+
+**路径**：`output/relationships.csv`
+
+**格式示例**：
+
+```csv
+node_1,node_2,edge,weight,chunk_id,source
+松材线虫,马尾松,感染,0.8,paper1.pdf_0,llm
+松褐天牛,松材线虫,传播,0.8,paper1.pdf_1,llm
+松材线虫,马尾松,co-occurs in,0.5,paper1.pdf_0,proximity
+```
+
+**字段说明**：
+
+- `node_1`, `node_2`：关系两端实体（已对齐）
+- `edge`：关系类型（感染、传播、co-occurs in 等）
+- `weight`：关系权重（LLM 抽取 0.8，近邻关系 0.5）
+- `source`：来源（llm 或 proximity）
+
+### E. 故障排查决策树
+
+```
+程序无法启动？
+├─ 提示"Python未找到"
+│  └─ 检查start.sh中的PYTHON_BIN路径
+├─ 提示"Ollama连接失败"
+│  └─ 运行：ollama serve
+└─ 提示"模型未找到"
+   └─ 运行：ollama pull qwen2.5-coder:7b
+
+程序运行缓慢？
+├─ 单块耗时>120秒
+│  └─ 配置：llm.model改为7b
+├─ 频繁超时
+│  └─ 配置：llm.timeout增加到600
+└─ JSON解析失败率>10%
+   └─ 配置：llm.temperature降至0.05
+
+结果质量不佳？
+├─ 概念重复多
+│  └─ 配置：deduplication.similarity_threshold降至0.80
+├─ 关系稀疏
+│  └─ 检查：是否启用proximity关系
+└─ 噪声概念多
+   └─ 配置：filtering.min_importance提高到3
+
+中断后数据丢失？
+└─ 检查：是否使用enhanced_pipeline_safe.py
+   └─ 是：查看output/checkpoints/.progress.json
+   └─ 否：改用安全版本
+```
+
+---
+
+**附录更新日期**：2025-11-29  
+**对应项目版本**：v2.5  
+**维护者**：知识工程第二组
