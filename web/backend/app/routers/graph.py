@@ -16,6 +16,7 @@ async def get_graph(
     limit: int = Query(100, ge=1, le=1000, description="节点数量限制"),
     node_type: Optional[str] = Query(None, description="节点类型筛选"),
     relation_type: Optional[str] = Query(None, description="关系类型筛选"),
+    exclude_other: bool = Query(False, description="排除Other类型节点"),
     neo4j = Depends(get_neo4j)
 ):
     """
@@ -29,7 +30,8 @@ async def get_graph(
     return service.get_graph_data(
         limit=limit,
         node_type=node_type,
-        relation_type=relation_type
+        relation_type=relation_type,
+        exclude_other=exclude_other
     )
 
 

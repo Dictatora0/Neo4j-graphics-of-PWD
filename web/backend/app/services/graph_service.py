@@ -17,35 +17,48 @@ class GraphService:
         self,
         limit: int = 100,
         node_type: Optional[str] = None,
-        relation_type: Optional[str] = None
+        relation_type: Optional[str] = None,
+        exclude_other: bool = False
     ) -> GraphData:
         """获取图谱数据"""
         
-        # 构建节点查询
-        node_filter = f"WHERE n.category = '{node_type}'" if node_type else ""
+        # 构建节点查询 - 使用labels()获取节点类型
+        # 优先返回非Other类型和高度数节点
+        filters = []
+        if node_type:
+            filters.append(f"'{node_type}' IN labels(n)")
+        if exclude_other:
+            filters.append("n.type <> 'Other'")
+        
+        node_filter = "WHERE " + " AND ".join(filters) if filters else ""
         node_query = f"""
         MATCH (n)
         {node_filter}
-        RETURN id(n) as id, n.name as name, n.category as category,
-               n.importance as importance, n.total_degree as total_degree
+        RETURN elementId(n) as id, n.name as name, 
+               COALESCE(n.type, labels(n)[0], 'Other') as category,
+               n.importance as importance, 
+               COALESCE(n.total_degree, 0) as total_degree
+        ORDER BY 
+            CASE WHEN n.type = 'Other' THEN 1 ELSE 0 END,
+            COALESCE(n.total_degree, 0) DESC
         LIMIT {limit}
         """
+        
+        # 执行节点查询
+        nodes_data = self.neo4j.execute_query(node_query)
+        
+        # 提取节点ID
+        node_ids = [node['id'] for node in nodes_data]
         
         # 构建关系查询
         relation_filter = f"WHERE type(r) = '{relation_type}'" if relation_type else ""
         edge_query = f"""
         MATCH (n)-[r]->(m)
         {relation_filter}
-        WHERE id(n) IN $node_ids AND id(m) IN $node_ids
-        RETURN id(r) as id, id(n) as source, id(m) as target,
+        WHERE elementId(n) IN $node_ids AND elementId(m) IN $node_ids
+        RETURN elementId(r) as id, elementId(n) as source, elementId(m) as target,
                type(r) as relationship, r.weight as weight
         """
-        
-        # 执行查询
-        nodes_data = self.neo4j.execute_query(node_query)
-        
-        # 提取节点ID
-        node_ids = [node['id'] for node in nodes_data]
         
         # 查询关系
         edges_data = self.neo4j.execute_query(edge_query, {'node_ids': node_ids})
