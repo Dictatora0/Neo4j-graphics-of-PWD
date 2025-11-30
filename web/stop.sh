@@ -89,14 +89,10 @@ main() {
     echo "╚════════════════════════════════════════════════════════╝"
     echo -e "${NC}\n"
     
-    # 询问是否保留日志
+    # 自动保留日志文件
     local keep_logs=true
-    if [ "$1" != "--keep-logs" ]; then
-        read -p "$(echo -e ${YELLOW}是否保留日志文件? [Y/n]: ${NC})" -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            keep_logs=false
-        fi
+    if [ "$1" = "--clean-logs" ]; then
+        keep_logs=false
     fi
     
     # 停止前端服务
