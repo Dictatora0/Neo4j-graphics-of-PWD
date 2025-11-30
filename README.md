@@ -54,7 +54,7 @@
 
 本项目通过**自动化知识图谱构建**技术，实现：
 
-- **知识整合**: 从 28 篇文献中自动抽取和整合领域知识
+- **知识整合**: 从多篇文献中自动抽取和整合领域知识
 - **关系发现**: 揭示病原、寄主、媒介、防治之间的复杂关系
 - **智能检索**: 支持语义检索和知识推理
 - **决策支持**: 为防治策略制定提供知识支撑
@@ -68,7 +68,7 @@
 从松材线虫病相关文献中**自动构建**结构化知识图谱，包括：
 
 1. **实体识别**: 自动识别 9 大类领域实体（病原、寄主、媒介、症状等）
-2. **关系抽取**: 提取 6 类核心关系（感染、传播、防治等）
+2. **关系抽取**: 提取 17 类核心关系（感染、传播、防治、影响等）
 3. **知识去重**: 基于语义相似度的智能去重
 4. **图谱构建**: 生成可查询、可视化的 Neo4j 知识图谱
 
@@ -163,7 +163,16 @@ Layer 3 (主循环层):  捕获异常 → continue
 **创新**:
 
 ```python
-混合相似度 = α × dense_sim + (1-α) × sparse_sim
+# 混合相似度计算: alpha * dense_sim + (1-alpha) * sparse_sim
+def hybrid_similarity(text1, text2, alpha=0.7):
+    # Dense similarity (embedding-based)
+    dense_sim = cosine_similarity(embed([text1]), embed([text2]))
+
+    # Sparse similarity (word-level Jaccard)
+    words1, words2 = set(text1.lower().split()), set(text2.lower().split())
+    sparse_sim = len(words1 & words2) / len(words1 | words2)
+
+    return alpha * dense_sim + (1-alpha) * sparse_sim
 
 # 中英文实体对齐
 "松材线虫" ↔ "bursaphelenchus xylophilus" → 高相似度匹配

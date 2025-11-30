@@ -120,10 +120,11 @@ PDF文献(./文献/*.pdf)
      - 跳过损坏或加密文件
   2. **三级解析策略**（自适应选择）：
      - **Level 1**: Marker（AI 驱动，需 GPU）
-       ```python
-       from marker.convert import convert_single_pdf
-       text, images, tables = convert_single_pdf(pdf_path)
-       ```
+     ```python
+     import marker
+     markdown, metadata = marker.convert(pdf_path)
+     text = self._extract_text_from_markdown(markdown)
+     ```
      - **Level 2**: pdfplumber（表格优化）
        ```python
        import pdfplumber
@@ -590,7 +591,7 @@ PDF文献(./文献/*.pdf)
 
 **步骤**：
 
-1. 准备数据：将 28 篇 PDF 放入 `./文献/` 目录
+1. 准备数据：将 PDF 文献放入 `./文献/` 目录
 2. 检查配置：编辑 `config/config.yaml`
    ```yaml
    llm:
