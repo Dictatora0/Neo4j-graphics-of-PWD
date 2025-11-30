@@ -26,8 +26,14 @@ export const graphAPI = {
     limit?: number;
     node_type?: string;
     relation_type?: string;
+    exclude_other?: boolean;
   }): Promise<GraphData> {
-    const response = await api.get<GraphData>("/api/graph/", { params });
+    const response = await api.get<GraphData>("/api/graph/", {
+      params: {
+        exclude_other: true, // 默认排除Other类型节点
+        ...params,
+      },
+    });
     return response.data;
   },
 

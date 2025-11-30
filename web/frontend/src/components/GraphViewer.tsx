@@ -12,17 +12,17 @@ interface GraphViewerProps {
   className?: string;
 }
 
-// 节点类别颜色映射
+// 节点类别颜色映射 - 匹配Neo4j标签和数据库颜色
 const NODE_COLORS: Record<string, string> = {
-  pathogen: "#ef4444", // 红色 - 病原
-  host: "#10b981", // 绿色 - 寄主
-  vector: "#f59e0b", // 橙色 - 媒介
-  symptom: "#8b5cf6", // 紫色 - 症状
-  treatment: "#3b82f6", // 蓝色 - 防治
-  environment: "#06b6d4", // 青色 - 环境
-  location: "#ec4899", // 粉色 - 地点
-  mechanism: "#6366f1", // 靛蓝 - 机制
-  compound: "#84cc16", // 黄绿 - 化合物
+  Pathogen: "#FF6B6B", // 红色 - 病原
+  Disease: "#FF8C42", // 橙色 - 疾病
+  Vector: "#4ECDC4", // 青色 - 媒介
+  Host: "#95E1D3", // 浅绿色 - 寄主
+  Control: "#A8E6CF", // 绿色 - 防治
+  Technology: "#95B8D1", // 蓝灰色 - 技术
+  Location: "#FFE66D", // 黄色 - 地点
+  Environment: "#87CEEB", // 天蓝色 - 环境
+  Other: "#C7CEEA", // 淡紫色 - 其他
   default: "#6b7280", // 灰色 - 默认
 };
 

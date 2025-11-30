@@ -21,6 +21,7 @@ const queryClient = new QueryClient({
 function KnowledgeGraphApp() {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [limit, setLimit] = useState(50);
+  const [showAll, setShowAll] = useState(false);
 
   // 获取图谱数据
   const {
@@ -28,8 +29,8 @@ function KnowledgeGraphApp() {
     isLoading: graphLoading,
     error: graphError,
   } = useQuery({
-    queryKey: ["graph", limit],
-    queryFn: () => graphAPI.getGraph({ limit }),
+    queryKey: ["graph", limit, showAll],
+    queryFn: () => graphAPI.getGraph({ limit, exclude_other: !showAll }),
   });
 
   // 获取统计数据
@@ -97,15 +98,24 @@ function KnowledgeGraphApp() {
                   </div>
                 </div>
               )}
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showAll}
+                  onChange={(e) => setShowAll(e.target.checked)}
+                  className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                />
+                <span>显示所有节点</span>
+              </label>
               <select
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                <option value={20}>显示 20 个节点</option>
-                <option value={50}>显示 50 个节点</option>
-                <option value={100}>显示 100 个节点</option>
-                <option value={200}>显示 200 个节点</option>
+                <option value={20}>20 个节点</option>
+                <option value={50}>50 个节点</option>
+                <option value={100}>100 个节点</option>
+                <option value={200}>200 个节点</option>
               </select>
             </div>
           </div>

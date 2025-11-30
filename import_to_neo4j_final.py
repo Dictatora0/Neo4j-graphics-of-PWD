@@ -122,6 +122,7 @@ with driver.session() as session:
         'Location': {'color': '#FFE66D', 'size': 'small', 'icon': 'LOCATION'},
         'Technology': {'color': '#95B8D1', 'size': 'small', 'icon': 'TECH'},
         'Control': {'color': '#A8E6CF', 'size': 'medium', 'icon': 'CONTROL'},
+        'Environment': {'color': '#87CEEB', 'size': 'medium', 'icon': 'ENVIRONMENT'},
         'Other': {'color': '#C7CEEA', 'size': 'small', 'icon': 'OTHER'},
     }
     
@@ -137,25 +138,41 @@ with driver.session() as session:
             color = style['color']
             icon = style['icon']
         else:
-            # 根据节点名称推断类型
-            if any(x in node.lower() for x in ['pine', 'pinus', 'forest', 'tree']):
-                node_type = 'Host'
-                style = default_styles['Host']
-            elif any(x in node.lower() for x in ['monochamus', 'arhopalus', 'beetle']):
-                node_type = 'Vector'
-                style = default_styles['Vector']
-            elif any(x in node.lower() for x in ['disease', 'wilt']):
+            # 根据节点名称推断类型（支持中英文）
+            node_lower = node.lower()
+            
+            # 疾病（Disease）- 优先检查，因为"松材线虫病"应该是Disease不是Pathogen
+            if any(x in node for x in ['病', 'disease', 'wilt', '萎蔫', '枯死', '疫情']):
                 node_type = 'Disease'
                 style = default_styles['Disease']
-            elif any(x in node.lower() for x in ['control', 'trap', 'biological']):
+            # 病原体（Pathogen）- 纯"线虫"才是病原体
+            elif any(x in node for x in ['线虫', 'nematode', 'xylophilus', 'bursaphelenchus']) and '病' not in node:
+                node_type = 'Pathogen'
+                style = default_styles['Pathogen']
+            # 媒介昆虫（Vector）
+            elif any(x in node for x in ['天牛', 'monochamus', 'arhopalus', 'beetle', '墨天牛']):
+                node_type = 'Vector'
+                style = default_styles['Vector']
+            # 寄主植物（Host）- 排除线虫和天牛
+            elif any(x in node for x in ['松', 'pine', 'pinus', 'forest', 'tree', '林']) and '线虫' not in node and '天牛' not in node:
+                node_type = 'Host'
+                style = default_styles['Host']
+            # 防治方法（Control）
+            elif any(x in node for x in ['防治', '防控', 'control', 'trap', 'biological', '诱捕', '药剂']):
                 node_type = 'Control'
                 style = default_styles['Control']
-            elif any(x in node.lower() for x in ['sentinel', 'spectral', 'hyperspectral', 'algorithm']):
+            # 技术方法（Technology）
+            elif any(x in node_lower for x in ['sentinel', 'spectral', 'hyperspectral', 'algorithm', '遥感', '光谱', '监测']):
                 node_type = 'Technology'
                 style = default_styles['Technology']
-            elif any(x in node.lower() for x in ['area', 'region', 'province', 'mountain', 'peak']):
+            # 地点（Location）- 排除已分类的节点
+            elif any(x in node for x in ['市', '省', '县', '区', '林场', 'area', 'region', 'province', 'mountain', 'peak']) and '病' not in node:
                 node_type = 'Location'
                 style = default_styles['Location']
+            # 环境因子（Environment）
+            elif any(x in node for x in ['气候', '温度', '湿度', '降雨', '土壤', '环境', 'climate', 'temperature', 'humidity']):
+                node_type = 'Environment'
+                style = default_styles.get('Environment', default_styles['Other'])
             else:
                 node_type = 'Other'
                 style = default_styles['Other']
