@@ -81,14 +81,18 @@
 
 ### 技术栈
 
-| 类别          | 技术选型       | 版本/规格 | 用途               |
-| ------------- | -------------- | --------- | ------------------ |
-| **LLM**       | Qwen2.5-Coder  | 7B        | 概念和关系抽取     |
-| **Embedding** | BGE-M3         | 2.27GB    | 语义去重、实体对齐 |
-| **图数据库**  | Neo4j          | 5.x       | 知识图谱存储和查询 |
-| **LLM 服务**  | Ollama         | Latest    | 本地模型推理       |
-| **PDF 解析**  | PyMuPDF        | Latest    | 文本提取           |
-| **进度追踪**  | tqdm + logging | -         | 实时进度和日志     |
+| 类别           | 技术选型       | 版本/规格 | 用途               |
+| -------------- | -------------- | --------- | ------------------ |
+| **LLM**        | Qwen2.5-Coder  | 7B        | 概念和关系抽取     |
+| **Embedding**  | BGE-M3         | 2.27GB    | 语义去重、实体对齐 |
+| **图数据库**   | Neo4j          | 5.x       | 知识图谱存储和查询 |
+| **LLM 服务**   | Ollama         | Latest    | 本地模型推理       |
+| **PDF 解析**   | PyMuPDF        | Latest    | 文本提取           |
+| **进度追踪**   | tqdm + logging | -         | 实时进度和日志     |
+| **前端框架**   | React 19       | Latest    | 交互式图谱可视化   |
+| **后端框架**   | FastAPI        | Latest    | RESTful API 服务   |
+| **图谱可视化** | Cytoscape.js   | Latest    | 网络图谱渲染       |
+| **样式框架**   | Tailwind CSS   | v4        | 现代化 UI 设计     |
 
 ### 技术要点概览
 
@@ -97,18 +101,22 @@
 - **语义去重与实体对齐**: `concept_deduplicator.py` 使用 BGE-M3 混合检索（dense + sparse），对相似概念聚合、对齐中英文实体，减少图谱冗余。
 - **多源关系构建策略**: 将 LLM 抽取的关系与 ContextualProximityAnalyzer 的近邻关系合并，加权生成最终关系集合，兼顾精度和覆盖率。
 - **图数据库落库与查询**: 通过 `import_to_neo4j_final.py` 与 Neo4j，将概念与关系以节点/边形式存储，支持后续 Cypher 查询和可视化分析。
+- **Web 应用可视化**: 基于 React 19 + FastAPI 的现代化 Web 应用，提供交互式图谱浏览、节点详情查看、智能搜索筛选等功能。
+- **智能启动脚本**: 自动端口冲突检测、依赖安装、服务管理，一键启动前后端服务，支持 macOS/Linux 系统。
 - **可选增强模块**: `agentic_extractor.py` 和 `graph_rag.py` 提供 Agentic Workflow 和 GraphRAG 社区摘要能力，通过配置文件按需启用或关闭。
 - **多模态扩展路径**: `multimodal_extractor.py` 结合 Qwen2-VL，对 PDF 图片生成文本描述并统一纳入抽取流程，为后续多模态知识扩展预留接口。
 
 ### v2.5 核心升级
 
-| 功能模块     | 技术方案          | 效果说明             |
-| ------------ | ----------------- | -------------------- |
-| **核心模型** | 32B → 7B 优化     | 处理时间显著缩短     |
-| **数据安全** | Checkpoint 机制   | 数据丢失风险大幅降低 |
-| **容错能力** | 多层防御设计      | 系统可用性提升       |
-| **用户体验** | 进度条 + 监控脚本 | 可观测性显著提升     |
-| **嵌入模型** | MiniLM → BGE-M3   | 中文语义理解增强     |
+| 功能模块       | 技术方案          | 效果说明             |
+| -------------- | ----------------- | -------------------- |
+| **核心模型**   | 32B → 7B 优化     | 处理时间显著缩短     |
+| **数据安全**   | Checkpoint 机制   | 数据丢失风险大幅降低 |
+| **容错能力**   | 多层防御设计      | 系统可用性提升       |
+| **用户体验**   | 进度条 + 监控脚本 | 可观测性显著提升     |
+| **嵌入模型**   | MiniLM → BGE-M3   | 中文语义理解增强     |
+| **Web 可视化** | React + FastAPI   | 现代化交互式图谱界面 |
+| **智能启动**   | 自动脚本管理      | 一键启动，零配置     |
 
 ---
 
@@ -348,6 +356,47 @@ python import_to_neo4j_final.py
 
 - 根据提示在 Neo4j 中创建数据库和连接配置
 
+### 8. 启动 Web 应用（推荐）
+
+导入数据后，启动交互式 Web 应用进行可视化浏览：
+
+```bash
+cd web
+./start.sh
+```
+
+**Web 应用功能**：
+
+- 🎨 **交互式图谱可视化** - 基于 Cytoscape.js 的动态图谱浏览
+- 🔍 **智能搜索筛选** - 支持节点类型、关系类型筛选
+- 📊 **实时数据统计** - 显示节点数量、关系分布等统计信息
+- 📋 **节点详情面板** - 点击节点查看详细信息
+- 🎯 **节点颜色分类** - 不同类型节点显示不同颜色
+- 📱 **响应式设计** - 支持桌面和移动设备访问
+
+**访问地址**：
+
+- **前端应用**: http://localhost:5173
+- **API 文档**: http://localhost:8000/docs
+- **Neo4j 浏览器**: http://localhost:7474
+
+**管理命令**：
+
+```bash
+./start.sh    # 启动所有服务
+./status.sh   # 查看服务状态
+./stop.sh     # 停止所有服务
+./restart.sh  # 重启所有服务
+```
+
+**特性**：
+
+- ✅ 自动端口冲突检测和释放
+- ✅ 自动依赖检查和安装
+- ✅ 后台运行，日志管理
+- ✅ 彩色状态输出
+- ✅ 支持 macOS/Linux
+
 ---
 
 ## 核心功能
@@ -393,6 +442,14 @@ Extract Agent → Critic Agent → Refine Agent
 - **VLM 描述**: Qwen2-VL / LLaVA 生成图片描述
 - **知识融合**: 将图片描述作为文本块参与抽取
 
+### 7. Web 应用可视化
+
+- **交互式图谱**: 基于 Cytoscape.js 的动态网络可视化
+- **智能筛选**: 支持节点类型、关系类型、重要性筛选
+- **节点详情**: 点击查看节点属性和连接关系
+- **响应式设计**: 现代化 UI，支持桌面和移动设备
+- **实时更新**: 与 Neo4j 数据库实时同步
+
 ---
 
 ## 技术架构
@@ -415,19 +472,25 @@ PDF文献
 [6] GraphRAG 社区摘要
   ↓
 知识图谱 (Neo4j)
+  ↓
+[7] Web 应用可视化 (React + FastAPI)
+  ↓
+交互式浏览界面
 ```
 
 ### 核心模块
 
-| 模块     | 文件                      | 功能            |
-| -------- | ------------------------- | --------------- |
-| PDF 解析 | `pdf_extractor.py`        | 文本提取、OCR   |
-| LLM 抽取 | `concept_extractor.py`    | 概念和关系抽取  |
-| Agentic  | `agentic_extractor.py`    | 多智能体审查    |
-| 去重     | `concept_deduplicator.py` | BGE-M3 语义去重 |
-| GraphRAG | `graph_rag.py`            | 社区检测和摘要  |
-| 多模态   | `multimodal_extractor.py` | 图片知识抽取    |
-| 主流程   | `enhanced_pipeline.py`    | 整合所有模块    |
+| 模块     | 文件                      | 功能             |
+| -------- | ------------------------- | ---------------- |
+| PDF 解析 | `pdf_extractor.py`        | 文本提取、OCR    |
+| LLM 抽取 | `concept_extractor.py`    | 概念和关系抽取   |
+| Agentic  | `agentic_extractor.py`    | 多智能体审查     |
+| 去重     | `concept_deduplicator.py` | BGE-M3 语义去重  |
+| GraphRAG | `graph_rag.py`            | 社区检测和摘要   |
+| 多模态   | `multimodal_extractor.py` | 图片知识抽取     |
+| 主流程   | `enhanced_pipeline.py`    | 整合所有模块     |
+| Web 前端 | `web/frontend/`           | React 可视化界面 |
+| Web 后端 | `web/backend/`            | FastAPI 服务     |
 
 ---
 
@@ -678,6 +741,21 @@ output/
 ├── community_summaries.csv  # 社区摘要（如启用GraphRAG）
 ├── checkpoints/             # Checkpoint 与进度文件
 └── pdf_images/              # 提取的图片（如启用多模态）
+
+web/                          # Web 应用目录
+├── frontend/                 # React 前端应用
+│   ├── src/                  # 源代码
+│   ├── public/               # 静态资源
+│   └── package.json          # 依赖配置
+├── backend/                  # FastAPI 后端服务
+│   ├── app/                  # 应用代码
+│   ├── requirements.txt      # Python 依赖
+│   └── .env                  # 环境变量
+├── start.sh                  # 智能启动脚本
+├── stop.sh                   # 停止服务脚本
+├── status.sh                 # 状态监控脚本
+├── restart.sh                # 重启服务脚本
+└── README.md                 # Web 应用说明
 ```
 
 ### concepts.csv 格式
@@ -740,6 +818,9 @@ node_1,edge,node_2,weight,confidence,source
 - **多层容错**: LLM 层+Checkpoint 层+主循环层三重防护
 - **可观测性**: 进度条 + 实时监控 + 统一启动入口
 - **嵌入升级**: MiniLM → BGE-M3，中文语义理解能力增强
+- **Web 应用**: React 19 + FastAPI 现代化交互式图谱界面
+- **智能启动**: 自动端口管理、依赖检查、服务监控脚本
+- **节点分类**: 中英文智能节点类型识别和颜色分类
 
 **技术文档**：
 
@@ -788,17 +869,31 @@ node_1,edge,node_2,weight,confidence,source
 ### 使用指南
 
 ```bash
-# 快速开始
+# 知识图谱构建
 ./start.sh              # 启动管道
 
 # 状态监控
 ./status.sh             # 查看当前状态
 ./monitor.sh            # 实时监控（每5秒刷新）
 
+# Web 应用管理
+cd web
+./start.sh              # 启动Web应用
+./status.sh             # 查看服务状态
+./stop.sh               # 停止Web应用
+./restart.sh            # 重启Web应用
+
 # 辅助脚本
 ./fast_download_bge_m3.sh    # 快速下载BGE-M3模型
 ./simple_deduplicate.py      # 简单去重（不依赖BGE-M3）
 ```
+
+### Web 应用文档
+
+- **项目结构**: `web/PROJECT_STRUCTURE.md` - 完整项目结构说明
+- **脚本使用**: `web/SCRIPTS_USAGE.md` - 启动脚本详细使用指南
+- **Web README**: `web/README.md` - Web 应用开发文档
+- **API 文档**: http://localhost:8000/docs - FastAPI 自动生成的接口文档
 
 ---
 
@@ -816,6 +911,9 @@ node_1,edge,node_2,weight,confidence,source
 - **运行脚本**: `./archive/RUN.sh`
 - **故障排查**: 见上方"故障排查"章节
 - **归档文档**: `archive/` 目录（旧版文档和脚本）
+- **Web 应用**: `web/` 目录（交互式图谱可视化）
+- **项目结构**: `web/PROJECT_STRUCTURE.md`
+- **脚本指南**: `web/SCRIPTS_USAGE.md`
 
 ---
 
