@@ -14,12 +14,12 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "PWD Knowledge Graph API"
     
     # CORS 配置
-    CORS_ORIGINS: List[str] = [
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-    ]
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173"
+    
+    @property
+    def cors_origins_list(self) -> List[str]:
+        """解析CORS origins为列表"""
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
     
     # Neo4j 配置
     NEO4J_URI: str = "neo4j://127.0.0.1:7687"
