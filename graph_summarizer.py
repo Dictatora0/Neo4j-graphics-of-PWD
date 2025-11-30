@@ -14,6 +14,12 @@ OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mistral")
 
 def _call_llm(prompt: str, system: str = "") -> Optional[str]:
+    """简单的 LLM 包装函数,用于社区主题摘要
+    
+    说明:
+    - 温度设为 0.1,尽量保证摘要在多次运行之间稳定
+    - 这里不做重试,失败直接返回 None,由调用方走规则摘要兜底
+    """
     try:
         payload = {
             "model": OLLAMA_MODEL,
@@ -31,6 +37,7 @@ def _call_llm(prompt: str, system: str = "") -> Optional[str]:
         return None
 
 def _summarize_community(cid: int, members: List[Dict]) -> Dict:
+    # 从 GDS 返回的成员列表中拆出名称和类型,后续用于构造“社区特征概要”
     names = [m.get("name", "") for m in members if m.get("name")]
     types = [m.get("type", "") for m in members]
     freq = {}
@@ -38,7 +45,9 @@ def _summarize_community(cid: int, members: List[Dict]) -> Dict:
         if not t:
             continue
         freq[t] = freq.get(t, 0) + 1
+    # 统计各类型出现次数,拼成一行便于 LLM 把握“社区是什么类型为主”
     type_desc = ", ".join([f"{k}:{v}" for k, v in sorted(freq.items(), key=lambda x: -x[1])])
+    # 只取前 20 个节点名喂给 LLM,避免提示词过长
     top_nodes = names[:20]
     system = "你是生物学知识图谱专家，为社区生成中文主题摘要。"
     user = (
@@ -51,10 +60,12 @@ def _summarize_community(cid: int, members: List[Dict]) -> Dict:
         "3) 3-6个关键词\n"
         "仅返回JSON: {\"title\":..., \"summary\":..., \"keywords\":[...]}"
     )
+    # 调用上面的简单 LLM 包装,让下游只关心结果文本
     resp = _call_llm(user, system)
     if not resp:
         return {"title": f"社区{cid}", "summary": "", "keywords": []}
     text = resp.strip()
+    # 兼容部分模型自动包上一层 ```json / ``` 代码块的情况
     if text.startswith("```json"):
         text = text[7:].strip()
     if text.startswith("```"):
@@ -62,6 +73,7 @@ def _summarize_community(cid: int, members: List[Dict]) -> Dict:
     if text.endswith("```"):
         text = text[:-3].strip()
     try:
+        # 尝试按约定的 JSON 结构解析,失败则退回到"纯文本摘要"模式
         data = json.loads(text.strip('`').strip())
         title = str(data.get("title", f"社区{cid}")).strip()
         summary = str(data.get("summary", "")).strip()
@@ -73,18 +85,32 @@ def _summarize_community(cid: int, members: List[Dict]) -> Dict:
         return {"title": f"社区{cid}", "summary": text[:300], "keywords": []}
 
 def _ensure_theme_indexes(session):
+    """确保 Theme 节点上存在基本索引,提升后续主题查询性能
+    
+    出错直接忽略,避免因为图数据库版本兼容性问题影响主流程
+    """
     try:
         session.run("CREATE INDEX theme_name IF NOT EXISTS FOR (t:Theme) ON (t.name)")
     except Exception:
         pass
 
 def run():
+    """主入口: 基于 Neo4j + GDS 进行社区检测,并为每个社区生成 Theme 主题节点
+    
+    步骤概览:
+    1) 使用 gds.graph.project.cypher 将当前图投影为 GDS 内存图
+    2) 运行 Louvain 社区检测,写回 communityId
+    3) 按 communityId 聚合节点,调用 LLM 生成摘要
+    4) 为每个社区创建 Theme 节点并建立 BELONGS_TO 关系
+    """
     driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
     with driver.session() as session:
+        # 如果之前已经存在同名 GDS 图,先尝试丢弃;失败直接忽略,保持幂等
         try:
             session.run("CALL gds.graph.drop($name, false)", name="pwd_graph")
         except Exception:
             pass
+        # 使用 Cypher 方式将现有 Neo4j 图投影为 GDS 图,带上关系权重
         session.run(
             """
             CALL gds.graph.project.cypher(
@@ -95,12 +121,14 @@ def run():
             """,
             name="pwd_graph",
         )
+        # 在投影图上运行 Louvain 社区检测,并把社区编号写回节点属性 communityId
         session.run(
             """
             CALL gds.louvain.write($name, {relationshipWeightProperty:'weight', writeProperty:'communityId'})
             """,
             name="pwd_graph",
         )
+        # 将同一 communityId 的节点聚合为一个成员列表,后面逐个送入 LLM 生成摘要
         records = session.run(
             """
             MATCH (n)

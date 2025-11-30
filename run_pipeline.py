@@ -40,12 +40,13 @@ def check_environment():
     print("="*70)
     
     checks = []
+    # 统一收集 Python 版本、Ollama、模型和依赖库状态,最后整体给出诊断结果
     
     # 检查 Python 版本
     py_version = sys.version.split()[0]
     checks.append(("Python 版本", py_version, True))
     
-    # 检查 Ollama 服务
+    # 检查 Ollama 服务: 使用 curl 探针而不是 Python SDK,降低依赖复杂度
     try:
         result = subprocess.run(
             ["curl", "-s", "http://localhost:11434/api/tags"],
@@ -79,6 +80,7 @@ def check_environment():
         has_model = False
     
     # 检查依赖库
+    # 关键依赖库检查: 提前发现缺失,避免管道中途才因为 ImportError 中断
     deps = [
         ("torch", "PyTorch"),
         ("sentence_transformers", "SentenceTransformers"),
@@ -103,7 +105,7 @@ def check_environment():
     except:
         checks.append(("PyTorch", "未安装", False))
     
-    # 检查输入文件
+    # 检查输入文件: 直接统计待处理 PDF 数量,给出是否“有活可干”的直观提示
     pdf_dir = config.get('pdf.input_directory', './文献')
     pdf_files = list(Path(pdf_dir).glob("*.pdf")) if os.path.exists(pdf_dir) else []
     checks.append(("PDF 文件", f"{len(pdf_files)} 个", len(pdf_files) > 0))
@@ -141,6 +143,7 @@ def show_config_info():
     print("\n去重配置:")
     use_bge = config['deduplication']['use_bge_m3']
     print(f"  • 引擎: {'BGE-M3 (混合检索)' if use_bge else 'MiniLM'}")
+    # 当启用 BGE-M3 时,额外展示具体模型和 dense/sparse 混合权重,方便调参
     if use_bge:
         print(f"  • 模型: {config['deduplication']['embedding_model']}")
         print(f"  • 混合权重: {config['deduplication']['hybrid_alpha']}")
@@ -175,7 +178,7 @@ def estimate_time():
     config = load_config()
     max_chunks = config['llm'].get('max_chunks', 100)
     
-    # 读取测试结果估算
+    # 读取测试结果估算: 基于历史实验给出一个粗略人类可读的时间预估
     time_per_chunk = 92  # 7B 模型约 92 秒/块
     
     total_seconds = time_per_chunk * max_chunks if max_chunks else time_per_chunk * 100
@@ -245,7 +248,7 @@ def run_with_monitoring():
     print("-"*70 + "\n")
     
     try:
-        # 运行管道
+        # 运行管道: 启用 resume 模式,在已有 checkpoint 基础上继续,默认不清空历史进度
         concepts_df, relationships_df = run_safe_pipeline(
             resume=True,
             clear_checkpoint=False

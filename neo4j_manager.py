@@ -38,7 +38,7 @@ class Neo4jManager:
         """连接到 Neo4j"""
         try:
             self.driver = GraphDatabase.driver(self.uri, auth=basic_auth(self.user, self.password))
-            # 测试连接
+            # 打开一个短会话跑一条简单查询,提前发现账号/网络等连接问题
             with self.driver.session() as session:
                 session.run("RETURN 1")
             logger.info(f"成功连接到 Neo4j: {self.uri}")
@@ -79,6 +79,7 @@ class Neo4jManager:
                 rel_count = result.single()["count"]
                 
                 if node_count == 0 and rel_count == 0:
+                    # 空库不做备份,避免生成大量无意义的备份文件
                     logger.info("数据库为空，无需备份")
                     return None
                 
@@ -190,7 +191,7 @@ class Neo4jManager:
                 cypher_script = f.read()
             
             with self.driver.session() as session:
-                # 分割并执行每条语句
+                # 简单按分号拆分语句,并跳过注释行;备份文件本身是纯 Cypher 脚本
                 statements = [s.strip() for s in cypher_script.split(';') if s.strip() and not s.strip().startswith('//')]
                 
                 for stmt in statements:

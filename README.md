@@ -19,9 +19,11 @@
 
 - [📖 项目背景](#项目背景)
 - [🎯 项目概述](#项目概述)
+- [🧭 代码执行顺序快速一览](#代码执行顺序快速一览)
 - [💡 核心创新点](#核心创新点)
 - [🔧 技术挑战与解决方案](#技术挑战与解决方案)
 - [🚀 快速开始](#快速开始)
+- [🧵 程序运行流程](#程序运行流程)
 - [⚡ 核心功能](#核心功能)
 - [🏗️ 技术架构](#技术架构)
 - [🌟 系统特性](#系统特性)
@@ -111,6 +113,45 @@
 - **智能启动脚本**: 自动端口冲突检测、依赖安装、服务管理，一键启动前后端服务，支持 macOS/Linux 系统。
 - **可选增强模块**: `agentic_extractor.py` 和 `graph_rag.py` 提供 Agentic Workflow 和 GraphRAG 社区摘要能力，通过配置文件按需启用或关闭。
 - **多模态扩展路径**: `multimodal_extractor.py` 结合 Qwen2-VL，对 PDF 图片生成文本描述并统一纳入抽取流程，为后续多模态知识扩展预留接口。
+
+### 代码执行顺序快速一览
+
+> 下面以“从你敲下 `./start.sh` 开始”的视角，串起脚本 → 模块 → 关键代码文件，方便第一次看仓库时快速对上整体执行路径。
+
+**整体执行链路(高层视角):**
+
+```text
+./start.sh
+  ↓  (环境检查 & 选择 Python 解释器)
+enhanced_pipeline_safe.py  安全版主流水线(含 Checkpoint)
+  ↓
+PDFExtractor.extract_from_directory          文本抽取与清洗
+  ↓
+EnhancedKnowledgeGraphPipelineSafe._create_chunks
+  ↓
+ConceptExtractor.extract_from_chunks         LLM 抽取 concepts + relationships(W1)
+  ↓
+ContextualProximityAnalyzer + merge_relationships  共现关系(W2) + W1/W2 融合
+  ↓
+ConceptDeduplicator / RelationshipDeduplicator    概念去重与关系端点更新
+  ↓
+ConceptImportanceFilter                          按重要性与连接度过滤概念
+  ↓
+output/concepts.csv & output/relationships.csv   最终 CSV 输出
+  ↓(可选)
+import_to_neo4j_final.py → Neo4j → web/start.sh  图数据库导入与 Web 可视化
+```
+
+**脚本 → 模块 → 文件 对照表:**
+
+| 阶段                  | 脚本/入口          | 核心模块/类                                                                                  | 关键 Python 文件                                                                  |
+| --------------------- | ------------------ | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 启动与环境检查        | `./start.sh`       | 选择 Python 解释器、检测 checkpoint、启动安全流水线                                          | `start.sh`, `enhanced_pipeline_safe.py`                                           |
+| PDF 文本提取          | 安全流水线内部调用 | `PDFExtractor` (Layout-Aware 解析 + OCR 回退 + 缓存)                                         | `pdf_extractor.py`                                                                |
+| 文本分块与 LLM 抽取   | 安全流水线内部调用 | `EnhancedKnowledgeGraphPipelineSafe._create_chunks`、`ConceptExtractor`、`CheckpointManager` | `enhanced_pipeline_safe.py`, `concept_extractor.py`, `checkpoint_manager.py`      |
+| 关系增强与合并(W1/W2) | 安全流水线内部调用 | `ContextualProximityAnalyzer.extract_proximity_relationships` + `merge_relationships`        | `concept_extractor.py`                                                            |
+| 语义去重与过滤        | 安全流水线内部调用 | `ConceptDeduplicator`, `RelationshipDeduplicator`, `ConceptImportanceFilter`                 | `concept_deduplicator.py`                                                         |
+| 图数据库导入与可视化  | 手动执行脚本(可选) | Neo4j 导入、GraphRAG/社区摘要、Web 可视化                                                    | `import_to_neo4j_final.py`, `graph_rag.py`, `graph_summarizer.py`, `web/start.sh` |
 
 ### v2.5 核心升级
 
@@ -405,6 +446,150 @@ cd web
 
 ---
 
+## 程序运行流程
+
+### 1. 从一键脚本到安全管道
+
+- 在项目根目录执行：
+
+  ```bash
+  ./start.sh
+  ```
+
+- `start.sh` 会完成：
+
+  - 设置 HuggingFace 离线相关环境变量；
+  - 优先选择 `~/.pyenv/versions/3.10.13/bin/python`，找不到则退回系统 `python3`；
+  - 检查 `output/checkpoints/.progress.json`，如存在则提示“从断点继续”并展示已处理块数；
+  - 最后执行：
+
+    ```bash
+    python enhanced_pipeline_safe.py
+    ```
+
+### 2. enhanced_pipeline_safe.py 内部主要流程
+
+- **配置加载**
+
+  - 通过 `config_loader.py` 读取 `config/config.yaml`，解析 LLM、去重、过滤、PDF 路径等配置。
+
+- **组件初始化**（按配置开关决定具体实现）：
+
+  - 文本提取：`pdf_extractor.PDFExtractor`（必要时调用 Ollama OCR 扫描识别）。
+  - 文本清洗：`data_cleaner.MarkdownDataCleaner`，做分句、去噪、结构识别。
+  - 概念/关系抽取：
+    - 默认使用 `concept_extractor.ConceptExtractor`；
+    - 如启用 Agentic，则由 `agentic_extractor.AgenticExtractor` 接管三阶段抽取。
+  - 近邻关系：`ContextualProximityAnalyzer`，基于同块共现生成 W2 关系。
+  - 去重与过滤：`ConceptDeduplicator`、`ConceptImportanceFilter` 等。
+
+- **PDF 处理与分块**
+
+  - 遍历 `config.pdf.input_directory` 下的所有 PDF；
+  - 提取原文文本并做清洗，按固定长度（如 2000~3000 字）切分为多个 `chunk`；
+  - 为每个 `chunk` 分配唯一 `chunk_id`，后续所有概念/关系都带上来源。
+
+- **LLM 抽取阶段**
+
+  - 对每个 `chunk` 调用 LLM，一次性返回该块的概念和关系（单次调用同时抽取 concepts + relationships）；
+  - 内部带超时重试逻辑，偶发超时/网络抖动会自动重试；
+  - 单个文本块如果完全提取失败，只计入失败计数并跳过，不会中断整个循环。
+
+- **关系增强与合并**
+
+  - 将 LLM 抽取关系（W1）与上下文近邻关系（W2）拼接后聚合：
+    - 以 `(node_1, node_2)` 为键，对多条关系的 `weight` 求和；
+    - 合并 `edge / chunk_id / source` 字段，保留多源信息；
+    - 最终将权重归一化到 `[0, 1]` 区间。
+
+- **语义去重与实体对齐**
+
+  - 使用 BGE-M3 或 SentenceTransformer 生成概念向量，对语义相近实体做聚类；
+  - 以“重要性最高的概念”作为簇代表，对应其他变体映射到该代表；
+  - 结合 `min_importance`、`min_connections` 等阈值过滤低价值概念。
+
+- **Checkpoint 与结果落盘**
+  - 通过 `CheckpointManager` 按块增量写出：
+    - `output/checkpoints/concepts_incremental.csv`
+    - `output/checkpoints/relationships_incremental.csv`
+    - `output/checkpoints/.progress.json`（记录已处理块、概念/关系累计数、时间戳）。
+  - 管道正常结束后，再输出最终的：
+    - `output/concepts.csv`
+    - `output/relationships.csv`
+
+### 3. 中断恢复与后处理
+
+- **中断恢复**
+
+  - 长时间运行时如遇断电、崩溃或手动 `Ctrl+C`：
+    - `CheckpointManager` 会在最后一次安全点写入 `.progress.json` 和增量 CSV；
+    - 再次执行 `./start.sh` 时，会自动识别已处理块，从最近 checkpoint 继续，不重复处理。
+
+- **手动后处理（可选）**
+
+  - 如需在 LLM 阶段结束后单独完成“去重 + 过滤 + 汇总”，可执行：
+
+    ```bash
+    python continue_processing.py
+    ```
+
+  - 该脚本会读取增量 CSV，完成语义去重、重要性过滤，并写出最终 `output/concepts.csv` 与 `output/relationships.csv`。
+
+### 4. 图数据库导入与 GraphRAG 分析
+
+- **导入 Neo4j 图数据库**
+
+  ```bash
+  python import_to_neo4j_final.py
+  ```
+
+  - 清空当前数据库中的节点和关系；
+  - 根据概念/关系类型创建带有颜色、大小、图标等样式的节点和关系；
+  - 为常用字段（如 `n.name`、`n.type`、`r.weight`）建立索引；
+  - 计算度数、关系权重等统计信息写回节点属性。
+
+- **Neo4j 内部社区主题（GraphRAG on Neo4j）**
+
+  ```bash
+  python graph_summarizer.py
+  ```
+
+  - 使用 Neo4j GDS 在现有图上运行 Louvain 社区检测，将社区编号写入 `communityId`；
+  - 按 `communityId` 聚合节点，调用 LLM 生成每个社区的主题标题、摘要和关键词；
+  - 为每个社区创建 `(:Theme {communityId})` 节点，并用 `(:BELONGS_TO)` 连接原节点与对应主题。
+
+- **基于 CSV 的离线 GraphRAG（可选）**
+
+  ```bash
+  python graph_rag.py
+  ```
+
+  - 直接基于 `output/concepts.csv` 与 `output/relationships.csv` 构图；
+  - 使用 Louvain/Leiden 等算法做社区划分；
+  - 调用 LLM 生成社区级摘要，写入 `output/community_summaries.csv`，方便离线分析和汇报使用。
+
+### 5. Web 可视化与交互
+
+- 导入 Neo4j 后，进入 `web/` 目录启动前后端服务：
+
+  ```bash
+  cd web
+  ./start.sh
+  ```
+
+- `web/start.sh` 会：
+
+  - 启动 FastAPI 后端（提供图谱查询 API）；
+  - 启动 React 前端（Cytoscape.js 图谱可视化界面）；
+  - 提供统一的 `./status.sh` / `./stop.sh` / `./restart.sh` 管理入口。
+
+- 最终你可以通过浏览器访问：
+  - Neo4j 浏览器: http://localhost:7474
+  - 图谱前端: http://localhost:5173
+  - API 文档: http://localhost:8000/docs
+
+---
+
 ## 核心功能
 
 ### 1. 智能 PDF 解析
@@ -417,7 +602,7 @@ cd web
 
 - **模型**: Qwen2.5-Coder（7B/14B，可配置，支持 JSON Schema 输出）
 - **输出格式**: 严格的 JSON 结构，确保解析稳定性
-- **领域优化**: 9 大概念类别 + 6 大关系类型
+- **领域优化**: 9 大概念类别 + 17 大关系类型
 
 ### 3. Agentic Workflow
 
@@ -685,7 +870,29 @@ agentic:
   review_model: qwen2.5-coder:14b
 ```
 
-**效果**: 通过三阶段质量审查提升抽取准确性，处理时间相应增加
+**实现位置**：
+
+- 核心文件：`agentic_extractor.py`
+- 关键类：`AgenticExtractor`, `CriticAgent`, `RefineAgent`
+
+**工作流程**：
+
+- `Extract`：使用 LLM 初次抽取概念和关系，生成候选结果
+- `Critic`：基于领域本体检查概念类别、关系类型与方向是否合理
+- `Refine`：根据审查意见修正、补充和过滤结果，输出更稳定的概念/关系集合
+
+**本体与约束示例**：
+
+- 合法类别：`pathogen`, `host`, `vector`, `symptom`, `treatment`, `environment`, `location`, `mechanism`, `compound`
+- 合法关系：`引起`, `感染`, `传播`, `防治`, `控制`, `分布于` 等
+- 方向约束示例：`(pathogen, 感染, host)`, `(vector, 传播, pathogen)`
+
+**使用建议**：
+
+- 适用于对抽取质量要求较高的实验或展示场景
+- 启用后整体运行时间会增加，建议在文献数量较少或夜间长时间运行时开启
+
+**效果**：通过三阶段质量审查提升抽取准确性，减少逻辑错误和噪声，处理时间相应增加
 
 ### 2. 启用 GraphRAG
 
@@ -695,7 +902,29 @@ agentic:
   community_algorithm: louvain
 ```
 
-**效果**: 生成社区摘要，支持全局查询
+**实现位置**：
+
+- 核心文件：`graph_rag.py`
+- 关键类：`CommunityDetector`, `CommunitySummarizer`
+
+**支持算法**：
+
+- `louvain`：基于 NetworkX 的模块度优化社区检测（默认）
+- `leiden`：基于 igraph 的改进算法，收敛更快、社区更稳定
+- 其他：标签传播（Label Propagation）、连通分量（Connected Components）作为降级方案
+
+**基本流程**：
+
+- 使用概念和关系 CSV 构建加权图（节点为概念，边权来源于关系权重）
+- 按所选算法进行社区划分，得到若干主题社区
+- 对每个社区调用 LLM 生成 100 字以内的主题摘要，写入 `output/community_summaries.csv`
+
+**典型应用场景**：
+
+- 回答类似“防治策略整体格局如何？”、“当前研究热点集中在哪些方向？”等宏观问题
+- 为展示报告或课题汇总提供高层次主题概览
+
+**效果**：生成社区级摘要，支持从“局部三元组”上升到“主题级全局查询”
 
 ### 3. 启用多模态
 
@@ -705,7 +934,27 @@ pdf:
   caption_model: qwen2-vl
 ```
 
-**前置条件**: 下载 VLM 模型
+**实现位置**：
+
+- 核心文件：`multimodal_extractor.py`
+- 关键类：`ImageExtractor`, `VisionLanguageModel`, `MultimodalKnowledgeExtractor`
+
+**图片处理流程**：
+
+1. 使用 `ImageExtractor` 基于 PyMuPDF 从 PDF 中提取图片，并按分辨率进行过滤
+2. 调用 `VisionLanguageModel`（支持 Ollama 或 transformers）对图片生成中文描述
+3. 将图片描述转为“伪文本块”，与普通文本一同送入概念/关系抽取管道
+4. 输出的概念和关系与文本结果统一写入 CSV，并可选择在图谱中标注图片来源
+
+**支持的 VLM 模型**：
+
+- Ollama：`qwen2-vl`, `llava` 等本地视觉语言模型
+- Transformers：通过 Hugging Face 加载 `Qwen/Qwen2-VL-7B-Instruct` 等模型（需要 GPU 或较强 CPU）
+
+**前置条件**：
+
+- 已在本地下载并配置对应的 VLM 模型（例如：`ollama pull qwen2-vl`）
+- 确认显存/内存资源充足，建议在图片数量较多时分批处理
 
 ```bash
 ollama pull qwen2-vl

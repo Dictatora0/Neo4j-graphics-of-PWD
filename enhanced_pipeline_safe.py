@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
-"""
-Enhanced Pipeline with Checkpoint Support
+"""Enhanced Pipeline with Checkpoint Support
 带断点续传和增量保存的安全版本
 
-新功能：
-1. 每 N 个文本块自动保存 checkpoint
-2. 支持断点续传（程序重启后继续）
-3. 异常捕获自动保存
-4. 最多损失 N 个块的进度（约 3-5 分钟）
+本文件实现了 安全版知识图谱构建主流水线, 在原有增强管道基础上增加:
+- 按块增量保存(CheckpointManager) → 单块/单次失败不丢全局结果;
+- 断点续传(根据 .progress.json 跳过已处理的 chunk);
+- `Ctrl+C`/异常时自动保存当前进度, 下次可以继续跑;
+- 最多只损失最近 N 个块的结果(由 `checkpoint_interval` 控制, 典型约 3-5 分钟)。
+
+高层执行流程(与 README 中的“程序运行流程”对应):
+1) `run_safe_pipeline` / `__main__` 作为统一入口, 读取配置与命令行参数;
+2) `EnhancedKnowledgeGraphPipelineSafe.run` 依次执行 6 个步骤:
+   - Step1: `_extract_pdf_texts` → 调用 `PDFExtractor` 完成 PDF 文本提取与清洗;
+   - Step2: `_create_chunks` → 按固定窗口+重叠切分文本, 生成带 `chunk_id` 的块列表;
+   - Step3: `_extract_with_checkpoints` → 对每个块调用 LLM 抽取 concepts/relationships, 同时增量保存;
+   - Step4: `_extract_proximity_relationships` → 基于共现生成 W2 近邻关系;
+   - Step5: `_merge_and_deduplicate` → 合并 W1/W2 关系, 对概念做语义去重并更新关系端点;
+   - Step6: `_filter_and_finalize` → 按重要性和连接度过滤概念, 得到最终子图;
+3) `_save_results` 将最终 `concepts.csv` / `relationships.csv` 落盘, 供 Neo4j 导入和后续分析使用。
 """
 
 import os
@@ -34,41 +44,53 @@ logger = get_logger('SafePipeline')
 
 
 class EnhancedKnowledgeGraphPipelineSafe:
-    """
-    安全版知识图谱构建管道
-    
-    新增特性：
-    - 增量保存：每 N 个块保存一次
-    - 断点续传：自动跳过已处理的块
-    - 异常保护：Ctrl+C 或崩溃时自动保存
+    """安全版知识图谱构建管道(带 Checkpoint)
+
+    角色可以理解为“整个知识图谱构建流程的总调度中心”, 主要职责:
+
+    - 按配置初始化各个功能组件: `PDFExtractor`、`ConceptExtractor`、`ConceptDeduplicator` 等;
+    - 串联从 **PDF → 文本 → chunk → 概念/关系(W1,W2) → 去重/过滤 → CSV** 的完整数据流;
+    - 通过 `CheckpointManager` 在 LLM 抽取阶段做**增量保存和进度追踪**, 支持断点续传;
+    - 在发生异常或用户 `Ctrl+C` 时, 尽量保证“已经算出来的东西都写到磁盘上”。
     """
     
     def __init__(self, config: Dict = None, checkpoint_interval: int = 5):
-        """
-        初始化安全管道
-        
-        Args:
-            config: 配置字典
-            checkpoint_interval: 每处理多少个块保存一次（默认 5）
+        """初始化安全管道
+
+        参数:
+            config: 配置字典, 一般来自 `config/config.yaml`, 不传则自动加载;
+            checkpoint_interval: 每处理多少个文本块写一次完整 checkpoint 快照(默认 5)。
+
+        说明:
+        - 与无 Checkpoint 版本相比, 这里会额外维护 `CheckpointManager`,
+          在 LLM 抽取阶段把**每个 chunk 的结果**和**阶段性全量快照**写入 `output/checkpoints/`;
+        - `checkpoint_interval` 越小, 容错越强(丢失的进度越少), 但写盘次数略多; 一般 5~10 之间即可。
         """
         if config is None:
+            # 默认从 config/config.yaml 加载一整套配置，便于统一管理
             config = load_config()
         
         self.config = config
+        # 输出目录，用于存放最终 concepts.csv / relationships.csv
         self.output_dir = config.get('output.base_directory', './output')
+        # LLM 相关配置：模型名称和 Ollama 服务地址
         self.ollama_model = config.get('llm.model', 'mistral')
         self.ollama_host = config.get('llm.ollama_host', 'http://localhost:11434')
+        # 去重与过滤相关阈值，从配置中拿，方便之后按项目需求微调
         self.similarity_threshold = config.get('deduplication.similarity_threshold', 0.85)
         self.min_concept_importance = config.get('filtering.min_importance', 2)
         self.min_connections = config.get('filtering.min_connections', 1)
+        # 最多处理多少个文本块，便于做小规模试跑或限流
         self.max_chunks = config.get('llm.max_chunks', 100)
+        # LLM 超时时间统一从配置读取，和概念抽取模块保持一致
         self.llm_timeout = config.get('llm.timeout', 600)
         
-        # Checkpoint 设置
+        # Checkpoint 设置：每处理多少个块写一次完整快照
         self.checkpoint_interval = checkpoint_interval
+        # 进度管理器负责增量 CSV + .progress.json 的读写
         self.checkpoint_manager = CheckpointManager()
         
-        # 初始化组件
+        # 初始化各个功能组件，抽取 / 去重 / 近邻分析
         self.concept_extractor = None
         self.deduplicator = None
         self.proximity_analyzer = ContextualProximityAnalyzer()
@@ -78,9 +100,18 @@ class EnhancedKnowledgeGraphPipelineSafe:
         logger.info(f"Safe pipeline initialized with checkpoint interval: {checkpoint_interval}")
     
     def _initialize_components(self):
-        """初始化 LLM 和嵌入组件"""
+        """初始化 LLM 抽取器与概念去重组件
+
+        - 概念/关系抽取: 使用 `ConceptExtractor`, 封装了对 Ollama(Qwen2.5-Coder 等) 的调用,
+          并内置了 JSON Schema、重试和超时控制;
+        - 概念去重: 根据配置决定使用 BGE-M3(`BGE_M3_Embedder`) 或 MiniLM(`SentenceTransformerEmbedding`)
+          作为嵌入提供者, 交给 `ConceptDeduplicator` 计算相似度矩阵并做聚类。
+
+        如初始化失败(例如 Ollama 未启动、模型未拉取), 会直接抛异常, 让上层尽早感知问题。
+        """
         try:
             logger.info("Initializing concept extractor...")
+            # LLM 模型和 Ollama 服务地址从配置中读取
             self.concept_extractor = ConceptExtractor(
                 model=self.ollama_model,
                 ollama_host=self.ollama_host,
@@ -94,6 +125,7 @@ class EnhancedKnowledgeGraphPipelineSafe:
         
         try:
             logger.info("Initializing concept deduplicator...")
+            # 去重相关配置从配置中读取
             use_bge_m3 = self.config.get('deduplication.use_bge_m3', True)
             
             if use_bge_m3:
@@ -115,16 +147,25 @@ class EnhancedKnowledgeGraphPipelineSafe:
             self.deduplicator = None
     
     def run(self, pdf_dir: str, resume: bool = True, clear_checkpoint: bool = False) -> Tuple[pd.DataFrame, pd.DataFrame]:
-        """
-        运行安全管道（支持断点续传）
-        
-        Args:
-            pdf_dir: PDF 文件目录
-            resume: 是否从上次中断处继续（默认 True）
-            clear_checkpoint: 是否清除旧的 checkpoint（开始新任务时设为 True）
-        
-        Returns:
-            (concepts_df, relationships_df)
+        """运行安全管道(支持断点续传)
+
+        参数:
+            pdf_dir: 待处理 PDF 所在目录(通常为 `./文献`);
+            resume: 是否从上次中断处继续(默认 True, 会根据 `.progress.json` 跳过已处理块);
+            clear_checkpoint: 是否清除旧的 checkpoint(如需“从头再跑一遍”或更换配置时建议设为 True)。
+
+        返回:
+            (concepts_df, relationships_df):
+            - concepts_df: 去重+过滤后的概念表;
+            - relationships_df: 合并 W1/W2、更新端点、过滤后的关系表。
+
+        整体阶段划分(对应日志中的 Step 1~6):
+        1. 从 `pdf_dir` 提取并清洗所有 PDF 文本;
+        2. 对清洗文本做分块, 生成带 `chunk_id` 的块列表;
+        3. 逐块调用 LLM 抽取概念/关系, 同时写入增量 checkpoint;
+        4. 基于 chunk 内共现关系生成 W2, 并准备与 W1 合并;
+        5. 合并关系并对概念做语义去重, 更新关系端点;
+        6. 按重要性与连接度过滤, 得到最终子图并落盘。
         """
         logger.info("="*60)
         logger.info("Starting Safe Enhanced Pipeline with Checkpoint Support")
@@ -133,10 +174,12 @@ class EnhancedKnowledgeGraphPipelineSafe:
         # 清除旧 checkpoint（如果需要）
         if clear_checkpoint:
             logger.info("Clearing old checkpoints...")
+            # 一般在“重头再跑一遍”或更换配置时才会打开该开关
             self.checkpoint_manager.clear()
         
         # 检查是否有未完成的任务
         if resume:
+            # 从 .progress.json 里读一个简要摘要，用于在日志中给出“续跑提示”
             summary = self.checkpoint_manager.get_summary()
             if summary['processed_chunks'] > 0:
                 logger.info("="*60)
@@ -164,6 +207,7 @@ class EnhancedKnowledgeGraphPipelineSafe:
             
             # 过滤已处理的块（断点续传）
             if resume:
+                # 从 checkpoint 中拿到已经处理过的 chunk_id 集合，只处理剩余部分
                 processed_chunks = self.checkpoint_manager.get_processed_chunks()
                 original_count = len(chunks)
                 chunks = [c for c in chunks if c['chunk_id'] not in processed_chunks]
@@ -229,12 +273,13 @@ class EnhancedKnowledgeGraphPipelineSafe:
     
     def _extract_with_checkpoints(self, chunks: List[Dict]) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """
-        带 checkpoint 的 LLM 抽取
-        
-        核心改进：
-        - 每 N 个块保存一次
-        - 实时更新进度文件
-        - 异常时已处理数据不丢失
+        带 checkpoint 的 LLM 抽取阶段
+
+        核心改进(相对简单 for-loop 抽取):
+        - **每 N 个块保存一次完整快照**: 方便中途查看“当前全局结果”, 也降低单次故障影响范围;
+        - **每个块结束后立即增量写入**: `save_chunk_results(chunk_id, concepts, relationships)`,
+          即使进程中断, 已处理块的结果也都在增量 CSV 中;
+        - **出错不终止主循环**: 单块抽取异常只记录日志并 `continue`, 管道整体可以跑完。
         """
         all_concepts = []
         all_relationships = []
@@ -259,10 +304,10 @@ class EnhancedKnowledgeGraphPipelineSafe:
                 if relationships:
                     all_relationships.extend(relationships)
                 
-                # 保存到 checkpoint
+                # 无论当前块是否抽取成功，都会把结果写入 checkpoint，保证进度单调前进
                 self.checkpoint_manager.save_chunk_results(chunk_id, concepts, relationships)
                 
-                # 定期保存完整 checkpoint
+                # 定期保存完整 checkpoint，方便中途查看“当前全局效果”
                 if (i + 1) % self.checkpoint_interval == 0:
                     temp_concepts_df = pd.DataFrame(all_concepts) if all_concepts else pd.DataFrame()
                     temp_relationships_df = pd.DataFrame(all_relationships) if all_relationships else pd.DataFrame()
@@ -274,6 +319,7 @@ class EnhancedKnowledgeGraphPipelineSafe:
                     logger.info(f"Checkpoint: {i+1}/{len(chunks)} chunks processed")
             
             except Exception as e:
+                # 单个文本块失败不会中断整个流程，只记录错误并继续下一个
                 logger.error(f"Failed to process chunk {chunk_id}: {e}")
                 continue
         
@@ -286,7 +332,11 @@ class EnhancedKnowledgeGraphPipelineSafe:
         return concepts_df, relationships_df
     
     def _extract_pdf_texts(self, pdf_dir: str) -> Dict[str, str]:
-        """提取 PDF 文本"""
+        """提取 PDF 文本
+
+        封装对 `PDFExtractor` 的调用, 按配置决定是否启用缓存/并行(当前实现内部统一串行),
+        返回 `{pdf_name: cleaned_text}` 形式的字典, 供后续分块使用。
+        """
         extractor = PDFExtractor(
             use_cache=self.config.get('system.enable_cache', True),
             enable_parallel=self.config.get('system.enable_parallel', True)
@@ -295,7 +345,18 @@ class EnhancedKnowledgeGraphPipelineSafe:
     
     def _create_chunks(self, pdf_texts: Dict[str, str], chunk_size: int = 3000,
                       overlap: int = 300) -> List[Dict]:
-        """分块"""
+        """将每篇 PDF 文本切分为多个 chunk
+
+        参数:
+            pdf_texts: `{pdf_name: text}` 形式的清洗后文本字典;
+            chunk_size: 每个块的目标长度(字符数, 默认 3000);
+            overlap: 相邻块之间的重叠长度(默认 300), 保障跨块语境连续性。
+
+        说明:
+        - 按 `chunk_size - overlap` 的步长滑动窗口截取文本;
+        - 过滤过短片段(长度 < 50), 避免把页眉/脚或噪声当作有效块;
+        - 为每个块生成唯一 `chunk_id = {pdf_name}_{counter}` 作为后续追踪的主键。
+        """
         chunks = []
         chunk_id_counter = 0
         
@@ -316,7 +377,16 @@ class EnhancedKnowledgeGraphPipelineSafe:
     
     def _extract_proximity_relationships(self, chunks: List[Dict],
                                         concepts_df: pd.DataFrame) -> pd.DataFrame:
-        """提取近邻关系"""
+        """基于共现的近邻关系提取(W2)
+
+        步骤:
+        1. 根据概念表 `concepts_df` 构建 `{chunk_id: [entity,...]}` 的概念列表映射;
+        2. 将这些列表写回 `chunks` 中的 `chunk['concepts']` 字段;
+        3. 调用 `ContextualProximityAnalyzer.extract_proximity_relationships` 生成 W2 关系 DataFrame。
+
+        返回:
+            只包含共现关系的 DataFrame, 后续会与 LLM 抽取的 W1 关系在 `_merge_and_deduplicate` 中合并。
+        """
         concept_map = {}
         for _, row in concepts_df.iterrows():
             chunk_id = row.get('chunk_id', '')
@@ -332,7 +402,17 @@ class EnhancedKnowledgeGraphPipelineSafe:
     def _merge_and_deduplicate(self, concepts_df: pd.DataFrame,
                               llm_relationships_df: pd.DataFrame,
                               proximity_relationships_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-        """合并和去重"""
+        """合并关系并进行概念去重
+
+        处理顺序:
+        1. 使用 `ContextualProximityAnalyzer.merge_relationships` 将 W1 与 W2 合并成统一的
+           `relationships_df`, 对同一 `(node_1,node_2)` 的多条边累加权重并归一化;
+        2. 若配置成功初始化了 `self.deduplicator` 且概念表非空, 调用 `deduplicate_concepts`:
+           - 在向量空间中识别语义相近的概念簇;
+           - 为每簇选择一个“规范名”并构建 `concept_mapping`;
+        3. 若存在关系数据, 使用 `RelationshipDeduplicator.update_relationships` 将关系两端
+           的概念名称替换为上述规范名, 并去除自环关系。
+        """
         relationships_df = self.proximity_analyzer.merge_relationships(
             llm_relationships_df, proximity_relationships_df
         )
@@ -351,7 +431,15 @@ class EnhancedKnowledgeGraphPipelineSafe:
     
     def _filter_and_finalize(self, concepts_df: pd.DataFrame,
                             relationships_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-        """过滤"""
+        """根据重要性与连通度过滤概念, 并同步裁剪关系
+
+        过滤逻辑:
+        - 首先调用 `ConceptImportanceFilter.filter_concepts`:
+          - 去掉配置中的通用/泛化概念(如“因素/机制/过程”等);
+          - 丢弃 `importance` 低于阈值的概念;
+          - 如提供关系表, 还会按参与关系条数(`connections`)过滤弱连接节点;
+        - 然后只保留两端都在 `filtered_concepts` 中的关系, 确保最终关系只链接保留下来的概念。
+        """
         filtered_concepts = ConceptImportanceFilter.filter_concepts(
             concepts_df, relationships_df,
             min_importance=self.min_concept_importance,
@@ -373,7 +461,13 @@ class EnhancedKnowledgeGraphPipelineSafe:
         return filtered_concepts, filtered_relationships
     
     def _save_results(self, concepts_df: pd.DataFrame, relationships_df: pd.DataFrame):
-        """保存最终结果"""
+        """保存最终结果到 CSV 文件
+
+        - 输出目录由配置项 `output.base_directory` 控制, 默认 `./output`;
+        - 使用 UTF-8-SIG 编码, 便于在 Excel 中直接打开不会出现中文乱码;
+        - 文件名固定为 `concepts.csv` 和 `relationships.csv`, 供 Neo4j 导入脚本和
+          后续分析工具(如 GraphRAG、统计脚本)直接使用。
+        """
         os.makedirs(self.output_dir, exist_ok=True)
         
         concepts_path = f"{self.output_dir}/concepts.csv"
@@ -389,18 +483,20 @@ def run_safe_pipeline(pdf_dir: str = None, config: Dict = None,
                      checkpoint_interval: int = 5,
                      resume: bool = True,
                      clear_checkpoint: bool = False) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """
-    运行安全版知识图谱构建管道（支持断点续传）
-    
-    Args:
-        pdf_dir: PDF 目录
-        config: 配置字典
-        checkpoint_interval: checkpoint 间隔（默认 5 个块）
-        resume: 是否断点续传（默认 True）
-        clear_checkpoint: 是否清除旧 checkpoint（默认 False）
-    
-    Returns:
-        (concepts_df, relationships_df)
+    """安全版知识图谱构建管道的便捷入口
+
+    一般不直接实例化 `EnhancedKnowledgeGraphPipelineSafe`, 而是通过此函数在脚本中调用,
+    例如在 `start.sh` 或其他上层调度中统一复用。
+
+    参数:
+        pdf_dir: PDF 目录, 不传则从配置 `pdf.input_directory` 读取(默认 `./文献`);
+        config: 配置字典, 不传则自动从 `config/config.yaml` 加载;
+        checkpoint_interval: 写入完整 checkpoint 的间隔(块数, 默认 5);
+        resume: 是否启用断点续传(默认 True);
+        clear_checkpoint: 是否在本次运行前清除旧 checkpoint(默认 False)。
+
+    返回:
+        (concepts_df, relationships_df): 与 `EnhancedKnowledgeGraphPipelineSafe.run` 一致。
     """
     if config is None:
         config = load_config()

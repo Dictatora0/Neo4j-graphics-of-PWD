@@ -1,6 +1,19 @@
 """
 实体消歧与链接模块
 处理同名实体、代词指代、实体标准化等问题
+
+整体流程总览(从原始实体列表到最终实体集):
+原始实体列表
+  ↓  (normalize_entity/merge_duplicate_entities 统一同义表达)
+标准化实体 + 去重结果
+  ↓  (resolve_coreference/resolve_pronouns_in_text 处理“该病/该虫”等代词引用)
+消歧后的实体引用
+  ↓  (identify_entity_clusters 在同类型内做字符串相似度聚类)
+实体簇 + 代表实体
+  ↓  (compute_entity_importance 根据连接数和类型打分)
+带重要性得分的实体表
+  ↓  (link_entities 统一调度上述步骤并返回最终实体/关系集)
+最终可用于下游分析的实体集及其关系
 """
 
 import re
@@ -53,7 +66,7 @@ class EntityLinker:
             '山东': ['山东省', 'Shandong'],
         }
         
-        # 构建反向索引
+        # 构建反向索引: 把所有变体名称映射到统一的标准实体,后续标准化时只需一次查表
         self.entity_to_standard = {}
         for standard, variants in self.standard_entities.items():
             self.entity_to_standard[standard] = standard
@@ -94,7 +107,7 @@ class EntityLinker:
                 logger.debug(f"标准化: {entity} -> {standard}")
             return standard
         
-        # 模糊匹配
+        # 模糊匹配: 直接查表失败时才走相似度匹配,成本更高但能兜住大小写/拼写差异
         for standard, variants in self.standard_entities.items():
             all_forms = [standard] + variants
             for form in all_forms:
@@ -138,6 +151,7 @@ class EntityLinker:
                     coreference_map[pronoun] = candidate
                     logger.debug(f"共指消解: {pronoun} -> {candidate}")
                 else:
+                    # 找不到候选实体时使用预设默认映射,至少保证指代落在同一语义类别
                     coreference_map[pronoun] = default_entity
                     logger.debug(f"共指消解（默认）: {pronoun} -> {default_entity}")
         
@@ -195,7 +209,7 @@ class EntityLinker:
         """
         logger.info("开始实体消歧...")
         
-        # 1. 标准化所有实体名称
+        # 1. 标准化所有实体名称,为后续去重与重新编号打基础
         original_count = len(entities_df)
         entities_df['normalized_name'] = entities_df['name'].apply(self.normalize_entity)
         
@@ -375,7 +389,7 @@ class EntityLinker:
             name = row['name']
             degree = entity_degree.get(name, 0)
             
-            # 重要性 = 度数 + 类型权重
+            # 重要性 = 度数 + 类型权重: 疾病/病原等类型先天给更高基线,即使连接数不多也不会被埋没
             type_weight = {
                 'Disease': 10,
                 'Pathogen': 8,
@@ -421,7 +435,7 @@ class EntityLinker:
         clusters = {}
         processed = set()
         
-        # 按类型分组处理
+        # 按类型分组处理: 只在同类型内做字符串相似度聚类,避免跨类型实体被误合并
         for entity_type in entities_df['type'].unique():
             type_entities = entities_df[entities_df['type'] == entity_type]['name'].tolist()
             
@@ -499,7 +513,7 @@ class EntityLinker:
         original_entity_count = len(entities_df)
         original_relation_count = len(relations_df)
         
-        # 1. 标准化和消歧
+        # 1. 标准化和消歧: 可通过 enable_normalization 控制,调试阶段可以临时关闭
         if enable_normalization:
             entities_df, relations_df = self.merge_duplicate_entities(
                 entities_df, relations_df

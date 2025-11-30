@@ -385,6 +385,50 @@ PDF文献(./文献/*.pdf)
 
 - **目的**：为 GraphRAG 社区检测提供更稠密的图结构
 
+### LLM 抽取链路 + W1/W2 合并（PPT 提纲版）
+
+**一图看懂关系构建链路：**
+
+```
+清洗后的文本块 chunks
+  ↓  (EnhancedPipelineSafe._create_chunks 切块, 生成 chunk_id)
+ConceptExtractor.extract_concepts_and_relationships
+  ↓  (一次 LLM 调用, 严格 JSON Schema)
+概念列表 concepts + LLM 关系列表 relationships(W1, source="llm", weight≈0.8)
+  ↓  (ContextualProximityAnalyzer.extract_proximity_relationships)
+共现关系列表 proximity_rels(W2, source="proximity", weight=0.5)
+  ↓  (ContextualProximityAnalyzer.merge_relationships)
+按 (node_1,node_2) 聚合, 累加 W1+W2, 合并 edge/chunk_id/source, 并归一化到 [0,1]
+  ↓
+关系 DataFrame relationships_df → 输入后续去重/过滤/GraphRAG/Neo4j 导入
+```
+
+**关键设计要点(可直接搬到 PPT)：**
+
+- **W1: LLM 抽取关系**
+
+  - 来源: `ConceptExtractor.extract_concepts_and_relationships`
+  - 字段: `node_1, node_2, edge, weight=0.8, chunk_id, source='llm'`
+  - 优点: 语义精确(因果/防治/传播等), 但覆盖度受 LLM 召回率影响。
+
+- **W2: 上下文共现关系**
+
+  - 来源: `ContextualProximityAnalyzer.extract_proximity_relationships`
+  - 规则: 同一 `chunk` 内任意两概念自动连边, `edge='co-occurs in', weight=0.5, source='proximity'`
+  - 作用: 在 LLM 漏提关系时, 依靠“共现”补齐弱连接, 为 GraphRAG 提供更稠密的基础图。
+
+- **W1+W2 融合**
+  - 实现: `ContextualProximityAnalyzer.merge_relationships`
+  - 步骤:
+    - 简单 `concat` 拼接 W1 与 W2;
+    - 按 `(node_1, node_2)` 分组, 对 `weight` 求和, 合并 `edge/chunk_id/source` 去重;
+    - 以全局最大权重 `max_weight` 为基准做归一化: `weight = weight / max_weight`。
+  - 直观含义:
+    - 被 LLM 强烈确认且频繁共现的边 → 最终归一化权重接近 1;
+    - 仅靠共现支撑的边 → 仍保留但权重相对较低, 适合作为“弱提示”。
+
+> 备注: 上述链路完全对应 `concept_extractor.py` 中的 `ConceptExtractor` 与 `ContextualProximityAnalyzer` 实现, 可直接用于技术汇报/架构图讲解。
+
 #### 阶段 6：语义去重与实体对齐
 
 - **模块**：`concept_deduplicator.ConceptDeduplicator` + `SentenceTransformerEmbedding`

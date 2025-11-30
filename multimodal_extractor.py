@@ -66,8 +66,10 @@ class ImageExtractor:
             max_images_per_pdf: 每个 PDF 最多提取图片数
         """
         self.output_dir = output_dir
+        # 小尺寸图片往往是装饰图标或噪声,这里设一个下限过滤掉
         self.min_width = min_width
         self.min_height = min_height
+        # 防止某些 PDF 图片特别多时一次性提取过量,影响后续 VLM 速度
         self.max_images_per_pdf = max_images_per_pdf
         
         os.makedirs(output_dir, exist_ok=True)
@@ -97,7 +99,7 @@ class ImageExtractor:
             for page_num in range(len(doc)):
                 page = doc[page_num]
                 
-                # 获取页面图片列表
+                # 获取页面图片列表,full=True 方便后续拿到全部元信息
                 image_list = page.get_images(full=True)
                 
                 for img_index, img_info in enumerate(image_list):
@@ -117,7 +119,7 @@ class ImageExtractor:
                         image = Image.open(io.BytesIO(image_bytes))
                         width, height = image.size
                         
-                        # 过滤小图片
+                        # 过滤小图片: 只保留在阅读视角下“肉眼可见”的图
                         if width < self.min_width or height < self.min_height:
                             logger.debug(f"跳过小图片: {width}x{height}")
                             continue
@@ -173,6 +175,7 @@ class VisionLanguageModel:
         self.model = model
         self.ollama_host = ollama_host
         
+        # 根据 provider 选择后端: 本地 transformers 或 Ollama 服务
         if self.provider == 'transformers':
             self._init_transformers_model()
         elif self.provider == 'ollama':
@@ -195,6 +198,7 @@ class VisionLanguageModel:
             )
             logger.info("VLM 加载成功")
         except Exception as e:
+            # 如果本地模型加载失败,这里直接抛出异常,由上层统一处理
             logger.error(f"VLM 加载失败: {e}")
             raise
     
@@ -321,6 +325,7 @@ class MultimodalExtractor:
     """
     
     def __init__(self, image_extractor: ImageExtractor, vlm: VisionLanguageModel):
+        # 图片提取和描述生成两个组件通过依赖注入传入,方便测试和替换实现
         self.image_extractor = image_extractor
         self.vlm = vlm
         logger.info("多模态抽取器已初始化")
@@ -348,6 +353,7 @@ class MultimodalExtractor:
         for i, img_info in enumerate(images_info, 1):
             logger.info(f"处理图片 {i}/{len(images_info)}: {img_info['path']}")
             
+            # 针对每张图片调用 VLM 生成一段文本描述
             caption = self.vlm.generate_caption(img_info['path'])
             
             if caption:
@@ -364,6 +370,7 @@ class MultimodalExtractor:
                 
                 logger.debug(f"图片描述: {caption[:100]}...")
             else:
+                # 某些图片可能因为质量或模型限制无法生成描述,这里直接跳过
                 logger.warning(f"图片 {img_info['path']} 描述生成失败")
         
         logger.info(f"多模态抽取完成: {len(image_chunks)} 个图片块")
@@ -416,6 +423,7 @@ def create_multimodal_extractor(config: Dict = None) -> Optional[MultimodalExtra
     enable_image_captions = config.get('pdf.enable_image_captions', False)
     
     if not enable_image_captions:
+        # 通过一个总开关控制是否启用多模态,默认关闭以避免额外开销
         logger.info("多模态功能未启用 (配置: pdf.enable_image_captions=false)")
         return None
     
@@ -444,6 +452,7 @@ def create_multimodal_extractor(config: Dict = None) -> Optional[MultimodalExtra
         return MultimodalExtractor(image_extractor, vlm)
     
     except Exception as e:
+        # 任一组件初始化失败都会走到这里,直接记录错误并返回 None,由调用方决定是否降级
         logger.error(f"多模态抽取器初始化失败: {e}")
         return None
 

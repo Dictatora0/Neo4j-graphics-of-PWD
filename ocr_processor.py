@@ -32,14 +32,28 @@ except ImportError:
 
 
 class OCRProcessor:
-    """OCR文本提取处理器"""
+    """扫描版PDF的OCR文本提取处理器
+    
+    使用场景：
+    - 扫描版PDF（图片形式PDF）
+    - 图片中的文字识别
+    - 图表中的文字提取
+    
+    支持的OCR引擎：
+    - Tesseract: 开源OCR，适合英文和简单中文
+    - PaddleOCR: 百度开源，中文识别精度高（推荐）
+    """
     
     def __init__(self, ocr_engine: str = 'tesseract', lang: str = 'chi_sim+eng'):
         """初始化OCR处理器
         
         Args:
             ocr_engine: OCR引擎 ('tesseract' 或 'paddle')
-            lang: 识别语言 (tesseract格式: 'chi_sim+eng')
+            lang: 识别语言 (tesseract格式: 'chi_sim+eng' 中英混合)
+        
+        注意：
+        - Tesseract需要安装语言包：sudo apt-get install tesseract-ocr-chi-sim
+        - PaddleOCR会自动下载模型文件，首次运行较慢
         """
         self.logger = get_logger('OCRProcessor')
         self.ocr_engine = ocr_engine
@@ -60,14 +74,18 @@ class OCRProcessor:
             self.logger.error("Tesseract未安装，OCR功能不可用")
     
     def is_scanned_pdf(self, pdf_path: str, sample_pages: int = 3) -> bool:
-        """检测PDF是否为扫描版
+        """检测PDF是否为扫描版（通过文本量和图像数判断）
         
         Args:
             pdf_path: PDF文件路径
-            sample_pages: 采样页数
+            sample_pages: 采样检查的页数（默认3页，避免遍历所有页）
         
         Returns:
-            是否为扫描版
+            True=扫描版，需要OCR；False=文本版，可直接提取
+        
+        判断标准：
+        - 平均每页文本 < 50字符 且 存在图像 = 扫描版
+        - 文本版PDF一般每页有数百到数千字符
         """
         try:
             doc = fitz.open(pdf_path)
@@ -91,7 +109,8 @@ class OCRProcessor:
             
             doc.close()
             
-            # 判断标准：平均每页文本<50字符且有图像
+            # 判断标准：平均每页文本<50字符 且 存在图像
+            # 这个阈值是经验值，可能需要根据实际情况调整
             avg_text_length = text_length_sum / pages_to_check
             
             is_scanned = avg_text_length < 50 and image_count > 0
@@ -114,7 +133,14 @@ class OCRProcessor:
             pdf_path: PDF文件路径
         
         Returns:
-            提取的文本
+            提取的文本（多页合并）
+        
+        处理流程：
+        1. 将PDF转换为图像（dpi=300，高清模式）
+        2. 逐页进行OCR识别
+        3. 合并所有页面的文本
+        
+        性能：速度较慢，大文件可能需要数分钟
         """
         if not OCR_AVAILABLE:
             self.logger.error("Tesseract不可用")
@@ -680,11 +706,4 @@ if __name__ == "__main__":
     else:
         print(f"\n测试文件不存在: {test_pdf}")
     
-    print("\n安装OCR支持:")
-    print("  macOS: brew install tesseract")
-    print("  Ubuntu: sudo apt-get install tesseract-ocr tesseract-ocr-chi-sim")
-    print("  Windows: 下载安装 https://github.com/UB-Mannheim/tesseract/wiki")
-    print("\nPython依赖:")
-    print("  pip install pytesseract pdf2image pillow")
-    print("  pip install paddlepaddle paddleocr  # 可选，中文效果更好")
-
+   

@@ -45,13 +45,13 @@ def clear_database():
             # 删除所有节点和关系（批量删除）
             print("正在删除...")
             
-            # 删除所有关系
+            # 删除所有关系: 先删边再删点,避免 DETACH DELETE 带来的额外开销和约束冲突
             session.run("MATCH ()-[r]->() DELETE r")
             
             # 删除所有节点
             session.run("MATCH (n) DELETE n")
             
-            # 删除所有约束和索引
+            # 删除所有约束和索引: 为重新导入数据腾出“干净”的 Schema 空间
             try:
                 constraints = session.run("SHOW CONSTRAINTS")
                 for constraint in constraints:

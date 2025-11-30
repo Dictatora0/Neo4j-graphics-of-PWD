@@ -24,7 +24,7 @@ logger = get_logger('ContinueProcessing')
 
 def main():
     """主处理流程"""
-    
+    # 该脚本只做“后半程”: 基于 checkpoint 导出的 CSV 完成去重、过滤和最终汇总
     logger.info("="*60)
     logger.info("继续处理现有checkpoint数据")
     logger.info("="*60)
