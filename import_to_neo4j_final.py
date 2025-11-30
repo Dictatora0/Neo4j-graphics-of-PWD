@@ -1,7 +1,54 @@
 #!/usr/bin/env python3
-"""
-将清理后的三元组导入Neo4j数据库
-包含样式优化和美观度提升
+"""Neo4j 图谱导入脚本
+
+用于将上游清洗好的三元组(节点1、关系、节点2、权重等)批量导入本地 Neo4j 数据库,
+并在导入过程中补充节点/关系样式、索引和统计信息, 方便后续在 Neo4j Browser 中进行
+可视化浏览和交互式查询。
+
+整体执行顺序:
+
+1. **读取三元组 CSV**
+   - 优先读取 `output/triples_export_semantic_clean.csv`(已做语义清洗);
+   - 若该文件不存在, 回退到 `output/triples_export.csv` 原始三元组;
+   - 打印总行数、关系类型数、唯一节点数等基础统计。
+
+2. **连接 Neo4j 数据库**
+   - 使用 `NEO4J_URI/NEO4J_USER/NEO4J_PASSWORD` 建立驱动和会话;
+   - 后续所有 Cypher 语句都在同一个 `session` 中按步骤顺序执行。
+
+3. **步骤1: 清空现有图数据**
+   - 执行 `MATCH (n) DETACH DELETE n`, 删除所有节点和关系;
+   - 适用于“每次导入前都重建一张干净的新图”的场景。
+
+4. **步骤2: 创建节点并应用样式**
+   - 先根据三元组中的 `node_1/node_2` 计算所有唯一节点集合;
+   - 对每个节点按以下优先级确定类型和样式:
+     1) 如在 `node_styles` 中有手工配置, 直接使用预设 `type/color/icon`;
+     2) 否则根据节点名称中的关键词(病/线虫/天牛/松/城市名等)自动推断类型,
+        并从 `default_styles` 中选取默认颜色和图标;
+   - 为每个节点创建一个带标签的节点(如 `:Pathogen`, `:Host`), 并写入:
+     `name/type/color/icon/created_at/display_name` 等属性。
+
+5. **步骤3: 创建关系并应用样式**
+   - 遍历三元组表中每一行, 读取 `node_1/node_2/relationship/weight`;
+   - 从 `relation_styles` 中按关系类型(如 INFECTS/CAUSES/CONTROLS 等)选择颜色/线宽/样式/中文标签;
+   - 未配置的关系类型统一使用灰色虚线 `default_relation_style`;
+   - 执行 `MATCH ... CREATE (s)-[r:RELTYPE {...}]->(t)` 创建加权有向边, 写入 `weight/color/style/label/created_at`。
+
+6. **步骤4: 创建索引**
+   - 预创建常用查询字段索引, 如 `n.name`、`n.type`、`r.weight`;
+   - 目的是加快前端可视化加载和交互式查询的响应速度。
+
+7. **步骤5: 添加统计信息**
+   - 通过 Cypher 计算每个节点的出度、入度与总度数, 写回 `out_degree/in_degree/total_degree` 属性;
+   - 统计不同关系类型的权重均值/最大值/最小值, 用于后续分析和调参。
+
+8. **步骤6: 最终验证与汇总输出**
+   - 统计图中节点数、关系数, 以及节点/关系类型分布和度数最高的节点;
+   - 在控制台打印导入概览、常用查询示例和 Neo4j Browser 访问方式, 方便人工快速验证导入结果。
+
+脚本设计为“一次性运行”的导入工具: 从读取 CSV 到关闭驱动, 按照上述步骤线性执行,
+便于理解和在调试时逐步注释/放开某些阶段。
 """
 from neo4j import GraphDatabase
 import pandas as pd
@@ -131,7 +178,7 @@ with driver.session() as session:
     
     created_nodes = 0
     for node in all_nodes:
-        # 确定节点类型和样式
+        # 确定节点类型和样式: 先查是否有手工定义的样式,否则按名称规则自动推断
         if node in node_styles:
             style = node_styles[node]
             node_type = style['type']
@@ -299,7 +346,7 @@ with driver.session() as session:
         rel_type = row['relationship']
         weight = row['weight']
         
-        # 获取关系样式
+        # 获取关系样式: 未在字典中出现的关系类型统一走默认灰色虚线
         style = relation_styles.get(rel_type, default_relation_style)
         
         # 创建关系
@@ -338,6 +385,7 @@ with driver.session() as session:
     print("步骤4: 创建索引")
     print("="*80)
     
+    # 为常用查询字段预创建索引,加快交互式探索和可视化加载速度
     index_queries = [
         "CREATE INDEX node_name IF NOT EXISTS FOR (n) ON (n.name)",
         "CREATE INDEX node_type IF NOT EXISTS FOR (n) ON (n.type)",

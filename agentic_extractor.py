@@ -28,6 +28,7 @@ class ExtractionResult:
     issues: List[str] = None
     
     def __post_init__(self):
+        # 统一将 issues 初始化为列表,避免后续追加问题时还需要判空
         if self.issues is None:
             self.issues = []
 
@@ -77,6 +78,7 @@ class CriticAgent:
                 "num_ctx": 4096,
             }
             
+            # Qwen 系列模型支持 format=json,可以直接要求返回 JSON,减少解析出错
             if 'qwen' in self.model.lower():
                 payload["format"] = "json"
             
@@ -136,6 +138,7 @@ class CriticAgent:
 }"""
         
         # 构建审查提示
+        # 这里将概念和关系转成 JSON 字符串,直接喂给审稿人模型,便于其做结构化检查
         concepts_str = json.dumps(extraction.concepts, ensure_ascii=False, indent=2)
         relations_str = json.dumps(extraction.relationships, ensure_ascii=False, indent=2)
         
@@ -168,7 +171,7 @@ class CriticAgent:
     
     def _default_review_report(self, extraction: ExtractionResult) -> Dict:
         """默认审查报告 (当 LLM 失败时)"""
-        # 简单的规则审查
+        # 简单的规则审查: 在 LLM 不可用时兜底,保证整个 Agentic 链路不会中断
         approved_concepts = []
         rejected_concepts = []
         
@@ -259,7 +262,7 @@ class RefineAgent:
         Returns:
             修正后的抽取结果
         """
-        # 如果质量已经很高,直接返回
+        # 如果质量已经很高,直接返回,避免额外一次 LLM 调用
         if review_report.get('overall_quality', 0) >= 0.9:
             logger.info("抽取质量优秀,无需修正")
             return extraction
@@ -315,6 +318,7 @@ class RefineAgent:
             refined_data = json.loads(response)
             
             # 标准化格式
+            # 这里对 LLM 输出做一次严格清洗,确保字段完整、类型正确
             refined_concepts = []
             for c in refined_data.get('concepts', []):
                 if isinstance(c, dict) and 'entity' in c:
@@ -395,6 +399,7 @@ class AgenticExtractor:
         self.extract_agent = extract_agent
         self.critic = CriticAgent(model, ollama_host)
         self.refiner = RefineAgent(model, ollama_host)
+        # 只有置信度落在该区间内的结果才会进入审查与修正流程
         self.review_threshold = review_threshold
         
         logger.info(f"Agentic Extractor 已初始化: 审查阈值 {review_threshold}")
@@ -425,7 +430,7 @@ class AgenticExtractor:
         )
         
         # Step 2: Critic Agent 审查 (仅对中等质量结果审查)
-        # 假设初始置信度在阈值范围内则审查
+        # 这里用一个固定初始置信度配合 review_threshold 控制“是否值得审一轮”
         if self.review_threshold[0] <= extraction.confidence <= self.review_threshold[1]:
             logger.debug(f"[{chunk_id}] Critic Agent 审查中...")
             review_report = self.critic.review_extraction(extraction, text)

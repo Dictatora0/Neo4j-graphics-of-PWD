@@ -1,7 +1,18 @@
 #!/usr/bin/env python3
-"""
-Embedding-based Concept Deduplication Module
-Uses semantic embeddings to identify and merge similar concepts
+"""基于向量表征的概念去重模块
+
+通过语义向量 (embedding) 度量概念之间的相似度, 自动识别并合并含义接近的概念, 减少知识图谱中的冗余节点。
+
+整体流程总览(从原始概念到最终保留概念):
+原始概念列表
+  ↓  (EmbeddingProvider/BGE_M3_Embedder 生成稠密向量)
+语义向量矩阵
+  ↓  (cosine_similarity 计算两两相似度)
+相似度矩阵
+  ↓  (AgglomerativeClustering 按阈值聚类)
+概念簇 + 规范名映射
+  ↓  (ConceptImportanceFilter 按重要性与连接度过滤)
+最终保留的规范概念集合
 """
 
 import logging
@@ -47,20 +58,29 @@ CATEGORY_MAPPING = {
     '化合物': '化合物',
     '其他': '其他',
 }
-
-
+ 
+ 
 class EmbeddingProvider:
-    """Abstract base class for embedding providers"""
+    """向量生成器抽象基类
+
+    所有具体的 embedding 实现(BGE-M3、SentenceTransformer、TF-IDF 等)都应继承该类,并实现 `embed` 方法。
+    """
     
     def embed(self, texts: List[str]) -> np.ndarray:
-        """Generate embeddings for texts"""
+        """为一组文本生成向量表示
+
+        返回形状为 `[样本数, 向量维度]` 的 numpy 数组,每一行对应一条文本的向量表示。
+        """
         raise NotImplementedError
 
 
 class BGE_M3_Embedder(EmbeddingProvider):
-    """
-    BGE-M3 embedding provider supporting dense+sparse hybrid retrieval
-    v2.2 feature: 升级至 BAAI/bge-m3 以支持混合检索
+    """BGE-M3 向量生成器(支持稠密/稀疏混合检索思路)
+
+    说明:
+    - **Dense Embedding(稠密向量)**: 每条文本被编码成一个高维浮点数组(如 1024 维),所有维度几乎都是非 0,适合做语义相似度计算。
+    - **Sparse Embedding(稀疏向量)**: 大部分维度是 0,只有少数维度非 0,可以理解为“关键词+权重”的高维表示,适合关键词级匹配。
+    - BGE-M3 原生支持 dense+sparse 混合检索,本实现主要使用 dense 向量,`embed_sparse` 提供一个简化占位实现。
     """
     
     def __init__(self, model_name: str = "BAAI/bge-m3", device=None):
@@ -82,29 +102,42 @@ class BGE_M3_Embedder(EmbeddingProvider):
             raise
     
     def embed(self, texts: List[str]) -> np.ndarray:
-        """生成密集向量 embeddings"""
+        """生成稠密向量(dense embedding)
+
+        每条输入文本会被编码成一个 L2 归一化后的高维向量,可以直接用余弦相似度表示语义相近程度。
+        """
         if not texts:
             return np.array([])
         embeddings = self.model.encode(texts, normalize_embeddings=True)
         return np.array(embeddings)
     
     def embed_sparse(self, texts: List[str]) -> List[Dict]:
-        """生成稀疏向量 embeddings (BGE-M3 特有)"""
-        # 简化实现：使用 encode 获取稀疏表示
-        # 实际 BGE-M3 可以通过特定参数获取 sparse embedding
+        """生成稀疏向量(sparse embedding)的占位实现
+
+        说明:
+        - 真正的 BGE-M3 稀疏向量通常通过专门的 sparse 接口/参数获取,对应倒排索引或 BM25 一类的表示。
+        - 这里为了兼容接口,简单地复用 dense embedding 并包一层字典返回,方便后续扩展为真实稀疏实现。
+        """
+        # 简化实现: 使用现有的 dense 向量作为返回,并不区分稀疏/稠密
+        # 实际应用中可替换为 BGE-M3 官方提供的 sparse embedding 接口
         dense_embeddings = self.embed(texts)
         # 这里返回密集向量，实际应用可以调用 BGE-M3 的 sparse 接口
         return [{"dense": emb} for emb in dense_embeddings]
     
     def hybrid_similarity(self, text1: str, text2: str, alpha: float = 0.7) -> float:
         """
-        混合相似度计算: alpha * dense_sim + (1-alpha) * sparse_sim
-        
-        Args:
-            text1, text2: 待比较文本
-            alpha: 密集向量权重 (0-1)
+        计算两段文本的“混合相似度”: `alpha * dense_sim + (1-alpha) * sparse_sim`
+
+        参数说明:
+        - `text1`, `text2`: 待比较的两段文本。
+        - `alpha`: 稠密相似度权重,取值范围 0-1。越接近 1 表示越依赖语义向量,越接近 0 表示越依赖词面重合。
+
+        专业术语解释:
+        - `dense_sim`: 稠密向量相似度,本实现中是两条 embedding 之间的余弦相似度(cosine similarity)。值域 [-1, 1],越接近 1 越相似。
+        - `sparse_sim`: 稀疏相似度,这里用Jaccard相似度近似: 共同出现的词数 / 所有不同词的总数,值域 [0, 1]。
         """
         # Dense similarity
+        # 实际使用时主要依赖语义向量相似度, Jaccard 稀疏相似度作为补充,兜住明显的词面差异
         emb1 = self.embed([text1])
         emb2 = self.embed([text2])
         dense_sim = cosine_similarity(emb1, emb2)[0][0]
@@ -122,14 +155,16 @@ class BGE_M3_Embedder(EmbeddingProvider):
 
 
 class SentenceTransformerEmbedding(EmbeddingProvider):
-    """Embedding provider using sentence-transformers"""
+    """基于 sentence-transformers 库的通用向量生成器
+
+    作为 BGE-M3 的替代方案,在无法使用 BGE-M3 或对混合检索没有强需求时使用。
+    """
     
     def __init__(self, model_name: str = "sentence-transformers/paraphrase-MiniLM-L6-v2"):
-        """
-        Initialize with sentence-transformers model
-        
-        Args:
-            model_name: HuggingFace model identifier
+        """初始化 sentence-transformers 模型
+
+        参数:
+        - `model_name`: HuggingFace 上的模型名称,例如 `sentence-transformers/paraphrase-MiniLM-L6-v2`。
         """
         try:
             from sentence_transformers import SentenceTransformer
@@ -140,37 +175,53 @@ class SentenceTransformerEmbedding(EmbeddingProvider):
             raise
     
     def embed(self, texts: List[str]) -> np.ndarray:
-        """Generate embeddings using sentence-transformers"""
+        """使用 sentence-transformers 生成稠密向量"""
         return self.model.encode(texts, show_progress_bar=False)
 
 
 class TfidfEmbedding(EmbeddingProvider):
-    """Fallback embedding provider using TF-IDF"""
+    """基于 TF-IDF 的简易向量生成器(降级方案)
+
+    当环境中无法使用深度学习模型时,退回到 TF-IDF 这种传统特征表示方式,牺牲一定语义能力换取可用性。
+    """
     
     def __init__(self):
-        """Initialize TF-IDF vectorizer"""
+        """初始化 TF-IDF 向量器
+
+        这里使用 字符 n-gram(2~3 字符长度) 的方式构造特征,对中英文混合文本更鲁棒。
+        """
         from sklearn.feature_extraction.text import TfidfVectorizer
         self.vectorizer = TfidfVectorizer(analyzer='char', ngram_range=(2, 3), max_features=100)
         logger.info("Using TF-IDF embeddings (fallback)")
     
     def embed(self, texts: List[str]) -> np.ndarray:
-        """Generate embeddings using TF-IDF"""
+        """使用 TF-IDF 生成向量
+
+        返回一个稀疏矩阵转成的 numpy 数组,每一行表示一条文本在 n-gram 特征空间中的权重分布。
+        """
         return self.vectorizer.fit_transform(texts).toarray()
 
 
 class ConceptDeduplicator:
-    """Deduplicate semantically similar concepts"""
+    """基于语义相似度的概念去重器
+
+    主要职责:
+    - 将文本中抽取出来的大量概念通过向量表示转换到同一语义空间;
+    - 计算任意两概念之间的相似度,识别“含义几乎相同”的概念组;
+    - 为每个相似概念簇选出一个代表概念(规范名),其余全部映射到该代表名上;
+    - 聚合重要性、类别和来源块信息,生成去重后的概念表。
+    """
     
     def __init__(self, embedding_provider: EmbeddingProvider = None, 
                  similarity_threshold: float = 0.85):
-        """
-        Initialize deduplicator
-        
-        Args:
-            embedding_provider: Provider for generating embeddings
-            similarity_threshold: Threshold for considering concepts as duplicates (0-1)
+        """初始化概念去重器
+
+        参数:
+        - `embedding_provider`: 具体的向量生成实现,如 `BGE_M3_Embedder`、`SentenceTransformerEmbedding` 等;
+        - `similarity_threshold`: 判定两个概念为“重复/同义”的相似度阈值,范围 0-1,越接近 1 表示越严格。
         """
         if embedding_provider is None:
+            # 默认优先使用 sentence-transformers；环境不满足时退回到轻量级 TF-IDF
             try:
                 embedding_provider = SentenceTransformerEmbedding()
             except:
@@ -178,41 +229,41 @@ class ConceptDeduplicator:
                 embedding_provider = TfidfEmbedding()
         
         self.embedding_provider = embedding_provider
+        # 相似度阈值控制“多严格才算重复”：越接近 1.0，合并得越保守
         self.similarity_threshold = similarity_threshold
     
     def deduplicate_concepts(self, concepts_df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, str]]:
-        """
-        Deduplicate concepts based on semantic similarity
-        
-        Args:
-            concepts_df: DataFrame with columns ['entity', 'importance', 'category', ...]
-        
-        Returns:
-            Tuple of (deduplicated_df, mapping_dict)
-            - deduplicated_df: DataFrame with merged concepts
-            - mapping_dict: Dict mapping original concepts to canonical forms
+        """基于语义相似度对概念做去重
+
+        参数:
+        - `concepts_df`: 概念 DataFrame,通常包含 `entity`(概念名称)、`importance`(重要性)、`category`(类别)、`chunk_id` 等列。
+
+        返回:
+        - `deduplicated_df`: 去重后的概念 DataFrame,每行是一个“规范概念”; 
+        - `mapping_dict`: 字典形式的映射关系,`原始概念名 -> 规范概念名`,便于后续更新关系表。
         """
         if concepts_df.empty:
             return concepts_df, {}
         
         logger.info(f"Deduplicating {len(concepts_df)} concepts...")
         
+        # 以 entity 为单位做去重: 先在文本层面去重,再在向量空间里按语义聚类
         # Get unique concepts
         unique_concepts = concepts_df['entity'].unique()
         
         if len(unique_concepts) < 2:
             return concepts_df, {concept: concept for concept in unique_concepts}
         
-        # Generate embeddings
+        # Generate embeddings: 为所有唯一概念生成向量表示
         embeddings = self.embedding_provider.embed(list(unique_concepts))
         
-        # Calculate similarity matrix
+        # Calculate similarity matrix: 计算任意两概念向量之间的余弦相似度,得到 N×N 的相似度矩阵
         similarity_matrix = cosine_similarity(embeddings)
         
-        # Find duplicate clusters
+        # Find duplicate clusters: 根据相似度矩阵做聚类,得到若干“同义概念簇”
         clusters = self._cluster_similar_concepts(similarity_matrix, unique_concepts)
         
-        # Create mapping from original to canonical concept
+        # Create mapping from original to canonical concept: 为每个簇生成“原名 -> 规范名”的映射
         mapping = self._create_concept_mapping(clusters, unique_concepts, concepts_df)
         
         # Apply mapping to deduplicate
@@ -224,7 +275,7 @@ class ConceptDeduplicator:
             lambda x: CATEGORY_MAPPING.get(str(x).lower(), '其他')
         )
         
-        # Aggregate by canonical concept
+        # Aggregate by canonical concept：同一个规范实体聚合重要性、类别和来源块信息
         deduplicated_df = deduplicated_df.groupby('entity').agg({
             'importance': 'max',
             'category': lambda x: x.mode()[0] if not x.empty else '其他',
@@ -238,20 +289,19 @@ class ConceptDeduplicator:
     
     def _cluster_similar_concepts(self, similarity_matrix: np.ndarray, 
                                  concepts: np.ndarray) -> List[Set[str]]:
+        """使用层次聚类算法将相似概念划分到同一簇
+
+        参数:
+        - `similarity_matrix`: 概念之间的相似度矩阵,形状为 `[N, N]`,取值 0-1,对角线为 1;
+        - `concepts`: 概念名称数组,长度为 N,与矩阵的行/列一一对应。
+
+        返回:
+        - 若干个概念集合列表,每个集合代表一个“语义上接近的概念簇”。
         """
-        Cluster similar concepts using hierarchical clustering
-        
-        Args:
-            similarity_matrix: Pairwise similarity matrix
-            concepts: Array of concept strings
-        
-        Returns:
-            List of concept clusters
-        """
-        # Convert similarity to distance
+        # Convert similarity to distance: 将相似度转为“距离”=1-sim,便于聚类算法使用
         distance_matrix = 1 - similarity_matrix
         
-        # Hierarchical clustering
+        # Hierarchical clustering：通过距离阈值控制簇大小，而不是预先指定簇数量
         clustering = AgglomerativeClustering(
             n_clusters=None,
             distance_threshold=1 - self.similarity_threshold,
@@ -260,7 +310,7 @@ class ConceptDeduplicator:
         
         labels = clustering.fit_predict(distance_matrix)
         
-        # Group concepts by cluster
+        # Group concepts by cluster: 按聚类标签将概念划分到不同簇中
         clusters = {}
         for concept, label in zip(concepts, labels):
             if label not in clusters:
@@ -272,18 +322,17 @@ class ConceptDeduplicator:
     def _create_concept_mapping(self, clusters: List[Set[str]], 
                                concepts: np.ndarray,
                                concepts_df: pd.DataFrame) -> Dict[str, str]:
-        """
-        Create mapping from original to canonical concepts
-        
-        Canonical concept is the one with highest importance in the cluster
-        
-        Args:
-            clusters: List of concept clusters
-            concepts: Array of all concepts
-            concepts_df: DataFrame with concept metadata
-        
-        Returns:
-            Mapping dictionary
+        """根据聚类结果生成“原始概念名 → 规范概念名”的映射
+
+        约定: 每个簇中重要性(importance)最高概念作为该簇的“规范名称”,其他同义项全部映射到该名称。
+
+        参数:
+        - `clusters`: 聚类得到的概念簇列表;
+        - `concepts`: 所有概念名称数组(主要用于保持顺序,这里只作为辅助);
+        - `concepts_df`: 含有 `importance` 等元信息的概念 DataFrame。
+
+        返回:
+        - `mapping` 字典: `原始概念名 -> 规范概念名`。
         """
         mapping = {}
         
@@ -302,51 +351,51 @@ class ConceptDeduplicator:
         return mapping
     
     def normalize_concept_names(self, concepts_df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Normalize concept names (pluralization, case, etc.)
-        
-        Args:
-            concepts_df: DataFrame with concepts
-        
-        Returns:
-            DataFrame with normalized concepts
+        """对概念名称做简单规范化(大小写、空白等)
+
+        当前实现仅包含:
+        - 统一转为小写并去掉首尾空白;
+        - 去掉完全重复的概念行;
+        复数形式等更激进的词形还原暂未启用,避免误伤专业名词。
         """
         normalized_df = concepts_df.copy()
         
-        # Convert to lowercase (already done in extraction)
+        # 将实体名称统一转为小写并去掉首尾空白(抽取阶段通常已做,这里再次保证一致性)
         normalized_df['entity'] = normalized_df['entity'].str.lower().str.strip()
         
-        # Remove common suffixes
+        # 常见英文后缀占位: 如复数/动词形态等,当前仅做标记,未真正裁剪
         suffixes = ['s', 'es', 'ed', 'ing', 'tion', 'ness']
         for suffix in suffixes:
             mask = normalized_df['entity'].str.endswith(suffix)
-            # Keep original for now - more sophisticated stemming can be added
+            # 暂不修改原文,避免粗暴词干提取误伤专业术语,后续如需可在此处扩展
         
-        # Remove duplicates after normalization
+        # 规范化之后再做一次去重,避免同一概念因大小写/空格差异重复出现
         normalized_df = normalized_df.drop_duplicates(subset=['entity'])
         
         return normalized_df
 
 
 class RelationshipDeduplicator:
-    """Deduplicate relationships based on concept deduplication"""
+    """基于概念去重结果更新关系表
+
+    在概念已经做了“同义合并”之后,需要同步更新关系中的 `node_1`/`node_2`,否则会出现老名称与新名称并存的问题。
+    """
     
     @staticmethod
     def update_relationships(relationships_df: pd.DataFrame, 
                             concept_mapping: Dict[str, str]) -> pd.DataFrame:
-        """
-        Update relationships to use canonical concept names
-        
-        Args:
-            relationships_df: DataFrame with relationships
-            concept_mapping: Mapping from original to canonical concepts
-        
-        Returns:
-            Updated relationships DataFrame
+        """根据概念映射结果更新关系中的节点名称
+
+        参数:
+        - `relationships_df`: 关系 DataFrame,包含 `node_1`、`node_2`、`edge`、`weight` 等列;
+        - `concept_mapping`: 概念映射字典,`原始概念名 -> 规范概念名`。
+
+        返回:
+        - 已将节点名称替换为规范名,并聚合重复关系后的 DataFrame。
         """
         updated_df = relationships_df.copy()
         
-        # Apply mapping to both nodes
+        # Apply mapping to both nodes: 将两端节点名称统一替换为规范概念名
         updated_df['node_1'] = updated_df['node_1'].map(
             lambda x: concept_mapping.get(x, x)
         )
@@ -354,10 +403,10 @@ class RelationshipDeduplicator:
             lambda x: concept_mapping.get(x, x)
         )
         
-        # Remove self-loops
+        # Remove self-loops: 删除 node_1 == node_2 的自环关系,避免概念自己连自己
         updated_df = updated_df[updated_df['node_1'] != updated_df['node_2']]
         
-        # Aggregate duplicate relationships
+        # Aggregate duplicate relationships: 对同一对节点之间的多条边做聚合,累加权重并合并关系描述/来源块
         aggregated = updated_df.groupby(['node_1', 'node_2']).agg({
             'weight': 'sum',
             'edge': lambda x: ' | '.join(x.unique()),
@@ -365,7 +414,7 @@ class RelationshipDeduplicator:
             'source': lambda x: ','.join(x.unique())
         }).reset_index()
         
-        # Normalize weights
+        # Normalize weights: 将聚合后的权重归一化到 [0,1],便于不同图之间对比
         max_weight = aggregated['weight'].max()
         if max_weight > 0:
             aggregated['weight'] = aggregated['weight'] / max_weight
@@ -374,9 +423,15 @@ class RelationshipDeduplicator:
 
 
 class ConceptImportanceFilter:
-    """Filter out redundant or outlier concepts"""
+    """基于重要性和连接度的概念过滤器
+
+    目的:
+    - 删掉“因素、机制、研究”等过于通用的概念,它们很难提供有价值的图谱信息;
+    - 利用 `importance`(人工/LLM 评分) 和 `connections`(参与的关系条数) 做二次筛选,保留对下游分析真正有用的概念。
+    """
     
     # 过于通用的概念列表（需要过滤）
+    # 包含“因素、机制、研究、结果”等泛化词,这些词即使频繁出现也难以提供有用语义信息
     GENERIC_CONCEPTS = {
         'factor', 'factors', 'mechanism', 'mechanisms', 'process', 'processes',
         'method', 'methods', 'approach', 'approaches', 'system', 'systems',
@@ -391,20 +446,21 @@ class ConceptImportanceFilter:
                        relationships_df: pd.DataFrame,
                        min_importance: int = 2,
                        min_connections: int = 1) -> pd.DataFrame:
+        """按重要性与连接度过滤概念
+
+        参数:
+        - `concepts_df`: 概念 DataFrame;
+        - `relationships_df`: 关系 DataFrame,用于统计每个概念参与了多少条关系;
+        - `min_importance`: 最小重要性阈值(1-5),低于该值的概念会被丢弃;
+        - `min_connections`: 最少连接数阈值,小于该值说明该概念在图中几乎不与其他节点交互,可视情况丢弃。
+
+        返回:
+        - 过滤后的概念 DataFrame。
         """
-        Filter concepts based on importance and connectivity
-        
-        Args:
-            concepts_df: DataFrame with concepts
-            relationships_df: DataFrame with relationships
-            min_importance: Minimum importance threshold (1-5)
-            min_connections: Minimum number of relationships required
-        
-        Returns:
-            Filtered concepts DataFrame
-        """
+        # min_importance 控制“多重要才保留”, min_connections 控制“至少参与多少条关系才算有用”
         filtered_df = concepts_df.copy()
         
+        # 处理顺序：先剔除过于通用的词，再按重要性和连接度筛一遍
         # Filter out generic concepts
         initial_count = len(filtered_df)
         filtered_df = filtered_df[

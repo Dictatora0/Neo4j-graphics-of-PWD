@@ -52,7 +52,7 @@ def main():
 """)
     print("="*70)
     
-    # 直接开始运行
+    # 直接开始运行: 相比 run_pipeline.py 省略 Enter 确认步骤,适合脚本/定时任务场景
     success = run_with_monitoring()
     
     sys.exit(0 if success else 1)

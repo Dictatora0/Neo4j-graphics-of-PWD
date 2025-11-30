@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
-"""
-LLM-based Concept Extraction Module
-Uses Ollama with Mistral/Zephyr for extracting concepts and semantic relationships
+"""基于 LLM 的概念与关系抽取模块
+
+通过本地 Ollama 模型(Mistral/Qwen 等)从文本块中抽取松材线虫病领域的概念和语义关系, 输出结构化 JSON, 供后续去重、过滤和导入 Neo4j 使用。
+
+整体链路总览(从原始文本到 W1 关系):
+1) 上游将 PDF 文本清洗并切分为若干 chunk, 每个 chunk 带有唯一 chunk_id;
+2) 本模块对每个 chunk 调用一次 LLM, 同时抽取 concepts 与 relationships;
+3) 将 LLM 输出转换为 DataFrame, 规范为 entity/category/importance 与 node_1/node_2/edge/weight 等字段;
+4) 生成的 relationships 作为 W1(LLM 关系), 与 ContextualProximityAnalyzer 计算的 W2(共现关系)在后处理阶段合并。
 """
 
 import json
@@ -15,16 +21,26 @@ logger = logging.getLogger(__name__)
 
 
 class ConceptExtractor:
-    """Extract concepts and relationships using LLM (Ollama)"""
+    """基于 LLM 的概念和关系提取器（使用 Ollama 本地模型）
+    
+    核心功能：
+    1. 从文本块中提取领域概念（病原、寄主、媒介等）
+    2. 识别实体间的语义关系（感染、传播、防治等）
+    3. 使用严格的 JSON Schema 保证输出可靠性
+    
+    支持的模型：
+    - mistral: 通用性能好，速度快
+    - qwen2.5-coder: 结构化输出最佳（推荐）
+    - llama3: Meta官方模型
+    """
     
     def __init__(self, model: str = "mistral", ollama_host: str = "http://localhost:11434", timeout: int = 600):
-        """
-        Initialize concept extractor
-        
-        Args:
-            model: Model name (mistral, zephyr, neural-chat, etc.)
-            ollama_host: Ollama server URL
-            timeout: Request timeout in seconds (default: 600s = 10min)
+        """初始化概念提取器
+
+        参数:
+            model: Ollama 模型名称(需提前拉取: ollama pull <model>)
+            ollama_host: Ollama 服务地址(本地运行一般为 http://localhost:11434)
+            timeout: 单次请求超时时间(秒), 大模型需要更长时间(默认 10 分钟)
         """
         self.model = model
         self.ollama_host = ollama_host
@@ -33,7 +49,15 @@ class ConceptExtractor:
         self._verify_ollama_connection()
     
     def _verify_ollama_connection(self):
-        """Verify Ollama server is running"""
+        """验证 Ollama 服务是否正常运行
+        
+        检查步骤：
+        1. 尝试连接 /api/tags 接口
+        2. 获取已安装的模型列表
+        3. 输出可用模型供参考
+        
+        如果失败，会抛出异常并提示运行 'ollama serve'
+        """
         try:
             response = requests.get(f"{self.ollama_host}/api/tags", timeout=5)
             if response.status_code == 200:
@@ -49,19 +73,24 @@ class ConceptExtractor:
             raise
     
     def _call_ollama(self, prompt: str, system_prompt: str = "", temperature: float = 0.1, max_retries: int = 3, json_mode: bool = True) -> Optional[str]:
+        """调用 Ollama API 生成文本(带重试机制)
+
+        参数:
+            prompt: 用户提示词(包含待提取的文本)
+            system_prompt: 系统提示词(定义任务规则和输出格式)
+            temperature: 采样温度,0 表示基本确定性输出,1 表示随机性最大; 概念/关系提取通常使用 0.1 保证稳定性
+            max_retries: 超时或网络异常时的最大重试次数
+            json_mode: 是否启用严格 JSON 模式(Qwen 模型支持, 输出更接近预期的 JSON 结构)
+
+        返回:
+            LLM 生成的文本(字符串), 失败返回 None
+
+        说明:
+        - temperature 越低, 输出越稳定但也越保守;
+        - 当 json_mode 为 True 且模型名称包含 qwen 时, 会在请求 payload 中设置 format="json", 限制模型必须输出合法 JSON;
+        - 超过 max_retries 次仍失败时, 函数返回 None, 由上层决定当前 chunk 是否跳过。
         """
-        Call Ollama API with retry mechanism and strict JSON mode for Qwen
-        
-        Args:
-            prompt: User prompt
-            system_prompt: System prompt for context
-            temperature: Temperature for generation (0.0-1.0)
-            max_retries: Maximum number of retries on timeout
-            json_mode: Enable strict JSON output mode (for Qwen models)
-        
-        Returns:
-            Generated text or None if failed
-        """
+        # 简单重试机制: 防止偶发超时/网络抖动直接导致整块解析失败
         for attempt in range(max_retries):
             try:
                 payload = {
@@ -76,9 +105,10 @@ class ConceptExtractor:
                     "num_ctx": 8192,  # Qwen 支持更大上下文
                 }
                 
-                # 如果是 Qwen 模型，启用 JSON mode
+                # Qwen 模型专属：强制 JSON 格式输出
+                # Ollama 的 format="json" 会约束模型输出符合JSON规范
                 if json_mode and 'qwen' in self.model.lower():
-                    payload["format"] = "json"  # Ollama JSON mode
+                    payload["format"] = "json"  # 严格模式，非法JSON会自动重试
                 
                 # 使用配置的超时时间（默认600秒，支持大模型）
                 response = requests.post(self.api_endpoint, json=payload, timeout=self.timeout)
@@ -100,23 +130,32 @@ class ConceptExtractor:
                 return None
     
     def extract_concepts(self, text: str, chunk_id: str = "") -> Optional[List[Dict]]:
-        """
-        Extract concepts from text chunk using Qwen with strict JSON Schema
-        
-        Args:
-            text: Text chunk to extract concepts from
-            chunk_id: Unique identifier for the chunk
-        
-        Returns:
-            List of concept dictionaries with format:
+        """从文本块中提取领域概念(使用严格的 JSON Schema)
+
+        参数:
+            text: 待提取的文本块(通常 2000~3000 字左右)
+            chunk_id: 文本块唯一标识符(例如: PDF 文件名_块序号)
+
+        返回:
+            概念字典列表, 每个元素大致形如:
             {
-                "entity": str,
-                "importance": int (1-5),
-                "category": str,
-                "chunk_id": str
+                "entity": 概念名称(如 "松材线虫"),
+                "importance": 1-5 的重要性评分(5 为核心概念),
+                "category": 概念类别(pathogen/host/vector 等),
+                "chunk_id": 来源文本块 ID
             }
+            若当前文本块未能成功解析, 返回 None。
+
+        提取策略:
+        - 只提取松材线虫病相关的领域概念;
+        - 过滤“因素、过程、机制、方法、系统”等过于通用的抽象词;
+        - 优先保留病原、寄主、媒介等核心实体, 以便后续构图时重点突出主干节点。
         """
-        # Qwen 优化的系统提示词 - 强制 JSON Schema
+        # Qwen 专用系统提示词 - 严格限定输出格式和提取范围
+        # 设计原则：
+        # 1. 明确JSON Schema，避免格式错误
+        # 2. 列出具体提取类别，减少无关概念
+        # 3. 定义重要性评分标准，保证一致性
         system_prompt = """你是一个专业的松材线虫病(Pine Wilt Disease)知识图谱构建助手。你的任务是从科学文献中精确提取领域概念。
 
 ## 输出要求
@@ -143,11 +182,11 @@ class ConceptExtractor:
 9. **化学物质** (compound): 萜烯类、酚类物质、杀虫剂成分
 
 ## 重要性评分标准
-- 5: 核心概念（如松材线虫、松褐天牛、马尾松）
-- 4: 重要概念（如具体防治药剂、关键症状）
-- 3: 一般概念（如环境因子、次要寄主）
-- 2: 次要概念（如地理位置、辅助信息）
-- 1: 边缘概念（如研究方法、实验设备）
+- 5: 核心概念（如松材线虫、松褐天牛、马尾松）- 出现频率高，领域关键
+- 4: 重要概念（如具体防治药剂、关键症状）- 有明确应用价值
+- 3: 一般概念（如环境因子、次要寄主）- 相关但非核心
+- 2: 次要概念（如地理位置、辅助信息）- 背景信息
+- 1: 边缘概念（如研究方法、实验设备）- 仅在特定上下文有用
 
 ## 过滤规则
 排除以下内容：
@@ -174,20 +213,23 @@ class ConceptExtractor:
             return None
         
         try:
-            # 直接解析 JSON，不需要清理 markdown
+            # 直接解析JSON（Qwen模型开启json_mode后输出必定是合法JSON）
+            # 不需要清理markdown代码块（```json...```）
             concepts = json.loads(response)
             
-            # 验证和标准化
+            # 验证和标准化每个概念
             valid_concepts = []
             for c in concepts:
                 if isinstance(c, dict) and 'entity' in c:
+                    # 处理importance字段（可能是字符串、None等）
                     importance_val = c.get('importance', 3)
                     if importance_val is None:
-                        importance_val = 3
+                        importance_val = 3  # 默认中等重要性
                     try:
+                        # 限制范围在1-5之间
                         importance = min(5, max(1, int(importance_val)))
                     except (ValueError, TypeError):
-                        importance = 3
+                        importance = 3  # 解析失败用默认值
                     
                     valid_concepts.append({
                         'entity': str(c.get('entity', '')).lower().strip(),
@@ -205,22 +247,22 @@ class ConceptExtractor:
             return None
     
     def extract_relationships(self, text: str, chunk_id: str = "") -> Optional[List[Dict]]:
-        """
-        Extract semantic relationships using Qwen with strict JSON Schema
-        
-        Args:
-            text: Text chunk to extract relationships from
-            chunk_id: Unique identifier for the chunk
-        
-        Returns:
-            List of relationship dictionaries with format:
+        """从文本块中提取实体间语义关系(使用 Qwen 严格 JSON Schema)
+
+        参数:
+            text: 待提取关系的文本块;
+            chunk_id: 文本块唯一标识符。
+
+        返回:
+            关系列表, 每条关系大致形如:
             {
-                "node_1": str,
-                "node_2": str,
-                "edge": str (relationship description),
-                "weight": float (W1 - LLM-extracted relationship weight),
-                "chunk_id": str
+                "node_1": 源实体名称,
+                "node_2": 目标实体名称,
+                "edge": 关系类型/描述,
+                "weight": W1 权重(LLM 抽取关系的置信度, 这里固定为 0.8),
+                "chunk_id": 来源文本块 ID
             }
+            若解析失败或无有效关系, 返回 None。
         """
         # Qwen 优化的关系提取提示词
         system_prompt = """你是松材线虫病知识图谱关系提取专家。你的任务是识别实体间的明确因果、功能关系。
@@ -315,15 +357,20 @@ class ConceptExtractor:
             return None
     
     def extract_concepts_and_relationships(self, text: str, chunk_id: str = "") -> Tuple[Optional[List[Dict]], Optional[List[Dict]]]:
-        """
-        Extract both concepts and relationships in a single LLM call with strict JSON Schema (FASTER + MORE RELIABLE)
-        
-        Args:
-            text: Text chunk to extract from
-            chunk_id: Unique identifier for the chunk
-        
-        Returns:
-            Tuple of (concepts_list, relationships_list)
+        """在一次 LLM 调用中同时抽取概念和关系
+
+        相比先调用 extract_concepts 再调用 extract_relationships, 这里使用统一的 JSON Schema
+        一次性返回 concepts 与 relationships, 可以减少网络往返并提高整体一致性,
+        也是上层 extract_from_chunks 默认使用的路径。
+
+        参数:
+            text: 待处理的文本块;
+            chunk_id: 文本块唯一标识符。
+
+        返回:
+            (concepts_list, relationships_list) 二元组:
+            - concepts_list: 概念字典列表, 结构与 extract_concepts 返回值一致, 无结果时为 None;
+            - relationships_list: 关系字典列表, 结构与 extract_relationships 返回值一致, 无结果时为 None。
         """
         system_prompt = """你是专业的松材线虫病知识图谱构建系统。你的任务是从科学文献中同时提取概念和关系。
 
@@ -431,15 +478,16 @@ class ConceptExtractor:
             return None, None
     
     def extract_from_chunks(self, chunks: List[Dict], max_chunks: int = None) -> Tuple[pd.DataFrame, pd.DataFrame]:
-        """
-        Extract concepts and relationships from multiple chunks
-        
-        Args:
-            chunks: List of chunk dictionaries with 'text' and 'chunk_id' keys
-            max_chunks: Maximum number of chunks to process (None = all chunks)
-        
-        Returns:
-            Tuple of (concepts_df, relationships_df)
+        """批量从多个文本块中抽取概念和关系
+
+        参数:
+            chunks: 文本块字典列表, 每个元素至少包含 'text' 和 'chunk_id' 字段;
+            max_chunks: 限制最多处理的块数, 为 None 时处理全部块(默认)。
+
+        返回:
+            (concepts_df, relationships_df) 二元组:
+            - concepts_df: 汇总所有成功块后得到的概念 DataFrame;
+            - relationships_df: 汇总所有成功块后得到的关系 DataFrame。
         """
         # Limit chunks if max_chunks is specified
         if max_chunks and len(chunks) > max_chunks:
@@ -477,6 +525,7 @@ class ConceptExtractor:
                 logger.debug(f"Extracted {len(concepts)} concepts")
             else:
                 logger.debug("No concepts extracted")
+                # 单块失败只计数并跳过,让管道尽量在其余块上继续跑完
                 failed_chunks += 1
                 continue
             
@@ -499,20 +548,26 @@ class ConceptExtractor:
 
 
 class ContextualProximityAnalyzer:
-    """Analyze contextual proximity between concepts in chunks"""
+    """基于上下文共现的关系分析器(W2)
+
+    作用:
+    - 在不调用 LLM 的前提下, 仅根据概念在同一文本块中的共现情况生成一批“弱关系”;
+    - 这些关系赋予固定权重 W2, 后续与 LLM 抽取的 W1 关系在 merge_relationships 中合并。
+    """
     
     @staticmethod
     def extract_proximity_relationships(chunks: List[Dict]) -> pd.DataFrame:
-        """
-        Extract relationships based on contextual proximity (W2 weight)
-        
-        Concepts that appear in the same chunk are considered related by proximity
-        
-        Args:
-            chunks: List of chunk dictionaries with extracted concepts
-        
-        Returns:
-            DataFrame of proximity-based relationships
+        """根据同一文本块内的共现情况生成关系(W2)
+
+        规则:
+        - 同一 chunk 中的任意两概念视为存在上下文关联;
+        - 为每一对概念创建一条关系, edge 固定为 'co-occurs in', weight 固定为 0.5。
+
+        参数:
+            chunks: 含有已抽取概念的文本块列表, 每个元素通常包含 'concepts' 和 'chunk_id' 字段。
+
+        返回:
+            由共现关系构成的 DataFrame。
         """
         proximity_relationships = []
         
@@ -538,20 +593,19 @@ class ContextualProximityAnalyzer:
     @staticmethod
     def merge_relationships(llm_relationships: pd.DataFrame, 
                           proximity_relationships: pd.DataFrame) -> pd.DataFrame:
-        """
-        Merge LLM-extracted and proximity-based relationships
-        
-        Rules:
-        - Group by (node_1, node_2) pairs
-        - Sum weights
-        - Concatenate relationship descriptions
-        
-        Args:
-            llm_relationships: DataFrame from LLM extraction
-            proximity_relationships: DataFrame from proximity analysis
-        
-        Returns:
-            Merged and aggregated relationships
+        """合并 LLM 抽取关系(W1) 和上下文共现关系(W2)
+
+        规则:
+        - 先将两类关系简单拼接在一起;
+        - 按 (node_1, node_2) 成对分组, 对权重求和, 将 edge/chunk_id/source 等字段合并去重;
+        - 最后把合并后的 weight 归一化到 [0,1] 区间, 便于后续按“强关系”排序。
+
+        参数:
+            llm_relationships: 来自 LLM 抽取的关系 DataFrame, 权重为 W1;
+            proximity_relationships: 来自上下文共现分析的关系 DataFrame, 权重为 W2。
+
+        返回:
+            已聚合并归一化权重的关系 DataFrame。
         """
         if llm_relationships.empty and proximity_relationships.empty:
             return pd.DataFrame()
@@ -562,7 +616,7 @@ class ContextualProximityAnalyzer:
             ignore_index=True
         )
         
-        # Group by node pairs and aggregate
+        # Group by node pairs and aggregate: 将 LLM 关系(W1) 与上下文共现关系(W2) 的权重累加,并合并关系描述
         merged = all_relationships.groupby(['node_1', 'node_2']).agg({
             'weight': 'sum',
             'edge': lambda x: ' | '.join(x.unique()),

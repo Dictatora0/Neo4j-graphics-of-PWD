@@ -63,7 +63,7 @@ class MarkdownDataCleaner:
         """
         self.logger = _get_logger(__name__)
         
-        # 配置参数
+        # 配置参数：这些开关主要控制“清洗力度”，可以根据项目阶段和任务需求调整
         self.remove_references = remove_references
         self.clean_tables = clean_tables
         self.normalize_chinese = normalize_chinese
@@ -118,6 +118,7 @@ class MarkdownDataCleaner:
     
     def _init_sentence_segmenter(self):
         """初始化分句工具"""
+        # 优先使用成熟的分句库，其次使用自定义实现，最后退回到简单正则
         if SBD_AVAILABLE:
             self.zh_segmenter = pysbd.Segmenter(language="zh", clean=False)
             self.en_segmenter = pysbd.Segmenter(language="en", clean=False)
@@ -378,7 +379,7 @@ class MarkdownDataCleaner:
             # 基础正则分句
             sentences = self._basic_sentence_segmentation(text)
         
-        # 过滤和清洗句子
+        # 过滤和清洗句子：按归一化 → 长度 → 数字/符号 → 停用词占比 逐层筛掉噪声
         filtered_sentences = []
         for sent in sentences:
             sent = self.normalize_text(sent)
@@ -441,6 +442,7 @@ class MarkdownDataCleaner:
         try:
             self.logger.info("开始Markdown文本清洗")
             
+            # 整体流程：行级清洗 → 结构解析 → 文本归一化 → 分句 → 生成元数据
             # 1. 按行拆分
             lines = markdown_text.split('\n')
             

@@ -2,6 +2,17 @@
 PDF文本提取模块（Layout-Aware增强版）
 使用智能文档解析工具提取PDF内容，解决乱序和表格丢失问题
 支持结构化分块和精准参考文献剔除
+
+整体处理流程(从原始 PDF 到清洗后的纯文本):
+1) `extract_from_directory` 遍历目录下所有 `.pdf` → 逐个调用 `extract_text_from_pdf`；
+2) `extract_text_from_pdf` 内部按优先级选择解析器:
+   - 优先 Marker(如 GPU 可用) → 其次 pdfplumber → 最后 PyMuPDF(fitz) 基础解析;
+3) 解析结果统一转换为结构化章节 `sections` → `_process_sections`:
+   - `_remove_header_footer_sections` 剔除页眉/页脚;
+   - `_remove_references` 剔除参考文献尾部;
+   - 合并标题+正文并调用 `clean_text` 做控制字符/空行清洗;
+4) 如启用 OCR 且文本长度 < 500, 认为可能是扫描版 PDF → 调用 `OCRProcessor` 尝试重新提取;
+5) 最终得到的纯文本会写入内存缓存(SimpleCache), 供后续重复运行直接复用。
 """
 
 import fitz  # PyMuPDF
@@ -61,7 +72,14 @@ class SimpleCache:
 
 
 class PDFExtractor:
-    """Layout-Aware PDF文本提取器"""
+    """Layout-Aware PDF文本提取器
+
+    特点:
+    - 解析优先级: Marker(结构+Markdown) > pdfplumber(文本+表格) > PyMuPDF(基础文本);
+    - 在结构化层面对页眉/页脚与参考文献做剔除, 输出更接近“正文语料”；
+    - 可选 OCR 回退, 对扫描版 PDF 再做一次文本提取尝试;
+    - 内置简单缓存, 避免对同一 PDF 反复解析。
+    """
     
     def __init__(self, use_cache: bool = True, enable_parallel: bool = False,  # 禁用并行（无依赖）
                  max_workers: int = None, enable_ocr: bool = False, 
@@ -75,8 +93,11 @@ class PDFExtractor:
             ocr_engine: OCR引擎 ('tesseract' 或 'paddle')
             use_marker: 是否使用Marker进行智能解析（需要GPU）
         """
+        # 这里不依赖全局 logger_config，而是使用模块内的简易 logger
         self.logger = _get_logger(__name__)
+        # 简单内存缓存：同一 PDF 第二次解析时可以直接复用结果，节省时间
         self.cache = SimpleCache() if use_cache else None
+        # 并行相关参数仅保留接口兼容，目前统一走串行路径
         self.enable_parallel = enable_parallel  # 强制禁用，避免依赖
         
         # 智能解析配置 - 新增GPU检测
@@ -203,6 +224,7 @@ class PDFExtractor:
             return markdown, sections
             
         except Exception as e:
+            # Marker 依赖较多（GPU/模型等），失败时不终止流程而是回退到 pdfplumber
             self.logger.error(f"Marker解析失败: {e}，将回退到pdfplumber")
             return self._parse_with_pdfplumber(pdf_path)
     
@@ -288,7 +310,13 @@ class PDFExtractor:
         return metadata.get('page', 1)
     
     def clean_text(self, text: str) -> str:
-        """清洗文本内容"""
+        """清洗文本内容
+
+        当前做的清洗步骤包括:
+        - 去除不可见控制字符(ASCII 0x00-0x1F 中常见的格式控制符);
+        - 统一行结束符为 `\n`, 兼容 Windows/Unix 不同换行风格;
+        - 将 3 行以上连续空行压缩为最多 2 行, 避免段落间出现大片空白。
+        """
         # 移除特殊字符
         text = re.sub(r'[\x00-\x08\x0b-\x0c\x0e-\x1f]', '', text)
         # 统一行结束符
@@ -392,8 +420,16 @@ class PDFExtractor:
         return self.clean_text(combined_text)
     
     def extract_text_from_pdf(self, pdf_path: str) -> str:
-        """从PDF中提取文本（Layout-Aware增强版）"""
-        # 检查缓存
+        """从单个 PDF 文件中提取清洗后的文本（Layout-Aware增强版）
+
+        关键步骤概览:
+        1. 命中缓存: 若 SimpleCache 中已有该 pdf_path 的结果, 直接返回;
+        2. 解析选择: 按 Marker → pdfplumber → PyMuPDF 的顺序选择可用解析器获取 `sections`;
+        3. 结构化清洗: `_process_sections` 统一做页眉/页脚剔除、参考文献裁剪与 Markdown 标题合并;
+        4. OCR 回退: 若启用 OCR 且文本长度 < 500 字符, 认为可能是扫描版 PDF, 调用 `OCRProcessor` 覆盖文本;
+        5. 写入缓存并记录日志: 将最终文本写入缓存, 输出字符数统计, 便于后续调优。
+        """
+        # 检查缓存：长文献多次调试时可以直接命中，避免重复解析
         if self.cache:
             cached_text = self.cache.get_pdf_cache(pdf_path)
             if cached_text:
@@ -403,7 +439,7 @@ class PDFExtractor:
         self.logger.info(f"开始提取: {os.path.basename(pdf_path)}")
         
         try:
-            # 选择解析方式
+            # 选择解析方式：优先使用 Marker，其次 pdfplumber，最后回退到 PyMuPDF 基础解析
             if self.use_marker:
                 raw_text, sections = self._parse_with_marker(pdf_path)
             elif PDFPLUMBER_AVAILABLE:
@@ -411,10 +447,10 @@ class PDFExtractor:
             else:
                 raw_text, sections = self._parse_with_fitz(pdf_path)
             
-            # 处理结构化内容
+            # 处理结构化内容：统一做页眉页脚/参考文献剔除和 Markdown 合并
             processed_text = self._process_sections(sections)
             
-            # 如果提取的文本很少，可能是扫描版PDF，尝试OCR
+            # 如果提取的文本很少，认为可能是扫描版 PDF，再退一步尝试 OCR
             if self.enable_ocr and self.ocr_processor and len(processed_text) < 500:
                 self.logger.info(f"文本量过少（{len(processed_text)}字符），可能为扫描版PDF，尝试OCR...")
                 try:

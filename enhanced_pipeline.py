@@ -28,21 +28,30 @@ logger = get_logger('EnhancedPipeline')
 
 
 class EnhancedKnowledgeGraphPipeline:
-    """
-    Enhanced pipeline combining:
-    1. LLM-based concept extraction (vs traditional NER)
-    2. Semantic relationship extraction with weighting
-    3. Contextual proximity analysis
-    4. Embedding-based deduplication
-    5. Importance filtering
+    """增强型知识图谱构建管道 - 完整的端到端处理流程
+    
+    核心改进（相比传统NER方法）：
+    1. LLM概念提取 - 理解语义，提取领域专有概念
+    2. 语义关系提取 - 识别因果、传播等复杂关系，带权重
+    3. 上下文邻近性分析 - 同一文本块的概念自动关联
+    4. 嵌入式去重 - 使用BGE-M3语义相似度合并同义概念
+    5. 重要性过滤 - 自动过滤低价值概念，减少噪音
+    
+    流程概览：
+    PDF文件 -> 文本提取 -> 分块 -> LLM提取 -> 去重 -> 过滤 -> 输出CSV
     """
     
     def __init__(self, config: Dict = None):
-        """
-        Initialize enhanced pipeline
+        """初始化增强型管道，加载配置和组件
         
         Args:
-            config: Configuration dictionary
+            config: 配置字典（从config/config.yaml加载）
+        
+        初始化内容：
+        - LLM概念提取器（连接Ollama）
+        - 嵌入模型（BGE-M3或MiniLM）
+        - 概念去重器
+        - 邻近性分析器
         """
         if config is None:
             config = load_config()
@@ -103,14 +112,21 @@ class EnhancedKnowledgeGraphPipeline:
             self.deduplicator = None
     
     def run(self, pdf_dir: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
-        """
-        Run complete enhanced pipeline
+        """运行完整的增强型管道处理流程
         
         Args:
-            pdf_dir: Directory containing PDF files
+            pdf_dir: PDF文献目录路径
         
         Returns:
-            Tuple of (concepts_df, relationships_df)
+            (概念DataFrame, 关系DataFrame) - 已去重和过滤的结果
+        
+        处理步骤（共6步）：
+        1. PDF文本提取 - 支持OCR和布局感知
+        2. 文本分块 - 3000字/块，300字重叠
+        3. LLM概念提取 - 调用Ollama模型
+        4. 邻近性分析 - 提取共现关系
+        5. 去重合并 - 语义相似度>0.85合并
+        6. 过滤输出 - 移除低重要性概念
         """
         logger.info("="*60)
         logger.info("Starting Enhanced Knowledge Graph Pipeline")

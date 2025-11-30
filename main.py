@@ -21,26 +21,39 @@ logger = get_logger('MainEnhanced')
 
 
 def print_step(step_num: int, total_steps: int, title: str):
-    """打印步骤标题"""
+    """打印步骤标题，用于进度展示"""
     print(f"\n{'='*60}")
     print(f"步骤 {step_num}/{total_steps}: {title}")
     print(f"{'='*60}\n")
 
 
 def main():
-    """主函数"""
-    # 加载配置
+    """主函数 - 松材线虫病知识图谱构建完整流程
+    
+    流程概览：
+    1. 加载配置和检查环境
+    2. 备份并清空 Neo4j 数据库（可选）
+    3. 运行增强型管道（PDF提取 -> LLM概念提取 -> 去重）
+    4. 数据清洗和格式转换
+    5. 生成 Neo4j 导入文件
+    6. 生成统计报告
+    
+    异常处理：
+    - 支持 Ctrl+C 中断，自动回滚数据库
+    - 出错时尝试恢复备份
+    """
+    # 加载配置文件（config/config.yaml）
     logger.info("加载配置文件...")
     config = load_config()
     
-    # 获取配置参数
-    PDF_DIR = config.get('pdf.input_directory', './文献')
-    OUTPUT_DIR = config.get('output.base_directory', './output')
-    CONFIDENCE_THRESHOLD = config.get('cleaning.confidence_threshold', 0.65)
-    USE_CACHE = config.get('system.enable_cache', True)
-    ENABLE_PARALLEL = config.get('system.enable_parallel', True)
-    LLM_MODEL = config.get('llm.model', 'mistral')
-    MAX_CHUNKS = config.get('llm.max_chunks', 100)
+    # 获取配置参数（带默认值兜底）
+    PDF_DIR = config.get('pdf.input_directory', './文献')  # PDF文献存放目录
+    OUTPUT_DIR = config.get('output.base_directory', './output')  # 所有输出文件的根目录
+    CONFIDENCE_THRESHOLD = config.get('cleaning.confidence_threshold', 0.65)  # 关系置信度阈值，低于此值会被过滤
+    USE_CACHE = config.get('system.enable_cache', True)  # 是否缓存PDF提取结果，避免重复解析
+    ENABLE_PARALLEL = config.get('system.enable_parallel', True)  # 并行处理PDF（多核加速）
+    LLM_MODEL = config.get('llm.model', 'mistral')  # Ollama模型名称（mistral/qwen2.5-coder等）
+    MAX_CHUNKS = config.get('llm.max_chunks', 100)  # 限制处理的文本块数量（None=全部），用于快速测试
     
     logger.info(f"PDF目录: {PDF_DIR}")
     logger.info(f"输出目录: {OUTPUT_DIR}")
@@ -63,11 +76,12 @@ def main():
     print(f"开始时间: {start_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
     
     # ========== Neo4j 数据库备份和清空 ==========
+    # 在导入新数据前，先备份旧数据，避免误操作丢失
     neo4j_manager = None
     backup_file = None
     
     try:
-        # 初始化 Neo4j 管理器
+        # 初始化 Neo4j 管理器（连接本地数据库）
         neo4j_uri = config.get('neo4j.uri', 'bolt://localhost:7687')
         neo4j_user = config.get('neo4j.user', 'neo4j')
         neo4j_password = config.get('neo4j.password', 'password')
@@ -77,12 +91,13 @@ def main():
         if neo4j_manager.connect():
             logger.info("准备清空 Neo4j 数据库...")
             
-            # 备份当前数据库
+            # 备份当前数据库（导出为 .cypher 脚本文件）
+            # 如果数据库为空则跳过备份
             backup_file = neo4j_manager.backup_database()
             if backup_file:
                 print(f"数据库已备份: {backup_file}")
             
-            # 清空数据库
+            # 清空数据库（DETACH DELETE 删除所有节点和关系）
             neo4j_manager.clear_database()
             print("数据库已清空，准备导入新数据\n")
         else:
@@ -94,9 +109,11 @@ def main():
     
     try:
         # ========== 步骤 1-5: 增强型管道处理 ==========
+        # 这一步包含：PDF提取 -> 分块 -> LLM概念提取 -> 关系提取 -> 去重
         print_step(1, 4, "运行增强型知识图谱管道")
         logger.info("初始化增强型管道...")
         
+        # 管道会自动完成所有核心处理步骤
         pipeline = EnhancedKnowledgeGraphPipeline(config)
         concepts_df, relationships_df = pipeline.run(PDF_DIR)
         
@@ -105,30 +122,35 @@ def main():
             sys.exit(1)
         
         # ========== 步骤 2: 数据清洗 ==========
+        # 标准化字段名称，添加 Neo4j 需要的列
         print_step(2, 4, "数据清洗和规范化")
         logger.info("开始数据清洗")
         
         cleaner = DataCleaner(confidence_threshold=CONFIDENCE_THRESHOLD)
         
-        # 转换概念为实体格式以兼容现有清洗器
+        # 转换概念为实体格式（entity -> name），兼容下游模块
         entities_clean = concepts_df.copy()
         entities_clean.rename(columns={'entity': 'name'}, inplace=True)
         
-        # 添加 Neo4j 需要的列
+        # 补充 Neo4j 导入所需的字段
+        # id: 节点唯一标识符（使用概念名称）
+        # type: 节点类型（从category字段获取，默认为concept）
         if 'id' not in entities_clean.columns:
             entities_clean['id'] = entities_clean['name']
         if 'type' not in entities_clean.columns:
             entities_clean['type'] = entities_clean.get('category', 'concept')
         
-        # 清洗关系
+        # 清洗关系（统一字段命名）
         relations_clean = relationships_df.copy()
         relations_clean.rename(columns={
-            'node_1': 'head',
-            'node_2': 'tail',
-            'edge': 'relation'
+            'node_1': 'head',      # 源节点
+            'node_2': 'tail',      # 目标节点
+            'edge': 'relation'     # 关系类型
         }, inplace=True)
         
-        # 添加缺失的列以兼容现有系统
+        # 补充字段以兼容现有系统
+        # confidence: 关系置信度（从weight字段映射）
+        # source_pdf: 来源PDF文件名（从chunk_id解析）
         if 'confidence' not in relations_clean.columns:
             relations_clean['confidence'] = relations_clean['weight']
         if 'source_pdf' not in relations_clean.columns:

@@ -18,18 +18,27 @@ init(autoreset=True)
 
 
 class KnowledgeGraphQuery:
-    """知识图谱查询类"""
+    """知识图谱查询类 - 封装常用的Cypher查询操作
+    
+    功能模块：
+    1. 统计查询 - 节点数、关系数、类型分布
+    2. 实体查询 - 按类型、关键词搜索节点
+    3. 关系查询 - 查看节点的邻居关系
+    4. 路径查询 - 最短路径搜索
+    5. 高级查询 - 社区分析、核心节点识别
+    """
     
     def __init__(self, uri: str = "bolt://localhost:7687", 
                  user: str = "neo4j", 
                  password: str = "12345678"):
-        """
-        初始化数据库连接
+        """初始化Neo4j数据库连接
         
         Args:
-            uri: Neo4j连接URI
-            user: 用户名
-            password: 密码
+            uri: Neo4j连接URI（默认本地：bolt://localhost:7687）
+            user: 数据库用户名（默认neo4j）
+            password: 数据库密码（需要在config.yaml中配置）
+        
+        连接失败会抛出异常，需要确保Neo4j服务正在运行
         """
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         
@@ -82,7 +91,16 @@ class KnowledgeGraphQuery:
     # ========== 统计查询 ==========
     
     def get_database_stats(self):
-        """获取数据库统计信息"""
+        """获取数据库统计信息 - 总览知识图谱规模
+        
+        输出内容：
+        - 总节点数、总关系数
+        - 平均度数（每个节点的平均连接数）
+        - 节点类型分布（Pathogen、Host、Vector等）
+        - 关系类型分布（感染、传播、防治等）
+        
+        用途：快速了解知识图谱的规模和结构
+        """
         self.print_section("数据库统计信息")
         
         # 节点总数
@@ -135,7 +153,16 @@ class KnowledgeGraphQuery:
             print(tabulate(table_data, headers=headers, tablefmt='simple'))
     
     def get_node_degree_distribution(self):
-        """获取节点度数分布"""
+        """获取节点度数分布 - 找出连接最多的核心节点
+        
+        度数：一个节点连接的关系总数（入度+出度）
+        
+        输出：Top 20高度数节点
+        - 度数越高，说明该概念越重要，与其他概念关联越多
+        - 如"松材线虫"通常度数最高（病原核心）
+        
+        应用：识别知识图谱中的关键概念
+        """
         self.print_section("节点度数分布（Top 20）")
         
         query = """
@@ -264,7 +291,20 @@ class KnowledgeGraphQuery:
     # ========== 路径查询 ==========
     
     def find_shortest_path(self, source: str, target: str):
-        """查找两个节点之间的最短路径"""
+        """查找两个节点之间的最短路径 - 发现概念间的关联链
+        
+        Args:
+            source: 源节点名称（如"松材线虫"）
+            target: 目标节点名称（如"马尾松"）
+        
+        输出：
+        - 路径长度（经过的关系数）
+        - 完整路径（节点序列和关系类型）
+        
+        应用场景：
+        - 理解两个概念如何关联（如病原到寄主的传播链）
+        - 发现潜在的间接关系
+        """
         self.print_section(f"最短路径: '{source}' → '{target}'")
         
         query = """

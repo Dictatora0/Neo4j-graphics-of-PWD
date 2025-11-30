@@ -12,7 +12,7 @@ print("\n" + "="*70)
 print(" 📊 运行状态检查")
 print("="*70 + "\n")
 
-# 检查进度文件
+# 检查进度文件: 由 CheckpointManager 周期性写入,反映当前块号和累计统计
 progress_file = Path("output/checkpoints/.progress.json")
 if progress_file.exists():
     with open(progress_file) as f:

@@ -57,8 +57,10 @@ class CommunityDetector:
         Args:
             algorithm: 社区检测算法 ('louvain', 'leiden', 'label_propagation', 'connected_components')
         """
+        # 统一转为小写,方便后续分支判断
         self.algorithm = algorithm.lower()
         
+        # 如果环境缺少 NetworkX/igraph,自动降级到可用算法,保证功能可用性
         if self.algorithm == 'louvain' and not NETWORKX_AVAILABLE:
             logger.warning("NetworkX 不可用,回退到 connected_components")
             self.algorithm = 'connected_components'
@@ -87,6 +89,7 @@ class CommunityDetector:
         
         logger.info(f"开始社区检测: {len(concepts_df)} 概念, {len(relationships_df)} 关系")
         
+        # 根据初始化时确定的算法分支到对应实现
         if self.algorithm == 'louvain':
             return self._detect_louvain(concepts_df, relationships_df)
         elif self.algorithm == 'leiden':
@@ -101,7 +104,7 @@ class CommunityDetector:
         """构建 NetworkX 图"""
         G = nx.Graph()
         
-        # 添加节点
+        # 添加节点: 只要在概念表里出现过的 entity 都作为节点加入,同时记录重要性和类别
         for _, row in concepts_df.iterrows():
             G.add_node(
                 row['entity'],
@@ -109,7 +112,7 @@ class CommunityDetector:
                 category=row.get('category', 'misc')
             )
         
-        # 添加边
+        # 添加边: 仅当两端节点都存在于图中时才连边,避免脏数据引入孤立引用
         for _, row in relationships_df.iterrows():
             node1 = row['node_1']
             node2 = row['node_2']
@@ -199,7 +202,7 @@ class CommunityDetector:
     def _detect_connected_components(self, concepts_df: pd.DataFrame, 
                                     relationships_df: pd.DataFrame) -> Dict[int, List[str]]:
         """连通分量检测 (基础算法,无需额外库)"""
-        # 构建邻接表
+        # 构建邻接表: 简单 undirected 图,用来在没有图算法库时兜底
         adjacency = defaultdict(set)
         
         for _, row in relationships_df.iterrows():
@@ -213,7 +216,7 @@ class CommunityDetector:
             if entity not in adjacency:
                 adjacency[entity] = set()
         
-        # BFS 查找连通分量
+        # BFS 查找连通分量: 每次从一个未访问节点出发,扩展出一个社区
         visited = set()
         communities = {}
         community_id = 0
@@ -311,13 +314,13 @@ class CommunitySummarizer:
             (relationships_df['node_2'].isin(community_entities))
         ]
         
-        # 识别核心概念 (importance 最高的前5个)
+        # 识别核心概念: 直接按 importance 排序取前几名,作为摘要里的“主角”
         core_concepts = community_concepts.nlargest(
             min(5, len(community_concepts)), 
             'importance'
         )['entity'].tolist()
         
-        # 构建社区知识上下文
+        # 构建社区知识上下文: 选取部分概念和关系,作为 LLM 摘要的输入提示
         concepts_info = []
         for _, row in community_concepts.head(10).iterrows():
             concepts_info.append(f"- {row['entity']} ({row.get('category', 'unknown')}类, 重要性: {row.get('importance', 1)})")
@@ -371,17 +374,18 @@ class CommunitySummarizer:
                 'size': len(community_entities)
             }
         except json.JSONDecodeError:
+            # 当 LLM 没有按预期返回 JSON 时,退回到规则摘要,保证功能可用
             logger.error("JSON 解析失败,使用规则生成")
             return self._rule_based_summary(community_entities, community_concepts, community_relations)
     
     def _rule_based_summary(self, entities: List[str], concepts_df: pd.DataFrame, 
                            relations_df: pd.DataFrame) -> Dict:
         """基于规则的摘要生成"""
-        # 统计类别分布
+        # 统计类别分布: 用出现次数最多的类别粗略代表该社区主题
         category_counts = concepts_df['category'].value_counts().to_dict()
         main_category = max(category_counts, key=category_counts.get) if category_counts else 'mixed'
         
-        # 核心概念
+        # 核心概念: 同样按 importance 取前若干个
         core_concepts = concepts_df.nlargest(
             min(5, len(concepts_df)), 'importance'
         )['entity'].tolist()
@@ -389,7 +393,7 @@ class CommunitySummarizer:
         # 生成标题
         title = f"{main_category.upper()} 相关知识 ({len(entities)} 概念)"
         
-        # 生成摘要
+        # 生成摘要: 提供一个可以直接展示的简要说明,即使没有 LLM 也能工作
         summary = f"该社区包含 {len(entities)} 个概念,主要类别为 {main_category}。核心概念包括: {', '.join(core_concepts[:3])}。"
         
         return {
@@ -458,10 +462,10 @@ class GraphRAG:
         Returns:
             社区摘要 DataFrame
         """
-        # 1. 检测社区
+        # 1. 检测社区: 基于关系结构把图拆成若干主题簇
         communities = self.detector.detect_communities(concepts_df, relationships_df)
         
-        # 2. 生成摘要
+        # 2. 生成摘要: 为每个社区生成 title + summary,最终汇总成 DataFrame
         summaries_df = self.summarizer.summarize_all_communities(
             communities, concepts_df, relationships_df
         )
