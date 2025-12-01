@@ -490,6 +490,7 @@ class ConceptExtractor:
             - relationships_df: 汇总所有成功块后得到的关系 DataFrame。
         """
         import gc  # 导入垃圾回收模块
+        import time  # 导入时间模块用于添加延迟
         
         # Limit chunks if max_chunks is specified
         if max_chunks and len(chunks) > max_chunks:
@@ -536,6 +537,9 @@ class ConceptExtractor:
                 logger.debug(f"Extracted {len(relationships)} relationships")
             
             successful_chunks += 1
+            
+            # 添加延迟避免Ollama过载（内存不足时尤其重要）
+            time.sleep(0.5)
             
             # 每10个chunk执行一次垃圾回收，防止内存累积
             if i % 10 == 0:

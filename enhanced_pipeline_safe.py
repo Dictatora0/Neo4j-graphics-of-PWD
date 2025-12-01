@@ -41,6 +41,14 @@ from config_loader import load_config
 from logger_config import get_logger
 from checkpoint_manager import CheckpointManager
 
+# v2.6.3: 多模态支持 - 图片提取和描述
+try:
+    from multimodal_extractor import ImageExtractor, VisionLanguageModel
+    MULTIMODAL_AVAILABLE = True
+except ImportError:
+    MULTIMODAL_AVAILABLE = False
+    logger.warning("multimodal_extractor not available, image extraction disabled")
+
 logger = get_logger('SafePipeline')
 
 
@@ -201,6 +209,18 @@ class EnhancedKnowledgeGraphPipelineSafe:
                 logger.error("No PDF texts extracted")
                 return pd.DataFrame(), pd.DataFrame()
             
+            # Step 1.5: 提取并描述图片（如果启用）
+            if self.config.get('pdf.enable_image_captions', False):
+                logger.info("\n[Step 1.5/6] Extracting and describing images from PDFs...")
+                pdf_images = self._extract_and_describe_images(pdf_dir)
+                
+                if pdf_images:
+                    logger.info(f"Extracted images from {len(pdf_images)} PDFs")
+                    pdf_texts = self._merge_image_captions_to_texts(pdf_texts, pdf_images)
+                    logger.info("Image captions merged into PDF texts")
+                else:
+                    logger.info("No images extracted or caption generation failed")
+            
             # Step 2: 分块
             logger.info("\n[Step 2/6] Splitting texts into chunks...")
             chunks = self._create_chunks(pdf_texts)
@@ -352,6 +372,129 @@ class EnhancedKnowledgeGraphPipelineSafe:
             enable_parallel=self.config.get('system.enable_parallel', True)
         )
         return extractor.extract_from_directory(pdf_dir)
+    
+    def _extract_and_describe_images(self, pdf_dir: str) -> Dict[str, List[Dict]]:
+        """从PDF中提取图片并生成VLM描述
+        
+        返回:
+            {pdf_name: [{'image_path': str, 'caption': str, 'page': int}, ...]}
+        """
+        if not MULTIMODAL_AVAILABLE:
+            logger.warning("Multimodal extraction not available, skipping images")
+            return {}
+        
+        enable_captions = self.config.get('pdf.enable_image_captions', False)
+        if not enable_captions:
+            logger.info("Image caption generation disabled in config")
+            return {}
+        
+        try:
+            # 初始化图片提取器
+            image_output_dir = self.config.get('pdf.image_output_dir', './output/pdf_images')
+            min_size = self.config.get('pdf.min_image_size', 300)
+            max_images = self.config.get('pdf.max_images_per_pdf', 20)
+            
+            image_extractor = ImageExtractor(
+                output_dir=image_output_dir,
+                min_width=min_size,
+                min_height=min_size,
+                max_images_per_pdf=max_images
+            )
+            
+            # 初始化VLM
+            caption_provider = self.config.get('pdf.caption_provider', 'ollama')
+            caption_model = self.config.get('pdf.caption_model', 'llava:7b')
+            caption_prompt = self.config.get('pdf.caption_prompt', '描述图片内容')
+            ollama_host = self.config.get('llm.ollama_host', 'http://localhost:11434')
+            
+            vlm = VisionLanguageModel(
+                provider=caption_provider,
+                model=caption_model,
+                ollama_host=ollama_host
+            )
+            
+            # 处理每个PDF
+            import os
+            pdf_images = {}
+            pdf_files = [f for f in os.listdir(pdf_dir) if f.lower().endswith('.pdf')]
+            
+            logger.info(f"Extracting images from {len(pdf_files)} PDFs...")
+            
+            for pdf_file in pdf_files:
+                pdf_path = os.path.join(pdf_dir, pdf_file)
+                
+                # 提取图片
+                images_info = image_extractor.extract_images_from_pdf(pdf_path)
+                
+                if not images_info:
+                    continue
+                
+                logger.info(f"{pdf_file}: extracted {len(images_info)} images")
+                
+                # 生成描述
+                images_with_captions = []
+                for img_info in images_info:
+                    try:
+                        caption = vlm.generate_caption(
+                            img_info['path'],
+                            prompt=caption_prompt
+                        )
+                        
+                        images_with_captions.append({
+                            'image_path': img_info['path'],
+                            'caption': caption,
+                            'page': img_info['page'],
+                            'size': img_info['size']
+                        })
+                        
+                        logger.debug(f"  Page {img_info['page']}: {caption[:100]}...")
+                        
+                    except Exception as e:
+                        logger.warning(f"Caption generation failed for {img_info['path']}: {e}")
+                        continue
+                
+                if images_with_captions:
+                    pdf_images[pdf_file] = images_with_captions
+                    logger.info(f"{pdf_file}: generated {len(images_with_captions)} captions")
+            
+            return pdf_images
+            
+        except Exception as e:
+            logger.error(f"Image extraction failed: {e}")
+            import traceback
+            traceback.print_exc()
+            return {}
+    
+    def _merge_image_captions_to_texts(self, pdf_texts: Dict[str, str], 
+                                       pdf_images: Dict[str, List[Dict]]) -> Dict[str, str]:
+        """将图片描述融入PDF文本
+        
+        策略: 在文本末尾添加 "## 图片内容" 章节
+        """
+        if not pdf_images:
+            return pdf_texts
+        
+        enhanced_texts = pdf_texts.copy()
+        
+        for pdf_name, images in pdf_images.items():
+            if pdf_name not in enhanced_texts:
+                continue
+            
+            # 构建图片描述章节
+            image_section = "\n\n## 图片内容\n\n"
+            image_section += "以下是文献中的图片描述，包含重要的视觉信息：\n\n"
+            
+            for i, img_info in enumerate(images, 1):
+                page = img_info['page']
+                caption = img_info['caption']
+                image_section += f"**图{i}**（第{page}页）：{caption}\n\n"
+            
+            # 附加到文本
+            enhanced_texts[pdf_name] = enhanced_texts[pdf_name] + image_section
+            
+            logger.info(f"{pdf_name}: merged {len(images)} image captions into text")
+        
+        return enhanced_texts
     
     def _create_chunks(self, pdf_texts: Dict[str, str], chunk_size: int = 3000,
                       overlap: int = 300) -> List[Dict]:
@@ -522,22 +665,38 @@ def run_safe_pipeline(pdf_dir: str = None, config: Dict = None,
 
 if __name__ == "__main__":
     import sys
+    import argparse
     
-    # 支持命令行参数
-    clear = '--clear' in sys.argv  # 是否清除旧进度
-    no_resume = '--no-resume' in sys.argv  # 是否禁用断点续传
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description='知识图谱构建 - 带分批处理支持')
+    parser.add_argument('--clear', action='store_true', help='清除旧进度')
+    parser.add_argument('--no-resume', action='store_true', help='禁用断点续传')
+    parser.add_argument('--max-chunks', type=int, default=None, help='最多处理N个chunks（用于分批）')
+    
+    args = parser.parse_args()
     
     print("\n" + "="*60)
     print("Safe Enhanced Pipeline - 带断点续传的安全版本")
     print("="*60)
-    print(f"断点续传: {'禁用' if no_resume else '启用'}")
-    print(f"清除旧进度: {'是' if clear else '否'}")
+    print(f"断点续传: {'禁用' if args.no_resume else '启用'}")
+    print(f"清除旧进度: {'是' if args.clear else '否'}")
+    if args.max_chunks:
+        print(f"批次限制: 最多处理 {args.max_chunks} chunks")
     print("="*60 + "\n")
     
-    # 运行
+    # 运行（传递max_chunks到config）
+    from config_loader import load_config
+    config = load_config()
+    
+    if args.max_chunks:
+        # 覆盖配置中的max_chunks
+        config._data['llm']['max_chunks'] = args.max_chunks
+        logger.info(f"Batch mode: Processing max {args.max_chunks} chunks")
+    
     concepts_df, relationships_df = run_safe_pipeline(
-        resume=not no_resume,
-        clear_checkpoint=clear
+        config=config,
+        resume=not args.no_resume,
+        clear_checkpoint=args.clear
     )
     
     print("\n" + "="*60)
