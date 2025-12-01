@@ -59,16 +59,77 @@ def _get_logger(name: Optional[str] = None) -> logging.Logger:
     return logger
 
 
-# 简化缓存类（替代 CacheManager，避免依赖缺失）
-class SimpleCache:
-    def __init__(self):
-        self.cache = {}
+# 持久化磁盘缓存类（替代内存缓存，支持断点续提取）
+class DiskCache:
+    """持久化磁盘缓存
+    
+    将提取的PDF文本保存到磁盘，程序重启后直接读取，避免重复提取。
+    缓存文件格式: output/cache/pdf_cache.json
+    """
+    def __init__(self, cache_dir: str = "./output/cache"):
+        self.cache_dir = cache_dir
+        self.cache_file = os.path.join(cache_dir, "pdf_cache.json")
+        os.makedirs(cache_dir, exist_ok=True)
+        
+        # 加载已有缓存
+        self.cache = self._load_cache()
+    
+    def _load_cache(self) -> Dict[str, str]:
+        """从磁盘加载缓存"""
+        if os.path.exists(self.cache_file):
+            try:
+                with open(self.cache_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception as e:
+                logging.warning(f"加载缓存失败: {e}，将创建新缓存")
+                return {}
+        return {}
+    
+    def _save_cache(self):
+        """保存缓存到磁盘"""
+        try:
+            with open(self.cache_file, 'w', encoding='utf-8') as f:
+                json.dump(self.cache, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logging.error(f"保存缓存失败: {e}")
     
     def get_pdf_cache(self, pdf_path: str) -> Optional[str]:
-        return self.cache.get(pdf_path)
+        """获取缓存的PDF文本
+        
+        使用文件的绝对路径作为key，确保唯一性
+        """
+        # 使用文件名+大小+修改时间作为缓存key（更可靠）
+        cache_key = self._get_cache_key(pdf_path)
+        return self.cache.get(cache_key)
     
     def set_pdf_cache(self, pdf_path: str, text: str):
-        self.cache[pdf_path] = text
+        """设置PDF文本缓存并立即保存到磁盘"""
+        cache_key = self._get_cache_key(pdf_path)
+        self.cache[cache_key] = text
+        self._save_cache()  # 立即持久化
+    
+    def _get_cache_key(self, pdf_path: str) -> str:
+        """生成缓存key：文件名+大小+修改时间"""
+        try:
+            stat = os.stat(pdf_path)
+            filename = os.path.basename(pdf_path)
+            # 使用文件名+大小+修改时间生成唯一key
+            return f"{filename}_{stat.st_size}_{int(stat.st_mtime)}"
+        except:
+            # 如果获取失败，使用文件名
+            return os.path.basename(pdf_path)
+    
+    def clear(self):
+        """清空缓存"""
+        self.cache = {}
+        self._save_cache()
+        
+    def get_stats(self) -> Dict:
+        """获取缓存统计信息"""
+        return {
+            "cached_files": len(self.cache),
+            "cache_size_mb": os.path.getsize(self.cache_file) / 1024 / 1024 if os.path.exists(self.cache_file) else 0
+        }
 
 
 class PDFExtractor:
@@ -95,8 +156,8 @@ class PDFExtractor:
         """
         # 这里不依赖全局 logger_config，而是使用模块内的简易 logger
         self.logger = _get_logger(__name__)
-        # 简单内存缓存：同一 PDF 第二次解析时可以直接复用结果，节省时间
-        self.cache = SimpleCache() if use_cache else None
+        # 持久化磁盘缓存：程序重启后仍可复用，大幅加速重复运行
+        self.cache = DiskCache() if use_cache else None
         # 并行相关参数仅保留接口兼容，目前统一走串行路径
         self.enable_parallel = enable_parallel  # 强制禁用，避免依赖
         
@@ -133,7 +194,8 @@ class PDFExtractor:
         self.metadata_keywords = ['作者', '单位', '收稿', '基金项目', '责任编辑']
         
         if self.cache:
-            self.logger.info("PDF缓存已启用（内置简单缓存）")
+            stats = self.cache.get_stats()
+            self.logger.info(f"PDF磁盘缓存已启用 (已缓存 {stats['cached_files']} 个文件, {stats['cache_size_mb']:.2f} MB)")
         if self.enable_parallel:
             self.logger.warning("并行处理依赖 parallel_processor，已自动禁用")
 

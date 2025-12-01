@@ -102,7 +102,7 @@ class ConceptExtractor:
                     "top_p": 0.8,
                     "top_k": 20,
                     "repeat_penalty": 1.1,
-                    "num_ctx": 8192,  # Qwen 支持更大上下文
+                    "num_ctx": 4096,  # 降低上下文窗口减少内存占用
                 }
                 
                 # Qwen 模型专属：强制 JSON 格式输出
@@ -489,6 +489,8 @@ class ConceptExtractor:
             - concepts_df: 汇总所有成功块后得到的概念 DataFrame;
             - relationships_df: 汇总所有成功块后得到的关系 DataFrame。
         """
+        import gc  # 导入垃圾回收模块
+        
         # Limit chunks if max_chunks is specified
         if max_chunks and len(chunks) > max_chunks:
             logger.warning(f"Limiting processing to {max_chunks} chunks (out of {len(chunks)})")
@@ -534,6 +536,11 @@ class ConceptExtractor:
                 logger.debug(f"Extracted {len(relationships)} relationships")
             
             successful_chunks += 1
+            
+            # 每10个chunk执行一次垃圾回收，防止内存累积
+            if i % 10 == 0:
+                gc.collect()
+                logger.debug(f"[Memory] Garbage collection executed at chunk {i}")
         
         logger.info(f"Extraction complete: {successful_chunks} successful, {failed_chunks} failed")
         logger.info(f"Total concepts: {len(all_concepts)}")

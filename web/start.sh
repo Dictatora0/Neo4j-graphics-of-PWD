@@ -241,15 +241,24 @@ start_backend() {
     echo $backend_pid > /tmp/pwd-backend.pid
     
     # 等待服务启动
-    sleep 2
+    sleep 5
     
-    # 检查服务是否正常启动
-    if check_port $BACKEND_PORT; then
-        log_success "后端服务启动成功 (PID: $backend_pid)"
-        log_info "API 地址: http://localhost:$BACKEND_PORT"
-        log_info "API 文档: http://localhost:$BACKEND_PORT/docs"
-        log_info "日志文件: /tmp/pwd-backend.log"
-    else
+    # 检查服务是否正常启动 (使用 curl 轮询)
+    log_info "等待后端服务响应..."
+    local success=false
+    for i in {1..10}; do
+        if curl -s --head http://localhost:$BACKEND_PORT/docs | grep "200 OK" > /dev/null; then
+            log_success "后端服务启动成功 (PID: $backend_pid)"
+            log_info "API 地址: http://localhost:$BACKEND_PORT"
+            log_info "API 文档: http://localhost:$BACKEND_PORT/docs"
+            log_info "日志文件: /tmp/pwd-backend.log"
+            success=true
+            break
+        fi
+        sleep 1
+    done
+
+    if [ "$success" = false ]; then
         log_error "后端服务启动失败"
         log_info "查看日志: tail -f /tmp/pwd-backend.log"
         return 1
@@ -282,14 +291,23 @@ start_frontend() {
     echo $frontend_pid > /tmp/pwd-frontend.pid
     
     # 等待服务启动
-    sleep 3
+    sleep 5
     
-    # 检查服务是否正常启动
-    if check_port $FRONTEND_PORT; then
-        log_success "前端服务启动成功 (PID: $frontend_pid)"
-        log_info "应用地址: http://localhost:$FRONTEND_PORT"
-        log_info "日志文件: /tmp/pwd-frontend.log"
-    else
+    # 检查服务是否正常启动 (使用 curl 轮询)
+    log_info "等待前端服务响应..."
+    local success=false
+    for i in {1..10}; do
+        if curl -s --head http://localhost:$FRONTEND_PORT | grep "200 OK" > /dev/null; then
+            log_success "前端服务启动成功 (PID: $frontend_pid)"
+            log_info "应用地址: http://localhost:$FRONTEND_PORT"
+            log_info "日志文件: /tmp/pwd-frontend.log"
+            success=true
+            break
+        fi
+        sleep 1
+    done
+
+    if [ "$success" = false ]; then
         log_error "前端服务启动失败"
         log_info "查看日志: tail -f /tmp/pwd-frontend.log"
         return 1
@@ -329,7 +347,7 @@ show_status() {
 
 # 主函数
 main() {
-    clear
+    # clear
     echo -e "${CYAN}"
     echo "╔════════════════════════════════════════════════════════╗"
     echo "║     松材线虫病知识图谱 Web 应用启动脚本               ║"

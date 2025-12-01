@@ -75,28 +75,97 @@ class EmbeddingProvider:
 
 
 class BGE_M3_Embedder(EmbeddingProvider):
-    """BGE-M3 向量生成器(支持稠密/稀疏混合检索思路)
+    """BGE-M3 向量生成器(支持稠密/稀疏混合检索)
 
     说明:
     - **Dense Embedding(稠密向量)**: 每条文本被编码成一个高维浮点数组(如 1024 维),所有维度几乎都是非 0,适合做语义相似度计算。
-    - **Sparse Embedding(稀疏向量)**: 大部分维度是 0,只有少数维度非 0,可以理解为“关键词+权重”的高维表示,适合关键词级匹配。
-    - BGE-M3 原生支持 dense+sparse 混合检索,本实现主要使用 dense 向量,`embed_sparse` 提供一个简化占位实现。
+    - **Sparse Embedding(稀疏向量)**: 大部分维度是 0,只有少数维度非 0,基于BM25类似的词项匹配，适合关键词级检索。
+    - **ColBERT**: 多向量表示，每个token对应一个向量，用于精细粒度匹配。
+    - 本实现使用FlagEmbedding库的BGEM3FlagModel，支持真实的dense+sparse+colbert三模态编码。
     """
     
-    def __init__(self, model_name: str = "BAAI/bge-m3", device=None):
+    def __init__(self, model_name: str = "BAAI/bge-m3", device=None, use_fp16: bool = True):
+        """
+        Args:
+            model_name: 模型名称或路径
+            device: 设备 ('cuda', 'cpu', None为自动检测)
+            use_fp16: 是否使用FP16加速(仅GPU)
+        """
         try:
-            from sentence_transformers import SentenceTransformer
-            import os
+            # 优先尝试使用FlagEmbedding库（支持真实的sparse encoding）
+            try:
+                from FlagEmbedding import BGEM3FlagModel
+                import os
+                
+                # 强制设置离线模式
+                os.environ['HF_HUB_OFFLINE'] = '1'
+                os.environ['TRANSFORMERS_OFFLINE'] = '1'
+                os.environ['HF_DATASETS_OFFLINE'] = '1'
+                
+                logger.info(f"Loading BGE-M3 with FlagEmbedding (supports true sparse): {model_name}")
+                
+                # 尝试加载模型（优先使用本地缓存路径）
+                try:
+                    # 检查本地缓存目录
+                    cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
+                    model_cache_name = f"models--{model_name.replace('/', '--')}"
+                    model_cache_path = os.path.join(cache_dir, model_cache_name)
+                    
+                    # 尝试使用本地路径
+                    local_model_path = None
+                    if os.path.exists(model_cache_path):
+                        # 优先使用main目录
+                        main_path = os.path.join(model_cache_path, "snapshots", "main")
+                        if os.path.exists(main_path) and os.path.exists(os.path.join(main_path, "pytorch_model.bin")):
+                            local_model_path = main_path
+                            logger.info(f"Using local model from: {main_path}")
+                        else:
+                            # 尝试查找其他snapshot
+                            snapshots_dir = os.path.join(model_cache_path, "snapshots")
+                            if os.path.exists(snapshots_dir):
+                                for snapshot in os.listdir(snapshots_dir):
+                                    snapshot_path = os.path.join(snapshots_dir, snapshot)
+                                    if os.path.exists(os.path.join(snapshot_path, "pytorch_model.bin")):
+                                        local_model_path = snapshot_path
+                                        logger.info(f"Using local model from: {snapshot_path}")
+                                        break
+                    
+                    # 加载模型（使用本地路径或model ID）
+                    model_path_or_id = local_model_path if local_model_path else model_name
+                    
+                    self.model = BGEM3FlagModel(
+                        model_path_or_id,
+                        devices=device,  # FlagEmbedding使用devices而不是device
+                        use_fp16=use_fp16,
+                        normalize_embeddings=True,
+                    )
+                    self.use_flag_embedding = True
+                    logger.info(f"✓ Loaded BGE-M3 with FlagEmbedding (dense+sparse+colbert support)")
+                    
+                except Exception as load_error:
+                    # 如果加载失败，记录详细错误并回退
+                    logger.warning(f"FlagEmbedding load failed: {load_error}")
+                    logger.warning("Falling back to SentenceTransformer...")
+                    raise ImportError("FlagEmbedding load failed") from load_error
+                
+            except ImportError:
+                # 回退到sentence-transformers（仅支持dense）
+                logger.warning("FlagEmbedding not available, falling back to SentenceTransformer (dense only)")
+                logger.warning("Install with: pip install FlagEmbedding")
+                
+                from sentence_transformers import SentenceTransformer
+                import os
+                
+                os.environ['HF_HUB_OFFLINE'] = '1'
+                os.environ['TRANSFORMERS_OFFLINE'] = '1'
+                
+                logger.info(f"Loading BGE-M3 with SentenceTransformer (dense only): {model_name}")
+                self.model = SentenceTransformer(model_name, device=device)
+                self.use_flag_embedding = False
+                logger.info(f"✓ Loaded BGE-M3 with SentenceTransformer (dense only)")
             
-            # 设置离线模式环境变量（避免网络检查）
-            os.environ['HF_HUB_OFFLINE'] = '1'
-            os.environ['TRANSFORMERS_OFFLINE'] = '1'
-            
-            # 尝试从本地缓存加载
-            logger.info(f"Loading BGE-M3 model (offline mode): {model_name}")
-            self.model = SentenceTransformer(model_name, device=device)
             self.model_name = model_name
-            logger.info(f"✓ Loaded BGE-M3 model successfully from local cache")
+            
         except Exception as e:
             logger.error(f"Failed to load BGE-M3: {e}")
             raise
@@ -108,21 +177,101 @@ class BGE_M3_Embedder(EmbeddingProvider):
         """
         if not texts:
             return np.array([])
-        embeddings = self.model.encode(texts, normalize_embeddings=True)
+        
+        if self.use_flag_embedding:
+            # FlagEmbedding的接口
+            embeddings = self.model.encode(
+                texts,
+                batch_size=12,
+                max_length=8192,
+                return_dense=True,
+                return_sparse=False,
+                return_colbert_vecs=False
+            )['dense_vecs']
+        else:
+            # SentenceTransformer的接口
+            embeddings = self.model.encode(texts, normalize_embeddings=True)
+        
         return np.array(embeddings)
     
     def embed_sparse(self, texts: List[str]) -> List[Dict]:
-        """生成稀疏向量(sparse embedding)的占位实现
+        """生成稀疏向量(sparse embedding)
 
-        说明:
-        - 真正的 BGE-M3 稀疏向量通常通过专门的 sparse 接口/参数获取,对应倒排索引或 BM25 一类的表示。
-        - 这里为了兼容接口,简单地复用 dense embedding 并包一层字典返回,方便后续扩展为真实稀疏实现。
+        真实实现说明:
+        - 使用FlagEmbedding库时，直接调用BGE-M3的sparse encoding功能
+        - Sparse向量格式: {token_id: weight}，类似BM25的词项匹配
+        - 如果使用SentenceTransformer后退模式，则使用TF-IDF近似实现
+        
+        Returns:
+            List[Dict]: 每个文本返回 {"indices": [...], "values": [...]}
         """
-        # 简化实现: 使用现有的 dense 向量作为返回,并不区分稀疏/稠密
-        # 实际应用中可替换为 BGE-M3 官方提供的 sparse embedding 接口
-        dense_embeddings = self.embed(texts)
-        # 这里返回密集向量，实际应用可以调用 BGE-M3 的 sparse 接口
-        return [{"dense": emb} for emb in dense_embeddings]
+        if not texts:
+            return []
+        
+        if self.use_flag_embedding:
+            # 真实BGE-M3稀疏编码
+            try:
+                result = self.model.encode(
+                    texts,
+                    batch_size=12,
+                    max_length=8192,
+                    return_dense=False,
+                    return_sparse=True,
+                    return_colbert_vecs=False
+                )['lexical_weights']
+                
+                # 转换为统一格式
+                sparse_vecs = []
+                for sparse_dict in result:
+                    # sparse_dict格式: {token_id: weight}
+                    indices = list(sparse_dict.keys())
+                    values = list(sparse_dict.values())
+                    sparse_vecs.append({
+                        "indices": indices,
+                        "values": values
+                    })
+                
+                logger.debug(f"Generated {len(sparse_vecs)} sparse vectors (FlagEmbedding)")
+                return sparse_vecs
+                
+            except Exception as e:
+                logger.warning(f"Sparse encoding failed: {e}, using fallback")
+                return self._fallback_sparse(texts)
+        else:
+            # SentenceTransformer回退模式：使用TF-IDF近似
+            logger.debug("Using TF-IDF fallback for sparse vectors")
+            return self._fallback_sparse(texts)
+    
+    def _fallback_sparse(self, texts: List[str]) -> List[Dict]:
+        """回退模式：使用TF-IDF近似稀疏向量"""
+        try:
+            from sklearn.feature_extraction.text import TfidfVectorizer
+            
+            # 使用TF-IDF生成稀疏表示
+            vectorizer = TfidfVectorizer(
+                max_features=5000,
+                lowercase=True,
+                token_pattern=r'(?u)\b\w+\b'  # 支持中文
+            )
+            tfidf_matrix = vectorizer.fit_transform(texts)
+            
+            sparse_vecs = []
+            for i in range(len(texts)):
+                row = tfidf_matrix[i]
+                # 获取非零元素
+                indices = row.indices.tolist()
+                values = row.data.tolist()
+                sparse_vecs.append({
+                    "indices": indices,
+                    "values": values
+                })
+            
+            return sparse_vecs
+            
+        except Exception as e:
+            logger.error(f"Fallback sparse encoding failed: {e}")
+            # 最后的回退：返回空稀疏向量
+            return [{"indices": [], "values": []} for _ in texts]
     
     def hybrid_similarity(self, text1: str, text2: str, alpha: float = 0.7) -> float:
         """
@@ -130,28 +279,71 @@ class BGE_M3_Embedder(EmbeddingProvider):
 
         参数说明:
         - `text1`, `text2`: 待比较的两段文本。
-        - `alpha`: 稠密相似度权重,取值范围 0-1。越接近 1 表示越依赖语义向量,越接近 0 表示越依赖词面重合。
+        - `alpha`: 稠密相似度权重,取值范围 0-1。越接近 1 表示越依赖语义向量,越接近 0 表示越依赖词项匹配。
 
         专业术语解释:
-        - `dense_sim`: 稠密向量相似度,本实现中是两条 embedding 之间的余弦相似度(cosine similarity)。值域 [-1, 1],越接近 1 越相似。
-        - `sparse_sim`: 稀疏相似度,这里用Jaccard相似度近似: 共同出现的词数 / 所有不同词的总数,值域 [0, 1]。
+        - `dense_sim`: 稠密向量相似度,余弦相似度(cosine similarity)。值域 [-1, 1]。
+        - `sparse_sim`: 稀疏向量相似度,基于词项匹配分数。值域 [0, 1]。
         """
         # Dense similarity
-        # 实际使用时主要依赖语义向量相似度, Jaccard 稀疏相似度作为补充,兜住明显的词面差异
         emb1 = self.embed([text1])
         emb2 = self.embed([text2])
         dense_sim = cosine_similarity(emb1, emb2)[0][0]
         
-        # Sparse similarity (简化版，实际可用 BM25 等)
-        # 这里使用词级别的 Jaccard 相似度作为稀疏替代
-        words1 = set(text1.lower().split())
-        words2 = set(text2.lower().split())
-        if not words1 or not words2:
-            sparse_sim = 0.0
-        else:
-            sparse_sim = len(words1 & words2) / len(words1 | words2)
+        # Sparse similarity (使用真实的稀疏向量或回退到TF-IDF)
+        try:
+            sparse_vecs = self.embed_sparse([text1, text2])
+            sparse1 = sparse_vecs[0]
+            sparse2 = sparse_vecs[1]
+            
+            # 计算稀疏向量相似度（使用内积）
+            sparse_sim = self._sparse_dot_product(sparse1, sparse2)
+            
+        except Exception as e:
+            logger.debug(f"Sparse similarity calculation failed: {e}, using Jaccard")
+            # 回退到Jaccard
+            words1 = set(text1.lower().split())
+            words2 = set(text2.lower().split())
+            if not words1 or not words2:
+                sparse_sim = 0.0
+            else:
+                sparse_sim = len(words1 & words2) / len(words1 | words2)
         
         return alpha * dense_sim + (1 - alpha) * sparse_sim
+    
+    def _sparse_dot_product(self, sparse1: Dict, sparse2: Dict) -> float:
+        """计算两个稀疏向量的内积
+        
+        Args:
+            sparse1, sparse2: {"indices": [...], "values": [...]}
+        
+        Returns:
+            内积值 (已归一化)
+        """
+        try:
+            # 建立索引到值的映射
+            dict1 = {idx: val for idx, val in zip(sparse1.get("indices", []), sparse1.get("values", []))}
+            dict2 = {idx: val for idx, val in zip(sparse2.get("indices", []), sparse2.get("values", []))}
+            
+            # 计算共同索引的内积
+            common_indices = set(dict1.keys()) & set(dict2.keys())
+            if not common_indices:
+                return 0.0
+            
+            dot_product = sum(dict1[idx] * dict2[idx] for idx in common_indices)
+            
+            # 归一化 (使用L2范数)
+            norm1 = sum(v**2 for v in dict1.values()) ** 0.5
+            norm2 = sum(v**2 for v in dict2.values()) ** 0.5
+            
+            if norm1 == 0 or norm2 == 0:
+                return 0.0
+            
+            return dot_product / (norm1 * norm2)
+            
+        except Exception as e:
+            logger.error(f"Sparse dot product failed: {e}")
+            return 0.0
 
 
 class SentenceTransformerEmbedding(EmbeddingProvider):

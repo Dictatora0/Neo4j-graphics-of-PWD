@@ -22,6 +22,7 @@
 
 import os
 import logging
+import gc
 from typing import Dict, List, Tuple
 import pandas as pd
 from datetime import datetime
@@ -317,6 +318,10 @@ class EnhancedKnowledgeGraphPipelineSafe:
                     )
                     
                     logger.info(f"Checkpoint: {i+1}/{len(chunks)} chunks processed")
+                    
+                    # 在checkpoint时清理内存
+                    gc.collect()
+                    logger.debug(f"[Memory] Garbage collection at checkpoint {i+1}")
             
             except Exception as e:
                 # 单个文本块失败不会中断整个流程，只记录错误并继续下一个
@@ -326,6 +331,11 @@ class EnhancedKnowledgeGraphPipelineSafe:
         # 最终数据
         concepts_df = pd.DataFrame(all_concepts) if all_concepts else pd.DataFrame()
         relationships_df = pd.DataFrame(all_relationships) if all_relationships else pd.DataFrame()
+        
+        # 清理中间变量
+        del all_concepts
+        del all_relationships
+        gc.collect()
         
         logger.info(f"Extraction complete: {len(concepts_df)} concepts, {len(relationships_df)} relationships")
         
