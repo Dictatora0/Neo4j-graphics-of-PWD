@@ -75,7 +75,7 @@ class CriticAgent:
                 "system": system_prompt,
                 "stream": False,
                 "temperature": temperature,
-                "num_ctx": 4096,
+                "num_ctx": 3072,  # 降低上下文窗口，减少内存占用
             }
             
             # Qwen 系列模型支持 format=json,可以直接要求返回 JSON,减少解析出错
@@ -234,7 +234,7 @@ class RefineAgent:
                 "system": system_prompt,
                 "stream": False,
                 "temperature": temperature,
-                "num_ctx": 4096,
+                "num_ctx": 3072,  # 降低上下文窗口，减少内存占用
             }
             
             if 'qwen' in self.model.lower():
