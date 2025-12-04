@@ -1,0 +1,60 @@
+# 根目录 .dockerignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+venv/
+env/
+ENV/
+
+# Node
+node_modules/
+npm-debug.log*
+web/frontend/dist/
+web/frontend/build/
+
+# 输出和缓存
+output/
+archive/
+*.log
+
+# Neo4j 数据
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# 文档
+*.md
+docs/
+
+# 测试
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 环境变量
+.env
+.env.local
+
+# 临时文件
+*.tmp
+*.bak
+*.swp
+文献/

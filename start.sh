@@ -122,10 +122,11 @@ auto_cleanup() {
         sleep 3
     fi
     
-    # 3. 系统缓存清理（macOS）
+    # 3. 系统缓存清理（macOS）- 无需sudo
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        echo -e "${BLUE}  → 清理系统缓存${NC}"
-        sudo purge 2>/dev/null || true
+        echo -e "${BLUE}  → 触发内存压缩${NC}"
+        # 使用sync强制写入缓存，无需sudo
+        sync 2>/dev/null || true
     fi
     
     echo -e "${GREEN}[AUTO-CLEANUP] 清理完成${NC}\n"

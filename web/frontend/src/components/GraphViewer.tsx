@@ -2,13 +2,16 @@
  * 图谱可视化组件
  * 使用 Cytoscape.js 实现交互式知识图谱
  */
-import { useEffect, useRef } from "react";
-import cytoscape, { type Core } from "cytoscape";
+import { useEffect, useRef, useState } from "react";
+import cytoscape, { type Core, type NodeSingular } from "cytoscape";
+import { Download, Maximize2, ZoomIn, ZoomOut, Layers } from "lucide-react";
 import type { GraphData, Node } from "../types/graph";
 
 interface GraphViewerProps {
   data: GraphData;
   onNodeClick?: (node: Node) => void;
+  searchQuery?: string;
+  filteredNodeIds?: string[];
   className?: string;
 }
 
@@ -26,13 +29,25 @@ const NODE_COLORS: Record<string, string> = {
   default: "#6b7280", // 灰色 - 默认
 };
 
+const LAYOUTS = [
+  { name: "cose", label: "力导向" },
+  { name: "circle", label: "环形" },
+  { name: "grid", label: "网格" },
+  { name: "concentric", label: "同心圆" },
+  { name: "breadthfirst", label: "层次" },
+];
+
 export default function GraphViewer({
   data,
   onNodeClick,
+  searchQuery,
+  filteredNodeIds,
   className = "",
 }: GraphViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<Core | null>(null);
+  const [currentLayout, setCurrentLayout] = useState("cose");
+  const [showLayoutMenu, setShowLayoutMenu] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current || !data.nodes.length) return;
@@ -69,16 +84,16 @@ export default function GraphViewer({
         {
           selector: "node",
           style: {
-            "background-color": (ele) => {
+            "background-color": (ele: NodeSingular) => {
               const category = ele.data("category") as string;
               return NODE_COLORS[category] || NODE_COLORS.default;
             },
             label: "data(label)",
-            width: (ele) => {
+            width: (ele: NodeSingular) => {
               const degree = ele.data("total_degree") || 1;
               return Math.max(30, Math.min(80, degree * 3));
             },
-            height: (ele) => {
+            height: (ele: NodeSingular) => {
               const degree = ele.data("total_degree") || 1;
               return Math.max(30, Math.min(80, degree * 3));
             },
@@ -112,6 +127,45 @@ export default function GraphViewer({
             "border-color": "#2563eb",
           },
         },
+        {
+          selector: "node.highlighted",
+          style: {
+            "border-width": 4,
+            "border-color": "#f59e0b",
+            "z-index": 999,
+          },
+        },
+        {
+          selector: "node.neighbor",
+          style: {
+            "border-width": 3,
+            "border-color": "#10b981",
+            opacity: 1,
+          },
+        },
+        {
+          selector: "node.searched",
+          style: {
+            "border-width": 5,
+            "border-color": "#ef4444",
+            "z-index": 1000,
+          },
+        },
+        {
+          selector: "node.filtered",
+          style: {
+            opacity: 0.3,
+          },
+        },
+        {
+          selector: "edge.neighbor",
+          style: {
+            "line-color": "#10b981",
+            "target-arrow-color": "#10b981",
+            width: 3,
+            opacity: 1,
+          },
+        },
       ],
       layout: {
         name: "cose",
@@ -142,6 +196,11 @@ export default function GraphViewer({
       const node = event.target;
       const nodeData = node.data();
 
+      // 高亮邻居节点
+      cy.elements().removeClass("highlighted neighbor");
+      node.addClass("highlighted");
+      node.neighborhood().addClass("neighbor");
+
       if (onNodeClick) {
         onNodeClick({
           id: nodeData.id,
@@ -153,11 +212,84 @@ export default function GraphViewer({
       }
     });
 
+    // 点击空白处取消高亮
+    cy.on("tap", (event) => {
+      if (event.target === cy) {
+        cy.elements().removeClass("highlighted neighbor");
+      }
+    });
+
     // 清理
     return () => {
       cy.destroy();
     };
   }, [data, onNodeClick]);
+
+  // 搜索功能
+  useEffect(() => {
+    if (!cyRef.current) return;
+
+    cyRef.current.elements().removeClass("searched");
+
+    if (searchQuery && searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      cyRef.current.nodes().forEach((node) => {
+        const label = node.data("label").toLowerCase();
+        if (label.includes(query)) {
+          node.addClass("searched");
+        }
+      });
+    }
+  }, [searchQuery]);
+
+  // 筛选功能
+  useEffect(() => {
+    if (!cyRef.current) return;
+
+    cyRef.current.nodes().removeClass("filtered");
+
+    if (filteredNodeIds && filteredNodeIds.length > 0) {
+      cyRef.current.nodes().forEach((node) => {
+        if (!filteredNodeIds.includes(node.id())) {
+          node.addClass("filtered");
+        }
+      });
+    }
+  }, [filteredNodeIds]);
+
+  // 切换布局
+  const handleLayoutChange = (layoutName: string) => {
+    if (!cyRef.current) return;
+
+    setCurrentLayout(layoutName);
+    setShowLayoutMenu(false);
+
+    const layout = cyRef.current.layout({
+      name: layoutName as any,
+      padding: 30,
+      animate: true,
+      animationDuration: 500,
+    } as any);
+
+    layout.run();
+    setTimeout(() => cyRef.current?.fit(), 600);
+  };
+
+  // 导出图片
+  const handleExport = () => {
+    if (!cyRef.current) return;
+
+    const png = cyRef.current.png({
+      scale: 2,
+      full: true,
+      bg: "#ffffff",
+    });
+
+    const link = document.createElement("a");
+    link.download = `knowledge-graph-${Date.now()}.png`;
+    link.href = png;
+    link.click();
+  };
 
   return (
     <div className={`relative w-full h-full ${className}`}>
@@ -173,19 +305,7 @@ export default function GraphViewer({
           className="bg-white hover:bg-gray-100 p-2 rounded-lg shadow-md transition-colors"
           title="适应画布"
         >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-            />
-          </svg>
+          <Maximize2 className="w-5 h-5" />
         </button>
 
         <button
@@ -193,19 +313,7 @@ export default function GraphViewer({
           className="bg-white hover:bg-gray-100 p-2 rounded-lg shadow-md transition-colors"
           title="放大"
         >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
+          <ZoomIn className="w-5 h-5" />
         </button>
 
         <button
@@ -213,20 +321,50 @@ export default function GraphViewer({
           className="bg-white hover:bg-gray-100 p-2 rounded-lg shadow-md transition-colors"
           title="缩小"
         >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M20 12H4"
-            />
-          </svg>
+          <ZoomOut className="w-5 h-5" />
         </button>
+
+        <button
+          onClick={handleExport}
+          className="bg-white hover:bg-gray-100 p-2 rounded-lg shadow-md transition-colors"
+          title="导出图片"
+        >
+          <Download className="w-5 h-5" />
+        </button>
+
+        <div className="relative">
+          <button
+            onClick={() => setShowLayoutMenu(!showLayoutMenu)}
+            className="bg-white hover:bg-gray-100 p-2 rounded-lg shadow-md transition-colors"
+            title="切换布局"
+          >
+            <Layers className="w-5 h-5" />
+          </button>
+
+          {showLayoutMenu && (
+            <>
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setShowLayoutMenu(false)}
+              />
+              <div className="absolute right-full mr-2 top-0 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-20 whitespace-nowrap">
+                {LAYOUTS.map((layout) => (
+                  <button
+                    key={layout.name}
+                    onClick={() => handleLayoutChange(layout.name)}
+                    className={`w-full px-4 py-2 text-left hover:bg-gray-100 transition-colors ${
+                      currentLayout === layout.name
+                        ? "bg-blue-50 text-blue-600"
+                        : ""
+                    }`}
+                  >
+                    {layout.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* 图例 */}

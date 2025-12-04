@@ -690,7 +690,7 @@ if __name__ == "__main__":
     
     if args.max_chunks:
         # 覆盖配置中的max_chunks
-        config._data['llm']['max_chunks'] = args.max_chunks
+        config.set('llm.max_chunks', args.max_chunks)
         logger.info(f"Batch mode: Processing max {args.max_chunks} chunks")
     
     concepts_df, relationships_df = run_safe_pipeline(
