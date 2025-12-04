@@ -42,6 +42,7 @@ export interface SearchResult {
 export interface StatsData {
   total_nodes: number;
   total_edges: number;
+  avg_degree?: number;
   node_distribution: Record<string, number>;
   edge_distribution: Record<string, number>;
   top_nodes: Node[];

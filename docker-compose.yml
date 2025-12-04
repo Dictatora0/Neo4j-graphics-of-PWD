@@ -1,0 +1,128 @@
+services:
+  # Neo4j 图数据库
+  neo4j:
+    image: neo4j:5.15.0
+    container_name: pwd-neo4j
+    ports:
+      - "7474:7474" # HTTP
+      - "7687:7687" # Bolt
+    environment:
+      - NEO4J_AUTH=neo4j/12345678
+      - NEO4J_dbms_memory_pagecache_size=512M
+      - NEO4J_dbms_memory_heap_initial__size=512M
+      - NEO4J_dbms_memory_heap_max__size=1G
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - ./output/neo4j_import:/imports # 映射本地导入文件
+    networks:
+      - pwd-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # 后端 API (FastAPI)
+  backend:
+    build:
+      context: ./web/backend
+      dockerfile: Dockerfile
+    container_name: pwd-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=12345678
+      - NEO4J_DATABASE=neo4j
+      - API_V1_PREFIX=/api
+      - PROJECT_NAME=PWD Knowledge Graph API
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:5173,http://localhost
+    volumes:
+      - ./web/backend:/app # 开发模式下挂载代码，支持热重载
+      - ./output:/app/output # 映射输出目录
+    networks:
+      - pwd-network
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'python -c ''import requests; requests.get("http://localhost:8000/api/health", timeout=5)''',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # 前端 (React + Vite)
+  frontend:
+    build:
+      context: ./web/frontend
+      dockerfile: Dockerfile
+    container_name: pwd-frontend
+    ports:
+      - "80:80"
+      - "3000:80" # 额外映射一个端口以兼容现有配置
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    networks:
+      - pwd-network
+    depends_on:
+      - backend
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://localhost/ || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # 前端开发服务器（可选，用于开发模式）
+  frontend-dev:
+    image: node:20-alpine
+    container_name: pwd-frontend-dev
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host"
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ./web/frontend:/app
+      - /app/node_modules # 避免覆盖 node_modules
+    networks:
+      - pwd-network
+    profiles:
+      - dev # 只在开发模式下启动
+    restart: unless-stopped
+
+# 数据卷
+volumes:
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
+  neo4j_import:
+    driver: local
+
+# 网络
+networks:
+  pwd-network:
+    driver: bridge
