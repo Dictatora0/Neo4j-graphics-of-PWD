@@ -60,7 +60,6 @@
   - [12. 贡献与许可证](#12-贡献与许可证)
     - [12.1 贡献流程](#121-贡献流程)
     - [12.2 许可证](#122-许可证)
-  - [13. 相关文档](#13-相关文档)
 
 ---
 
@@ -306,8 +305,6 @@ make lint         # 运行代码风格检查
 make help         # 查看 Makefile 所有命令
 ```
 
-详细 Docker 使用说明参见：`archive/docs/DOCKER_DEPLOYMENT.md`、`archive/docs/QUICK_START_DOCKER.md`、`archive/docs/GET_STARTED_WITH_DEVOPS.md`。
-
 ---
 
 ### 3.2 传统方式（本地环境）
@@ -516,22 +513,20 @@ python import_to_neo4j_final.py
 
 ### 6.2 主要脚本一览
 
-
-
 | --------------------------- | ------------ | -------------------------------- |
-| `start.sh`                  | ✅ **推荐**  | 主入口脚本，一键运行安全管道     |
-| `enhanced_pipeline_safe.py` | ✅ **推荐**  | 安全版主流水线与 Checkpoint 管理 |
-| `pdf_extractor.py`          | ✅ 核心模块  | PDF 文本提取 + OCR               |
-| `concept_extractor.py`      | ✅ 核心模块  | LLM 概念与关系抽取               |
-| `concept_deduplicator.py`   | ✅ 核心模块  | 语义去重与实体对齐               |
-| `import_to_neo4j_final.py`  | ✅ 核心模块  | 导入 Neo4j，创建索引与样式       |
-| `graph_rag.py`              | ✅ 可选功能  | 基于 CSV 的社区检测与摘要        |
-| `graph_summarizer.py`       | ✅ 可选功能  | 基于 Neo4j 的 GraphRAG           |
-| `run_pipeline.py`           | 🔄 旧版/示例 | 旧版管线入口（保留作参考）       |
-| `enhanced_pipeline.py`      | 🔄 旧版/示例 | 旧版管线（保留作参考）           |
-| `simple_deduplicate.py`     | 🔄 可选      | 不依赖 BGE-M3 的简单去重         |
-| `test_imports.sh`           | 🧪 测试工具  | 测试模块导入                     |
-| `test_neo4j.py`             | 🧪 测试工具  | 测试 Neo4j 连接                  |
+| `start.sh` | ✅ **推荐** | 主入口脚本，一键运行安全管道 |
+| `enhanced_pipeline_safe.py` | ✅ **推荐** | 安全版主流水线与 Checkpoint 管理 |
+| `pdf_extractor.py` | ✅ 核心模块 | PDF 文本提取 + OCR |
+| `concept_extractor.py` | ✅ 核心模块 | LLM 概念与关系抽取 |
+| `concept_deduplicator.py` | ✅ 核心模块 | 语义去重与实体对齐 |
+| `import_to_neo4j_final.py` | ✅ 核心模块 | 导入 Neo4j，创建索引与样式 |
+| `graph_rag.py` | ✅ 可选功能 | 基于 CSV 的社区检测与摘要 |
+| `graph_summarizer.py` | ✅ 可选功能 | 基于 Neo4j 的 GraphRAG |
+| `run_pipeline.py` | 🔄 旧版/示例 | 旧版管线入口（保留作参考） |
+| `enhanced_pipeline.py` | 🔄 旧版/示例 | 旧版管线（保留作参考） |
+| `simple_deduplicate.py` | 🔄 可选 | 不依赖 BGE-M3 的简单去重 |
+| `test_imports.sh` | 🧪 测试工具 | 测试模块导入 |
+| `test_neo4j.py` | 🧪 测试工具 | 测试 Neo4j 连接 |
 
 **状态说明**：
 
@@ -619,8 +614,6 @@ make clean-all
 make prune
 ```
 
-详细说明见：`archive/docs/DOCKER_DEPLOYMENT.md`、`archive/docs/DEVOPS_SUMMARY.md`、`archive/docs/DEVOPS_IMPLEMENTATION_REPORT.md`。
-
 ### 8.2 GitHub Actions CI/CD
 
 工作流文件：`.github/workflows/ci.yml`
@@ -645,8 +638,6 @@ make prune
 ./scripts/local_ci_test.sh
 ```
 
-详细说明见：`archive/docs/CI_CD_GUIDE.md`。
-
 ---
 
 ## 9. 性能与优化
@@ -661,16 +652,6 @@ make prune
   - `num_ctx` / `parallel_workers`
   - 是否启用 Agentic、GraphRAG、多模态等可选模块
 
-参考文档：
-
-- `archive/docs/MEMORY_OPTIMIZATION.md`
-- `archive/docs/OPTIMIZATION_SUMMARY.md`
-- `archive/docs/FINAL_OPTIMIZATION_SUMMARY.md`
-- `archive/docs/BATCH_PROCESSING_GUIDE.md`
-- `archive/docs/BGE_M3_SPARSE_GUIDE.md`
-- `archive/docs/PDF_CACHE_GUIDE.md`
-- `archive/docs/AUTO_CLEANUP_GUIDE.md`
-
 ---
 
 ## 10. 常用命令速查表
@@ -682,10 +663,9 @@ make prune
 ./status.sh                # 查看状态
 ./monitor.sh               # 实时监控（CPU/内存/进度）
 
-./test_imports.sh          # 测试模块导入
-python test_neo4j.py       # 测试 Neo4j 连接
+cd web/backend && python test_neo4j.py  # 测试 Neo4j 连接
 python simple_deduplicate.py  # 简单去重
-python scripts/model_benchmark.py  # 模型性能测试
+# 如需模型基准测试，可在 scripts/ 目录中自行添加相应脚本
 ```
 
 ### 10.2 Docker 与服务
@@ -731,8 +711,6 @@ cd web
 | 前端构建失败（TypeScript） | TS 编译错误                                | 根据错误提示修正前端类型                                    |
 | Web 打不开或 404           | 前端容器未启动或端口被占用                 | 检查 `make status`，排查端口冲突                            |
 
-更多细节参见：`archive/docs/DOCKER_DEPLOYMENT.md`、`archive/docs/CI_CD_GUIDE.md`、`archive/docs/MEMORY_OPTIMIZATION.md`、`docs/TECHNICAL_CHALLENGES.md`。
-
 ---
 
 ## 12. 贡献与许可证
@@ -763,42 +741,6 @@ cd web
    - 主要修改点
    - 测试方式与结果
 
-可参考：`.github/PULL_REQUEST_TEMPLATE.md`。
-
 ### 12.2 许可证
 
 本项目采用 MIT 许可证，详见 `LICENSE` 文件。
-
----
-
-## 13. 相关文档
-
-- **新功能说明** ✨
-  - `docs/NEW_FEATURES_GRAPHRAG_CONFIG.md`：GraphRAG 问答 + 领域配置外置化
-  - `docs/CONFIG_REFACTORING.md`：配置系统重构 + 多环境支持
-  - `web/frontend/NEW_FEATURES.md`：前端人机回环 + 多模态 UI
-- 部署与 DevOps
-  - `archive/docs/DOCKER_DEPLOYMENT.md`：Docker 部署与运维手册
-  - `archive/docs/CI_CD_GUIDE.md`：GitHub Actions 流程
-  - `archive/docs/DEVOPS_SUMMARY.md` / `archive/docs/DEVOPS_IMPLEMENTATION_REPORT.md`：DevOps 实施总结
-- 性能与优化
-  - `archive/docs/MEMORY_OPTIMIZATION.md`
-  - `archive/docs/OPTIMIZATION_SUMMARY.md`
-  - `archive/docs/FINAL_OPTIMIZATION_SUMMARY.md`
-  - `archive/docs/BATCH_PROCESSING_GUIDE.md`
-  - `archive/docs/BGE_M3_SPARSE_GUIDE.md`
-  - `archive/docs/PDF_CACHE_GUIDE.md`
-  - `archive/docs/AUTO_CLEANUP_GUIDE.md`
-- Web 与多模态
-  - `web/PROJECT_STRUCTURE.md`
-  - `web/SCRIPTS_USAGE.md`
-  - `archive/docs/MULTIMODAL_IMAGE_GUIDE.md`
-- 配置与工具
-  - `config/domain_dict.json`：实体别名映射配置
-  - `config/type_hierarchy.json`：类型层级配置
-  - `tools/validate_domain_config.py`：配置验证工具
-  - `tools/domain_config_loader.py`：配置加载工具
-- 历史与技术细节
-  - `archive/docs/IMPLEMENTATION_DETAILS.md`
-  - `docs/TECHNICAL_CHALLENGES.md`
-  - `archive/` 目录：旧版 README 与变更记录
