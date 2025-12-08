@@ -1,6 +1,14 @@
 #!/bin/bash
 # 知识图谱构建启动脚本 - 使用正确的 Python 环境
-# v2.7 - 分批处理机制 + 自动负载监控与清理
+# v2.8 - 集成六大改进功能 + 分批处理 + 自动负载监控
+#
+# 新功能 (v2.8):
+#   - 滑动窗口上下文机制
+#   - 层级本体 Label
+#   - Local Search 精确检索
+#   - 实体消歧与链接 (CanonicalResolver)
+#   - 多模态深度融合
+#   - 人机回环纠错
 
 set -e  # 遇到错误立即退出
 
@@ -163,6 +171,80 @@ echo "[INFO] 已设置 HuggingFace 离线模式" >&2
 # 使用已安装依赖的 Python 3.10.13
 PYTHON_BIN="$HOME/.pyenv/versions/3.10.13/bin/python"
 
+# 检查新功能状态
+check_features() {
+    echo -e "\n${BLUE}[功能状态检查]${NC}"
+    
+    # 检查 Python 依赖
+    local missing_deps=()
+    for dep in pandas requests yaml sklearn; do
+        if ! "$PYTHON_BIN" -c "import $dep" 2>/dev/null; then
+            # yaml 对应的包名是 pyyaml
+            if [ "$dep" = "yaml" ]; then
+                missing_deps+=("pyyaml")
+            else
+                missing_deps+=("$dep")
+            fi
+        fi
+    done
+    
+    if [ ${#missing_deps[@]} -gt 0 ]; then
+        echo -e "  ${RED}✗ 缺少依赖: ${missing_deps[*]}${NC}"
+        echo -e "    安装命令: pip install ${missing_deps[*]}"
+        return 1
+    else
+        echo -e "  ${GREEN}✓ Python 依赖完整${NC}"
+    fi
+    
+    # 检查配置文件
+    if [ ! -f "config/config.yaml" ]; then
+        echo -e "  ${RED}✗ 配置文件不存在${NC}"
+        return 1
+    fi
+    
+    # 检查新功能配置
+    if command -v python3 &> /dev/null; then
+        context_window=$("$PYTHON_BIN" -c "import yaml; c=yaml.safe_load(open('config/config.yaml')); print(c.get('improvements', {}).get('context_window', {}).get('enable', False))" 2>/dev/null || echo "False")
+        entity_linking=$("$PYTHON_BIN" -c "import yaml; c=yaml.safe_load(open('config/config.yaml')); print(c.get('improvements_phase2', {}).get('entity_linking', {}).get('use_external_kb', False))" 2>/dev/null || echo "False")
+        
+        echo -e "  ${GREEN}✓ 配置文件加载成功${NC}"
+        echo -e "    - 滑动窗口: ${context_window}"
+        echo -e "    - 外部知识库: ${entity_linking}"
+    fi
+    
+    # 检查 Ollama
+    if pgrep ollama > /dev/null; then
+        echo -e "  ${GREEN}✓ Ollama 服务运行中${NC}"
+        # 测试 API 连接
+        if curl -s -f http://localhost:11434/api/tags > /dev/null 2>&1; then
+            echo -e "    API 状态: 正常"
+        else
+            echo -e "    ${YELLOW}API 状态: 启动中${NC}"
+        fi
+    else
+        echo -e "  ${YELLOW}⚠ Ollama 服务未运行${NC}"
+        echo -e "    ${BLUE}提示: 运行 start.sh 时会自动启动 Ollama${NC}"
+        echo -e "    或手动启动: ollama serve"
+    fi
+    
+    echo ""
+    return 0
+}
+
+# 快速测试新功能
+test_features() {
+    echo -e "\n${BLUE}[快速功能测试]${NC}"
+    echo -e "正在测试新功能...\n"
+    
+    if [ -f "scripts/run_feature_tests.py" ]; then
+        "$PYTHON_BIN" scripts/run_feature_tests.py
+    elif [ -f "scripts/verify_all_improvements.sh" ]; then
+        bash scripts/verify_all_improvements.sh
+    else
+        echo -e "${YELLOW}未找到测试脚本${NC}"
+    fi
+}
+
 # 解析命令行参数
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -178,13 +260,25 @@ while [[ $# -gt 0 ]]; do
             BATCH_CLEANUP=false
             shift
             ;;
+        --check)
+            check_features
+            exit $?
+            ;;
+        --test)
+            test_features
+            exit $?
+            ;;
         --help)
             echo "用法: $0 [选项]"
             echo ""
-            echo "选项:"
+            echo "主要选项:"
             echo "  --batch-size <N>      每批处理N个chunks (默认: 50)"
             echo "  --batch-mode <mode>   批次模式: auto|manual|single (默认: auto)"
             echo "  --no-cleanup          禁用批次间自动清理"
+            echo ""
+            echo "诊断与测试:"
+            echo "  --check               检查系统依赖和功能状态"
+            echo "  --test                运行快速功能测试"
             echo "  --help                显示此帮助信息"
             echo ""
             echo "批次模式说明:"
@@ -192,9 +286,24 @@ while [[ $# -gt 0 ]]; do
             echo "  manual - 每批完成后需手动确认"
             echo "  single - 只处理一批后停止"
             echo ""
+            echo "新功能 (v2.8):"
+            echo "  ✓ 滑动窗口上下文机制 - 解决跨块实体指代丢失"
+            echo "  ✓ 层级本体 Label - 支持高级语义查询"
+            echo "  ✓ Local Search - 精确问答能力"
+            echo "  ✓ 实体消歧与链接 - 生物分类学标准化"
+            echo "  ✓ 多模态深度融合 - 图片-概念关联"
+            echo "  ✓ 人机回环纠错 - 用户反馈机制"
+            echo ""
             echo "示例:"
-            echo "  $0 --batch-size 30 --batch-mode manual"
-            echo "  $0 --batch-size 100 --no-cleanup"
+            echo "  $0                                    # 使用默认配置运行"
+            echo "  $0 --check                            # 检查系统状态"
+            echo "  $0 --test                             # 测试新功能"
+            echo "  $0 --batch-size 30 --batch-mode manual  # 自定义批次"
+            echo "  $0 --batch-size 100 --no-cleanup       # 大批次无清理"
+            echo ""
+            echo "配置文件: config/config.yaml"
+            echo "日志文件: output/kg_builder.log"
+            echo "批次日志: $BATCH_LOG"
             exit 0
             ;;
         *)
@@ -205,9 +314,16 @@ done
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════════════════╗"
-echo "║        松材线虫病知识图谱构建系统 v2.7                                  ║"
-echo "║        分批处理 + 自动负载监控与清理                                    ║"
+echo "║        松材线虫病知识图谱构建系统                                         ║"
 echo "╚══════════════════════════════════════════════════════════════════════╝"
+echo ""
+echo -e "${GREEN}新功能状态:${NC}"
+echo -e "  ✓ 滑动窗口上下文机制 (解决跨块实体指代)"
+echo -e "  ✓ 层级本体 Label (支持语义查询)"
+echo -e "  ✓ Local Search (精确问答)"
+echo -e "  ✓ 实体消歧与链接 (标准化)"
+echo -e "  ✓ 多模态深度融合 (图片关联)"
+echo -e "  ✓ 人机回环纠错 (反馈收集)"
 echo ""
 echo -e "${BLUE}分批配置:${NC}"
 echo -e "  批次大小: ${BATCH_SIZE} chunks/batch"
@@ -225,6 +341,17 @@ fi
 echo -e "${BLUE}使用的 Python:${NC} $PYTHON_BIN"
 $PYTHON_BIN --version
 echo ""
+
+# 执行功能状态检查
+if ! check_features; then
+    echo -e "\n${YELLOW}[警告] 部分功能检查失败${NC}"
+    echo -e "${YELLOW}建议运行: $0 --check 查看详细信息${NC}"
+    read -p "是否继续？(y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
 
 # 启动前资源检查
 echo -e "${BLUE}[系统检查] 检测当前资源状态...${NC}"
@@ -270,6 +397,44 @@ if [ -f "$BATCH_STATE" ]; then
         echo ""
     fi
 fi
+
+# 检查并启动 Ollama 服务
+echo -e "${BLUE}[Ollama 服务] 检查 Ollama 状态...${NC}"
+if pgrep ollama > /dev/null; then
+    echo -e "${GREEN}  ✓ Ollama 服务已运行${NC}"
+    # 测试 API 连接
+    if curl -s -f http://localhost:11434/api/tags > /dev/null 2>&1; then
+        echo -e "${GREEN}  ✓ Ollama API 连接正常${NC}"
+    else
+        echo -e "${YELLOW}  ⚠ Ollama 服务正在启动中，等待就绪...${NC}"
+        sleep 3
+    fi
+else
+    echo -e "${YELLOW}  ⚠ Ollama 服务未运行，正在启动...${NC}"
+    
+    # 启动 Ollama 服务
+    nohup ollama serve > /tmp/ollama.log 2>&1 &
+    ollama_pid=$!
+    echo -e "${BLUE}  → 已启动 Ollama (PID: $ollama_pid)${NC}"
+    
+    # 等待服务就绪（最多 15 秒）
+    echo -e "${BLUE}  → 等待 Ollama 服务就绪...${NC}"
+    for i in {1..15}; do
+        if curl -s -f http://localhost:11434/api/tags > /dev/null 2>&1; then
+            echo -e "${GREEN}  ✓ Ollama 服务已就绪${NC}"
+            break
+        fi
+        if [ $i -eq 15 ]; then
+            echo -e "${RED}  ✗ Ollama 启动超时，请检查日志: /tmp/ollama.log${NC}"
+            echo -e "${YELLOW}  提示: 您可以手动运行 'ollama serve' 然后重新启动本脚本${NC}"
+            exit 1
+        fi
+        sleep 1
+        echo -n "."
+    done
+    echo ""
+fi
+echo ""
 
 # 启动后台监控
 echo -e "${BLUE}[监控] 启动后台资源监控 (间隔: ${CHECK_INTERVAL}s)${NC}"
@@ -397,6 +562,13 @@ echo -e "\n${GREEN}════════════════════�
 echo -e "${GREEN}分批处理完成${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════════════════════════════════${NC}"
 echo -e "  总批次: $batch_num"
+echo -e "  已处理: ~$total_processed chunks"
 echo -e "  批次日志: $BATCH_LOG"
 echo -e "  系统日志: output/kg_builder.log"
+echo ""
+echo -e "${BLUE}下一步操作:${NC}"
+echo -e "  1. 导入 Neo4j:  python import_to_neo4j_final.py"
+echo -e "  2. 启动 Web:    cd web && ./start.sh"
+echo -e "  3. 测试功能:    $0 --test"
+echo -e "  4. 查看日志:    tail -f output/kg_builder.log"
 echo ""

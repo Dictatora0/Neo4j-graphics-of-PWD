@@ -1,0 +1,119 @@
+{
+  "comment": "类型层级配置 - 用于Neo4j多级Label",
+  "hierarchy": {
+    "Organism": {
+      "description": "生物",
+      "children": {
+        "Pathogen": {
+          "description": "病原体",
+          "children": {
+            "Nematode": {
+              "description": "线虫"
+            },
+            "Bacteria": {
+              "description": "细菌"
+            },
+            "Fungus": {
+              "description": "真菌"
+            }
+          }
+        },
+        "Host": {
+          "description": "寄主",
+          "children": {
+            "Pine": {
+              "description": "松树"
+            }
+          }
+        },
+        "Vector": {
+          "description": "媒介",
+          "children": {
+            "Beetle": {
+              "description": "天牛"
+            },
+            "Insect": {
+              "description": "昆虫"
+            }
+          }
+        }
+      }
+    },
+    "Disease": {
+      "description": "疾病",
+      "children": {
+        "PlantDisease": {
+          "description": "植物病害"
+        }
+      }
+    },
+    "ControlMeasure": {
+      "description": "防控措施",
+      "children": {
+        "ChemicalControl": {
+          "description": "化学防治"
+        },
+        "BiologicalControl": {
+          "description": "生物防治"
+        },
+        "PhysicalControl": {
+          "description": "物理防治"
+        },
+        "QuarantineMeasure": {
+          "description": "检疫措施"
+        }
+      }
+    },
+    "Symptom": {
+      "description": "症状",
+      "children": {}
+    },
+    "Region": {
+      "description": "地区",
+      "children": {
+        "Province": {
+          "description": "省份"
+        },
+        "City": {
+          "description": "城市"
+        }
+      }
+    },
+    "EnvironmentalFactor": {
+      "description": "环境因子",
+      "children": {
+        "Climate": {
+          "description": "气候"
+        },
+        "Terrain": {
+          "description": "地形"
+        },
+        "Soil": {
+          "description": "土壤"
+        }
+      }
+    },
+    "Technology": {
+      "description": "技术",
+      "children": {
+        "MonitoringTechnology": {
+          "description": "监测技术"
+        },
+        "DetectionMethod": {
+          "description": "检测方法"
+        }
+      }
+    },
+    "Chemical": {
+      "description": "化学物质",
+      "children": {
+        "Pesticide": {
+          "description": "农药"
+        },
+        "Attractant": {
+          "description": "引诱剂"
+        }
+      }
+    }
+  }
+}

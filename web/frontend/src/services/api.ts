@@ -148,4 +148,101 @@ export const statsAPI = {
   },
 };
 
+// 反馈API
+export const feedbackAPI = {
+  // 提交关系方向错误
+  async submitRelationDirectionError(data: {
+    source: string;
+    target: string;
+    relation_type: string;
+    user_id: string;
+    comment?: string;
+    timestamp: string;
+  }): Promise<any> {
+    const response = await api.post("/api/feedback/relation-direction", data);
+    return response.data;
+  },
+
+  // 提交关系类型错误
+  async submitRelationTypeError(data: {
+    source: string;
+    target: string;
+    incorrect_type: string;
+    correct_type: string;
+    user_id: string;
+    comment?: string;
+    timestamp: string;
+  }): Promise<any> {
+    const response = await api.post("/api/feedback/relation-type", data);
+    return response.data;
+  },
+
+  // 提交实体合并建议
+  async submitEntityMerge(data: {
+    entity1: string;
+    entity2: string;
+    user_id: string;
+    comment?: string;
+    timestamp: string;
+  }): Promise<any> {
+    const response = await api.post("/api/feedback/entity-merge", data);
+    return response.data;
+  },
+
+  // 提交缺失关系
+  async submitMissingRelation(data: {
+    source: string;
+    target: string;
+    relation_type: string;
+    user_id: string;
+    comment?: string;
+    timestamp: string;
+  }): Promise<any> {
+    const response = await api.post("/api/feedback/missing-relation", data);
+    return response.data;
+  },
+
+  // 获取反馈报告
+  async getFeedbackReport(): Promise<any> {
+    const response = await api.get("/api/feedback/report");
+    return response.data;
+  },
+};
+
+// 多模态API
+export const multimodalAPI = {
+  // 按概念检索图片
+  async retrieveImages(
+    concepts: string[],
+    maxImagesPerConcept: number = 3
+  ): Promise<any> {
+    const response = await api.post("/api/multimodal/retrieve-images", {
+      concepts,
+      max_images_per_concept: maxImagesPerConcept,
+    });
+    return response.data;
+  },
+
+  // 获取概念的图片
+  async getConceptImages(conceptName: string): Promise<any[]> {
+    const response = await api.get(
+      `/api/multimodal/concept/${encodeURIComponent(conceptName)}/images`
+    );
+    return response.data;
+  },
+
+  // 获取图片文件
+  getImageUrl(imagePath: string): string {
+    return `${API_BASE_URL}/api/multimodal/image/${encodeURIComponent(
+      imagePath
+    )}`;
+  },
+
+  // 获取多模态统计
+  async getStats(): Promise<any> {
+    const response = await api.get("/api/multimodal/stats");
+    return response.data;
+  },
+};
+
 export default api;

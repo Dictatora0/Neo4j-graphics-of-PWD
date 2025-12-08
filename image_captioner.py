@@ -5,6 +5,7 @@
 
 import base64
 import os
+import time
 from typing import Dict, List, Optional
 
 import requests
@@ -112,7 +113,16 @@ class ImageCaptioner:
 
         return ""
 
-    def _caption_with_ollama(self, image_path: str, prompt: str) -> str:
+    def _check_ollama_health(self) -> bool:
+        """检查 Ollama 服务是否健康"""
+        try:
+            response = requests.get(f"{self.ollama_host}/api/tags", timeout=5)
+            return response.status_code == 200
+        except Exception:
+            return False
+
+    def _caption_with_ollama(self, image_path: str, prompt: str, max_retries: int = 3) -> str:
+        """使用 Ollama 生成图片描述，支持重试"""
         with open(image_path, "rb") as file:
             image_b64 = base64.b64encode(file.read()).decode("utf-8")
 
@@ -123,15 +133,48 @@ class ImageCaptioner:
             "stream": False,
         }
 
-        response = requests.post(
-            f"{self.ollama_host}/api/generate",
-            json=payload,
-            timeout=self.timeout,
-        )
-        response.raise_for_status()
+        last_error = None
+        for attempt in range(max_retries):
+            try:
+                # 在重试前检查 Ollama 是否健康
+                if attempt > 0:
+                    self.logger.info(f"第 {attempt + 1} 次重试，检查 Ollama 服务...")
+                    for wait_time in range(10):  # 等待最多10秒
+                        if self._check_ollama_health():
+                            self.logger.info("Ollama 服务已恢复")
+                            break
+                        time.sleep(1)
+                    else:
+                        self.logger.warning("Ollama 服务未恢复，继续尝试...")
 
-        data = response.json()
-        return data.get("response", "").strip()
+                response = requests.post(
+                    f"{self.ollama_host}/api/generate",
+                    json=payload,
+                    timeout=self.timeout,
+                )
+                response.raise_for_status()
+                data = response.json()
+                return data.get("response", "").strip()
+
+            except (requests.exceptions.ConnectionError, 
+                    requests.exceptions.Timeout,
+                    requests.exceptions.HTTPError) as e:
+                last_error = e
+                self.logger.warning(
+                    f"Ollama 请求失败 (尝试 {attempt + 1}/{max_retries}): {e}"
+                )
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt  # 指数退避: 1s, 2s, 4s
+                    self.logger.info(f"等待 {wait_time} 秒后重试...")
+                    time.sleep(wait_time)
+            except Exception as e:
+                last_error = e
+                self.logger.error(f"未预期的错误: {e}")
+                break
+
+        # 所有重试都失败
+        self.logger.error(f"所有重试均失败，最后错误: {last_error}")
+        return ""
 
 
 __all__ = ["ImageCaptioner", "TRANSFORMERS_AVAILABLE"]

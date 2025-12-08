@@ -5,18 +5,20 @@ pdf:
   input_directory: ./文献
   output_directory: ./output/extracted_texts
   enable_cache: true
-  parallel_workers: 4 # 降低并发数减少内存占用（原8改为4）
+  parallel_workers: 2 # ⚠️ 进一步降低到2以避免 Ollama 崩溃（原8→4→2）
   enable_ocr: true # 是否启用OCR（用于扫描版PDF）
   ocr_engine: tesseract # OCR引擎: tesseract 或 paddle（推荐中文用paddle）
   ocr_languages: chi_sim+eng # OCR识别语言（tesseract格式）
 
   # v2.1 Multimodal 图片描述配置
-  enable_image_captions: false # 暂时禁用（系统内存不足）
+  enable_image_captions: false # ⚠️ 暂时禁用以确保主流程稳定（内存不足时）
   image_output_dir: ./output/pdf_images # 图片保存目录
-  max_images_per_pdf: 20 # 每个PDF最多提取图片数（降低以节省资源）
+  max_images_per_pdf: 10 # ⚠️ 降低到10张避免内存溢出（原20）
   min_image_size: 300 # 最小图片尺寸（像素）过滤小图标
   caption_model: llava:7b # 使用Ollama的LLaVA模型（轻量级VLM，约4.7GB）
   caption_provider: ollama # 提供方: ollama（推荐）或 transformers
+  caption_timeout: 120 # 单张图片描述超时时间（秒）
+  caption_retry: 3 # 失败重试次数
   caption_prompt: "你是植物病理学专家。请描述图片中与松材线虫病、松树病害、昆虫媒介（天牛）、显微镜观察相关的内容。重点关注：病原体形态、病害症状、寄主植物、传播媒介。"
 
   reference_keywords:
@@ -103,25 +105,24 @@ llm:
   # 推荐模型优先级:
   # 1. qwen2.5-coder:14b (推荐) - 强大的代码和结构化输出能力
   # 2. qwen2.5-coder:7b - 性能与速度平衡
-  # 3. deepseek-r1:7b-distill - DeepSeek 蒸馏版
-  model: qwen2.5-coder:7b # 默认使用 Qwen2.5-Coder-7B-Instruct（速度更快）
+  # 3. llama3.2:3b - 轻量稳定，内存占用低
+  model: llama3.2:3b # 使用轻量级模型，更稳定，内存占用更低
 
   # 备选模型列表 (如果默认模型不可用)
   fallback_models:
-    - qwen2.5-coder:7b
-    - deepseek-r1:7b-distill
     - llama3.2:3b
+    - qwen2.5-coder:7b
 
   ollama_host: http://localhost:11434
   max_chunks: 50 # 先处理50块测试（实际耗时比预期长）
-  timeout: 600 # API 超时时间（秒）- 增加到10分钟防止慢块超时
-  num_ctx: 3072 # 上下文窗口（降低到3072节省内存，对文本块足够）
+  timeout: 900 # API 超时时间（秒）- 增加到15分钟防止慢块超时和崩溃
+  num_ctx: 2048 # 上下文窗口（降低到2048减少内存压力，防止崩溃）
   temperature: 0.1 # 降低温度提升稳定性和 JSON 格式准确性
 
   # Qwen 专用配置
   qwen_config:
     enable_strict_json: true # 启用严格 JSON 输出模式
-    max_tokens: 2048 # 最大生成 token 数
+    max_tokens: 1536 # 最大生成 token 数（降低以减少内存使用）
     top_p: 0.8 # 核采样参数
     top_k: 20 # Top-K 采样
     repeat_penalty: 1.1 # 重复惩罚
@@ -152,9 +153,58 @@ agentic:
   # LLM 审稿人 Agent
   enable_llm_review: true # 是否启用 LLM 二次校验（耗时）
   review_confidence_range: [0.6, 0.8] # 需要审查的置信度范围
-  review_model: qwen2.5-coder:7b # 审稿人模型
+  review_model: llama3.2:3b # 审稿人模型（使用轻量模型）
 
   # GraphRAG 社区摘要
   enable_graph_rag: true # 是否启用图谱社区检测和摘要
   community_algorithm: louvain # 社区检测算法: louvain 或 leiden
-  summary_model: qwen2.5-coder:7b # 摘要生成模型
+  summary_model: llama3.2:3b # 摘要生成模型（使用轻量模型）
+
+# v2.4 改进功能配置 (2024-12)
+improvements:
+  # 滑动窗口上下文机制
+  context_window:
+    enable: true # 是否启用滑动窗口上下文
+    window_size: 5 # 保留前 N 个核心实体作为上下文
+    min_importance: 4 # 只保留重要性 >= 4 的实体到上下文
+
+  # 层级本体 Label
+  hierarchical_ontology:
+    enable: true # 是否启用层级 Label（需要 Neo4j 5.x+）
+    create_inheritance_index: true # 是否为父类 Label 创建索引
+
+  # Local Search 配置
+  local_search:
+    enable: true # 是否启用 Local Search 功能
+    embedding_model: BAAI/bge-m3 # Embedding 模型
+    default_top_k: 5 # 默认检索节点数
+    default_max_hops: 2 # 默认子图扩展跳数
+    batch_size: 32 # 索引构建批量大小
+    max_context_nodes: 20 # 最大上下文节点数
+    max_context_rels: 30 # 最大上下文关系数
+
+# v2.5 第二阶段改进配置 (2024-12)
+improvements_phase2:
+  # 实体消歧与链接
+  entity_linking:
+    enable: true # 是否启用实体标准化解析器
+    use_canonical_resolver: true # 使用内置规则映射
+    use_external_kb: true # 是否使用外部知识库（NCBI Taxonomy、Wikidata）
+    external_kb_timeout: 10 # 外部知识库查询超时（秒）
+    # 注意：启用外部知识库需要网络连接，会增加处理时间
+
+  # 多模态融合
+  multimodal:
+    enable: false # 默认禁用（需要先提取图片）
+    image_dir: ./output/pdf_images
+    caption_file: output/image_captions.json
+    max_images_per_concept: 3 # 每个概念最多关联的图片数
+    # 注意：需要先在 pdf.enable_image_captions 中启用图片提取
+
+  # 人机回环
+  human_feedback:
+    enable: true # 是否启用反馈记录
+    feedback_file: output/human_feedback.jsonl # 反馈存储文件
+    auto_export_training_data: true # 自动导出训练数据
+    export_interval_days: 7 # 每周导出一次
+    training_data_file: output/feedback_training_data.json

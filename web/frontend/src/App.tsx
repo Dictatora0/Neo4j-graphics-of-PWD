@@ -4,11 +4,20 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
-import { BarChart3, X } from "lucide-react";
+import {
+  BarChart3,
+  X,
+  AlertTriangle,
+  GitMerge,
+  MessageSquare,
+} from "lucide-react";
 import GraphViewer from "./components/GraphViewer";
 import SearchBar from "./components/SearchBar";
 import FilterPanel, { type FilterState } from "./components/FilterPanel";
 import StatsPanel from "./components/StatsPanel";
+import ImageGallery from "./components/ImageGallery";
+import FeedbackModal, { type FeedbackType } from "./components/FeedbackModal";
+import RAGPanel from "./components/RAGPanel";
 import { graphAPI, statsAPI } from "./services/api";
 import type { Node } from "./types/graph";
 
@@ -29,6 +38,17 @@ function KnowledgeGraphApp() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterState | null>(null);
   const [showStatsPanel, setShowStatsPanel] = useState(false);
+  const [showRAGPanel, setShowRAGPanel] = useState(false);
+  const [highlightedNodes, setHighlightedNodes] = useState<string[]>([]);
+  const [feedbackModal, setFeedbackModal] = useState<{
+    isOpen: boolean;
+    type: FeedbackType;
+    data: any;
+  }>({
+    isOpen: false,
+    type: "entity_merge",
+    data: {},
+  });
 
   // 获取图谱数据
   const {
@@ -149,11 +169,32 @@ function KnowledgeGraphApp() {
                 </div>
               )}
               <button
-                onClick={() => setShowStatsPanel(!showStatsPanel)}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg"
+                onClick={() => {
+                  setShowStatsPanel(!showStatsPanel);
+                  setShowRAGPanel(false);
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all shadow-md hover:shadow-lg ${
+                  showStatsPanel
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
               >
                 <BarChart3 className="w-4 h-4" />
                 <span>统计面板</span>
+              </button>
+              <button
+                onClick={() => {
+                  setShowRAGPanel(!showRAGPanel);
+                  setShowStatsPanel(false);
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all shadow-md hover:shadow-lg ${
+                  showRAGPanel
+                    ? "bg-gradient-to-r from-green-500 to-teal-500 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>知识问答</span>
               </button>
               <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input
@@ -199,19 +240,47 @@ function KnowledgeGraphApp() {
 
       {/* 主内容区域 */}
       <div className="flex-1 flex overflow-hidden">
-        {/* 左侧统计面板 */}
-        {showStatsPanel && graphData && (
-          <aside className="w-96 bg-white/80 backdrop-blur-md border-r border-gray-200/50 p-4 overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">数据统计</h2>
-              <button
-                onClick={() => setShowStatsPanel(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <StatsPanel data={graphData} stats={stats} />
+        {/* 左侧面板 - 统计或问答 */}
+        {(showStatsPanel || showRAGPanel) && (
+          <aside className="w-96 bg-white/80 backdrop-blur-md border-r border-gray-200/50 overflow-hidden flex flex-col">
+            {showStatsPanel && graphData && (
+              <>
+                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    数据统计
+                  </h2>
+                  <button
+                    onClick={() => setShowStatsPanel(false)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4">
+                  <StatsPanel data={graphData} stats={stats} />
+                </div>
+              </>
+            )}
+            {showRAGPanel && (
+              <>
+                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    知识问答
+                  </h2>
+                  <button
+                    onClick={() => setShowRAGPanel(false)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="flex-1 overflow-hidden">
+                  <RAGPanel
+                    onHighlightNodes={(nodeIds) => setHighlightedNodes(nodeIds)}
+                  />
+                </div>
+              </>
+            )}
           </aside>
         )}
 
@@ -294,8 +363,54 @@ function KnowledgeGraphApp() {
                 </div>
               )}
             </div>
+
+            {/* 相关图片展示 */}
+            <ImageGallery conceptName={selectedNode.name} />
+
+            {/* 纠错按钮 */}
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <p className="text-sm font-medium text-gray-700 mb-3">
+                反馈与纠错
+              </p>
+              <div className="space-y-2">
+                <button
+                  onClick={() =>
+                    setFeedbackModal({
+                      isOpen: true,
+                      type: "entity_merge",
+                      data: { entityName: selectedNode.name },
+                    })
+                  }
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
+                >
+                  <GitMerge className="w-4 h-4" />
+                  <span>建议实体合并</span>
+                </button>
+                <button
+                  onClick={() =>
+                    setFeedbackModal({
+                      isOpen: true,
+                      type: "missing_relation",
+                      data: { sourceNode: selectedNode.name },
+                    })
+                  }
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm bg-orange-50 text-orange-700 rounded hover:bg-orange-100 transition-colors"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>报告缺失关系</span>
+                </button>
+              </div>
+            </div>
           </aside>
         )}
+
+        {/* 反馈模态框 */}
+        <FeedbackModal
+          isOpen={feedbackModal.isOpen}
+          onClose={() => setFeedbackModal({ ...feedbackModal, isOpen: false })}
+          type={feedbackModal.type}
+          data={feedbackModal.data}
+        />
       </div>
     </div>
   );

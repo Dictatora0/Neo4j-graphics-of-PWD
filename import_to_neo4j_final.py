@@ -160,6 +160,21 @@ with driver.session() as session:
         },
     }
     
+    # 层级本体定义：定义每个类型的父类关系
+    # 格式: {'Type': ['ParentType1', 'ParentType2', ...]}
+    # 例如: Pathogen 继承自 Organism, Host 继承自 Plant 和 Organism
+    type_hierarchy = {
+        'Pathogen': ['Organism', 'Concept'],
+        'Disease': ['Condition', 'Concept'],
+        'Vector': ['Insect', 'Animal', 'Organism', 'Concept'],
+        'Host': ['Plant', 'Organism', 'Concept'],
+        'Location': ['GeographicEntity', 'Concept'],
+        'Technology': ['Method', 'Concept'],
+        'Control': ['Treatment', 'Method', 'Concept'],
+        'Environment': ['Factor', 'Concept'],
+        'Other': ['Concept'],
+    }
+    
     # 默认样式
     default_styles = {
         'Pathogen': {'color': '#FF6B6B', 'size': 'medium', 'icon': 'PATHOGEN'},
@@ -227,11 +242,29 @@ with driver.session() as session:
             color = style['color']
             icon = style.get('icon', '')
         
-        # 创建节点
+        # 构建层级 Label 字符串
+        # 例如: Pathogen 节点将有 :Pathogen:Organism:Concept 三个 Label
+        labels = [node_type]
+        if node_type in type_hierarchy:
+            labels.extend(type_hierarchy[node_type])
+        
+        # 去重并保持顺序（具体类型在前，抽象类型在后）
+        seen = set()
+        unique_labels = []
+        for label in labels:
+            if label not in seen:
+                seen.add(label)
+                unique_labels.append(label)
+        
+        labels_str = ':'.join(unique_labels)
+        
+        # 创建节点（带层级 Label）
         session.run(f"""
-            CREATE (n:{node_type} {{
+            CREATE (n:{labels_str} {{
                 name: $name,
                 type: $type,
+                primary_label: $primary_label,
+                all_labels: $all_labels,
                 color: $color,
                 icon: $icon,
                 created_at: $timestamp,
@@ -240,6 +273,8 @@ with driver.session() as session:
         """, 
         name=node,
         type=node_type,
+        primary_label=node_type,
+        all_labels=unique_labels,
         color=color,
         icon=icon,
         timestamp=datetime.now().isoformat(),
@@ -389,6 +424,7 @@ with driver.session() as session:
     index_queries = [
         "CREATE INDEX node_name IF NOT EXISTS FOR (n) ON (n.name)",
         "CREATE INDEX node_type IF NOT EXISTS FOR (n) ON (n.type)",
+        "CREATE INDEX node_primary_label IF NOT EXISTS FOR (n) ON (n.primary_label)",
         "CREATE INDEX rel_weight IF NOT EXISTS FOR ()-[r]-() ON (r.weight)",
     ]
     
@@ -493,6 +529,11 @@ print("  查看所有节点: MATCH (n) RETURN n")
 print("  查看所有关系: MATCH ()-[r]->() RETURN r")
 print("  查看高度数节点: MATCH (n) RETURN n ORDER BY n.total_degree DESC LIMIT 10")
 print("  查看特定关系: MATCH ()-[r:PARASITIZES]->() RETURN r")
+print("\n层级本体查询示例:")
+print("  查询所有生物: MATCH (n:Organism) RETURN n")
+print("  查询所有植物: MATCH (n:Plant) RETURN n")
+print("  查询所有动物: MATCH (n:Animal) RETURN n")
+print("  查询所有防治方法: MATCH (n:Treatment) RETURN n")
 
 print("\n访问 Neo4j Browser:")
 print("  URL: http://localhost:7474")
@@ -504,3 +545,5 @@ print("  1. 在 Neo4j Browser 中运行查询查看可视化")
 print("  2. 使用 MATCH (n) RETURN n LIMIT 25 查看节点")
 print("  3. 使用 MATCH p=()-[r]->() RETURN p LIMIT 25 查看关系")
 print("  4. 尝试路径查询: MATCH p=(a)-[*1..3]-(b) WHERE a.name='pine wilt disease' RETURN p")
+print("  5. 利用层级本体: MATCH (o:Organism)-[r]->(h:Host) RETURN o, r, h")
+print("  6. 查询节点的所有 Label: MATCH (n) RETURN n.name, labels(n) LIMIT 10")

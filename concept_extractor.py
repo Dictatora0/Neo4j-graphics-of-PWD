@@ -356,8 +356,9 @@ class ConceptExtractor:
             logger.warning(f"关系 JSON 解析失败 [{chunk_id}]: {str(e)}")
             return None
     
-    def extract_concepts_and_relationships(self, text: str, chunk_id: str = "") -> Tuple[Optional[List[Dict]], Optional[List[Dict]]]:
-        """在一次 LLM 调用中同时抽取概念和关系
+    def extract_concepts_and_relationships(self, text: str, chunk_id: str = "", 
+                                          context_hint: str = "") -> Tuple[Optional[List[Dict]], Optional[List[Dict]]]:
+        """在一次 LLM 调用中同时抽取概念和关系（支持上下文提示）
 
         相比先调用 extract_concepts 再调用 extract_relationships, 这里使用统一的 JSON Schema
         一次性返回 concepts 与 relationships, 可以减少网络往返并提高整体一致性,
@@ -365,7 +366,8 @@ class ConceptExtractor:
 
         参数:
             text: 待处理的文本块;
-            chunk_id: 文本块唯一标识符。
+            chunk_id: 文本块唯一标识符;
+            context_hint: 上下文提示，包含前文提到的核心实体，帮助保持一致性。
 
         返回:
             (concepts_list, relationships_list) 二元组:
@@ -412,7 +414,7 @@ class ConceptExtractor:
         
         user_prompt = f"""从以下松材线虫病科学文本中提取概念和关系：
 
-{text}
+{text}{context_hint}
 
 输出格式示例：
 {{
@@ -477,17 +479,26 @@ class ConceptExtractor:
             logger.error(f"原始响应（前500字符）:\n{response[:500]}")
             return None, None
     
-    def extract_from_chunks(self, chunks: List[Dict], max_chunks: int = None) -> Tuple[pd.DataFrame, pd.DataFrame]:
-        """批量从多个文本块中抽取概念和关系
+    def extract_from_chunks(self, chunks: List[Dict], max_chunks: int = None, 
+                           use_context_window: bool = True, 
+                           context_window_size: int = 5) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        """批量从多个文本块中抽取概念和关系（支持滑动窗口上下文）
 
         参数:
             chunks: 文本块字典列表, 每个元素至少包含 'text' 和 'chunk_id' 字段;
-            max_chunks: 限制最多处理的块数, 为 None 时处理全部块(默认)。
+            max_chunks: 限制最多处理的块数, 为 None 时处理全部块(默认);
+            use_context_window: 是否启用滑动窗口上下文机制，帮助保持跨块实体一致性;
+            context_window_size: 上下文窗口大小，保留前 N 个核心实体作为上下文。
 
         返回:
             (concepts_df, relationships_df) 二元组:
             - concepts_df: 汇总所有成功块后得到的概念 DataFrame;
             - relationships_df: 汇总所有成功块后得到的关系 DataFrame。
+        
+        滑动窗口机制说明:
+        - 在处理 Chunk N 时，将 Chunk N-1 中提取的高重要性实体作为上下文提示
+        - 帮助 LLM 识别跨块的实体指代（如代词、简称等）
+        - 提高实体抽取的一致性和准确性
         """
         import gc  # 导入垃圾回收模块
         import time  # 导入时间模块用于添加延迟
@@ -501,9 +512,14 @@ class ConceptExtractor:
         all_concepts = []
         all_relationships = []
         
+        # 滑动窗口上下文：存储前一个 chunk 的核心实体
+        context_entities = []
+        
         logger.info(f"Extracting concepts and relationships from {len(chunks)} chunks...")
         logger.info("Optimized: single LLM call per chunk with strict JSON Schema")
         logger.info("Model: Using Qwen2.5-Coder with enhanced structured output")
+        if use_context_window:
+            logger.info(f"Context Window: Enabled (size={context_window_size}, maintains cross-chunk entity consistency)")
         logger.info("Timeout: 180 seconds per request (Qwen 14B requires longer processing)")
         logger.info("Retry: 3 attempts per chunk with exponential backoff")
         logger.info(f"Estimated time: ~{len(chunks) * 20} seconds (20s per chunk for Qwen 14B)")
@@ -520,12 +536,37 @@ class ConceptExtractor:
             
             logger.debug(f"[{i}/{len(chunks)}] Processing chunk: {chunk_id}")
             
+            # 构建上下文提示（如果启用滑动窗口）
+            context_hint = ""
+            if use_context_window and context_entities:
+                context_hint = f"\n\n**前文提到的核心实体**: {', '.join(context_entities[:context_window_size])}\n请注意保持实体名称的一致性。"
+            
             # Extract both concepts and relationships in ONE call
-            concepts, relationships = self.extract_concepts_and_relationships(text, chunk_id)
+            concepts, relationships = self.extract_concepts_and_relationships(
+                text, chunk_id, context_hint=context_hint
+            )
             
             if concepts:
                 all_concepts.extend(concepts)
                 logger.debug(f"Extracted {len(concepts)} concepts")
+                
+                # 更新滑动窗口上下文：保留高重要性实体
+                if use_context_window:
+                    chunk_core_entities = [
+                        c['entity'] for c in concepts 
+                        if c.get('importance', 0) >= 4  # 只保留重要性 >= 4 的实体
+                    ][:context_window_size]
+                    
+                    # 合并到上下文列表，去重并保持顺序
+                    for entity in chunk_core_entities:
+                        if entity not in context_entities:
+                            context_entities.insert(0, entity)
+                    
+                    # 限制上下文窗口大小
+                    context_entities = context_entities[:context_window_size]
+                    
+                    if chunk_core_entities:
+                        logger.debug(f"Context updated: {context_entities}")
             else:
                 logger.debug("No concepts extracted")
                 # 单块失败只计数并跳过,让管道尽量在其余块上继续跑完

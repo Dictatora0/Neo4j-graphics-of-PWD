@@ -16,7 +16,7 @@
 """
 
 import logging
-from typing import List, Dict, Tuple, Set
+from typing import List, Dict, Tuple, Set, Optional
 import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
@@ -394,23 +394,346 @@ class TfidfEmbedding(EmbeddingProvider):
         return self.vectorizer.fit_transform(texts).toarray()
 
 
+class CanonicalResolver:
+    """实体标准化解析器 - 基于规则和外部知识库的实体对齐
+    
+    功能:
+    1. 生物分类学拉丁名对齐（如 Bursaphelenchus xylophilus）
+    2. 常见别名映射（如 "松材线虫" → "Bursaphelenchus xylophilus"）
+    3. 外部知识库查询（可选：NCBI Taxonomy、Wikidata 等）
+    4. 规则优先级：外部知识库 > 内置规则 > Embedding 相似度
+    """
+    
+    # 内置生物分类学标准名映射
+    BIOLOGICAL_CANONICAL_NAMES = {
+        # 病原体
+        '松材线虫': 'Bursaphelenchus xylophilus',
+        '线虫': 'Bursaphelenchus xylophilus',
+        'bursaphelenchus xylophilus': 'Bursaphelenchus xylophilus',
+        'b. xylophilus': 'Bursaphelenchus xylophilus',
+        'pine wood nematode': 'Bursaphelenchus xylophilus',
+        'pwn': 'Bursaphelenchus xylophilus',
+        
+        # 媒介昆虫
+        '松褐天牛': 'Monochamus alternatus',
+        '天牛': 'Monochamus alternatus',
+        'monochamus alternatus': 'Monochamus alternatus',
+        'm. alternatus': 'Monochamus alternatus',
+        'japanese pine sawyer': 'Monochamus alternatus',
+        
+        '云杉花墨天牛': 'Monochamus saltuarius',
+        'monochamus saltuarius': 'Monochamus saltuarius',
+        
+        # 寄主植物
+        '马尾松': 'Pinus massoniana',
+        'pinus massoniana': 'Pinus massoniana',
+        'masson pine': 'Pinus massoniana',
+        
+        '黑松': 'Pinus thunbergii',
+        'pinus thunbergii': 'Pinus thunbergii',
+        'japanese black pine': 'Pinus thunbergii',
+        
+        '湿地松': 'Pinus elliottii',
+        'pinus elliottii': 'Pinus elliottii',
+        'slash pine': 'Pinus elliottii',
+        
+        '赤松': 'Pinus densiflora',
+        'pinus densiflora': 'Pinus densiflora',
+        'japanese red pine': 'Pinus densiflora',
+        
+        '云南松': 'Pinus yunnanensis',
+        'pinus yunnanensis': 'Pinus yunnanensis',
+        
+        '华山松': 'Pinus armandii',
+        'pinus armandii': 'Pinus armandii',
+    }
+    
+    # 疾病标准名
+    DISEASE_CANONICAL_NAMES = {
+        '松材线虫病': 'Pine Wilt Disease',
+        '松树萎蔫病': 'Pine Wilt Disease',
+        'pine wilt disease': 'Pine Wilt Disease',
+        'pwd': 'Pine Wilt Disease',
+        'pine wilt': 'Pine Wilt Disease',
+    }
+    
+    # 化学物质标准名
+    CHEMICAL_CANONICAL_NAMES = {
+        '阿维菌素': 'Avermectin',
+        'avermectin': 'Avermectin',
+        '噻虫啉': 'Thiacloprid',
+        'thiacloprid': 'Thiacloprid',
+        '吡虫啉': 'Imidacloprid',
+        'imidacloprid': 'Imidacloprid',
+    }
+    
+    def __init__(self, use_external_kb: bool = False, external_kb_api: str = None):
+        """
+        Args:
+            use_external_kb: 是否使用外部知识库（如 NCBI Taxonomy）
+            external_kb_api: 外部知识库 API 地址
+        """
+        self.use_external_kb = use_external_kb
+        self.external_kb_api = external_kb_api
+        
+        # 合并所有标准名映射
+        self.canonical_map = {
+            **self.BIOLOGICAL_CANONICAL_NAMES,
+            **self.DISEASE_CANONICAL_NAMES,
+            **self.CHEMICAL_CANONICAL_NAMES
+        }
+        
+        logger.info(f"CanonicalResolver initialized with {len(self.canonical_map)} built-in mappings")
+        if use_external_kb:
+            logger.info(f"External KB enabled: {external_kb_api}")
+    
+    def resolve(self, entity: str, category: str = None) -> str:
+        """
+        解析实体到标准名
+        
+        Args:
+            entity: 原始实体名
+            category: 实体类别（可选，用于优化查询）
+        
+        Returns:
+            标准化后的实体名
+        """
+        entity_lower = entity.lower().strip()
+        
+        # 1. 优先使用内置规则
+        if entity_lower in self.canonical_map:
+            canonical = self.canonical_map[entity_lower]
+            logger.debug(f"Resolved '{entity}' → '{canonical}' (built-in rule)")
+            return canonical
+        
+        # 2. 尝试外部知识库（如果启用）
+        if self.use_external_kb and self.external_kb_api:
+            try:
+                canonical = self._query_external_kb(entity, category)
+                if canonical:
+                    logger.debug(f"Resolved '{entity}' → '{canonical}' (external KB)")
+                    return canonical
+            except Exception as e:
+                logger.warning(f"External KB query failed for '{entity}': {e}")
+        
+        # 3. 无法解析，返回原名
+        return entity
+    
+    def _query_external_kb(self, entity: str, category: str = None) -> Optional[str]:
+        """
+        查询外部知识库（如 NCBI Taxonomy、Wikidata）
+        
+        Args:
+            entity: 实体名称
+            category: 实体类别（用于选择合适的知识库）
+        
+        Returns:
+            标准名称，如果查询失败则返回 None
+        """
+        import requests
+        from urllib.parse import quote
+        
+        # 根据类别选择查询策略
+        # 生物相关类别优先使用 NCBI Taxonomy
+        bio_categories = ['Pathogen', 'Vector', 'Host', 'Organism', 'Animal', 'Plant', 'Insect']
+        
+        if category in bio_categories:
+            # 1. 尝试 NCBI Taxonomy
+            result = self._query_ncbi_taxonomy(entity)
+            if result:
+                return result
+        
+        # 2. 尝试 Wikidata（通用知识库）
+        result = self._query_wikidata(entity)
+        if result:
+            return result
+        
+        return None
+    
+    def _query_ncbi_taxonomy(self, entity: str) -> Optional[str]:
+        """
+        查询 NCBI Taxonomy 数据库
+        
+        API 文档: https://www.ncbi.nlm.nih.gov/books/NBK25499/
+        """
+        import requests
+        from urllib.parse import quote
+        
+        try:
+            # Step 1: 搜索实体，获取 TaxID
+            search_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+            search_params = {
+                'db': 'taxonomy',
+                'term': entity,
+                'retmode': 'json',
+                'retmax': 1
+            }
+            
+            search_response = requests.get(search_url, params=search_params, timeout=5)
+            search_response.raise_for_status()
+            search_data = search_response.json()
+            
+            # 检查是否有结果
+            id_list = search_data.get('esearchresult', {}).get('idlist', [])
+            if not id_list:
+                return None
+            
+            tax_id = id_list[0]
+            
+            # Step 2: 获取详细信息
+            fetch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
+            fetch_params = {
+                'db': 'taxonomy',
+                'id': tax_id,
+                'retmode': 'xml'
+            }
+            
+            fetch_response = requests.get(fetch_url, params=fetch_params, timeout=5)
+            fetch_response.raise_for_status()
+            
+            # 解析 XML 获取学名
+            import xml.etree.ElementTree as ET
+            root = ET.fromstring(fetch_response.text)
+            
+            # 获取 ScientificName
+            scientific_name = root.find('.//ScientificName')
+            if scientific_name is not None and scientific_name.text:
+                canonical = scientific_name.text.strip()
+                logger.info(f"NCBI Taxonomy: '{entity}' → '{canonical}' (TaxID: {tax_id})")
+                return canonical
+            
+            return None
+        
+        except requests.exceptions.Timeout:
+            logger.warning(f"NCBI Taxonomy query timeout for '{entity}'")
+            return None
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"NCBI Taxonomy query failed for '{entity}': {e}")
+            return None
+        except Exception as e:
+            logger.warning(f"NCBI Taxonomy parsing error for '{entity}': {e}")
+            return None
+    
+    def _query_wikidata(self, entity: str) -> Optional[str]:
+        """
+        查询 Wikidata 知识库
+        
+        使用 SPARQL 查询接口
+        """
+        import requests
+        from urllib.parse import quote
+        
+        try:
+            # SPARQL 查询：搜索与实体名称匹配的条目
+            sparql_query = f"""
+            SELECT ?item ?itemLabel ?scientificName WHERE {{
+              ?item rdfs:label "{entity}"@zh .
+              OPTIONAL {{ ?item wdt:P225 ?scientificName . }}
+              SERVICE wikibase:label {{ bd:serviceParam wikibase:language "zh,en". }}
+            }}
+            LIMIT 1
+            """
+            
+            sparql_url = "https://query.wikidata.org/sparql"
+            headers = {
+                'User-Agent': 'PWD-KG-Builder/1.0',
+                'Accept': 'application/json'
+            }
+            
+            response = requests.get(
+                sparql_url,
+                params={'query': sparql_query, 'format': 'json'},
+                headers=headers,
+                timeout=10
+            )
+            response.raise_for_status()
+            data = response.json()
+            
+            # 解析结果
+            bindings = data.get('results', {}).get('bindings', [])
+            if bindings:
+                result = bindings[0]
+                
+                # 优先使用 scientificName（拉丁学名）
+                if 'scientificName' in result:
+                    canonical = result['scientificName']['value']
+                    logger.info(f"Wikidata: '{entity}' → '{canonical}' (scientific name)")
+                    return canonical
+                
+                # 否则使用标签
+                if 'itemLabel' in result:
+                    canonical = result['itemLabel']['value']
+                    # 如果标签就是原实体名，则不返回（避免循环）
+                    if canonical.lower() != entity.lower():
+                        logger.info(f"Wikidata: '{entity}' → '{canonical}' (label)")
+                        return canonical
+            
+            return None
+        
+        except requests.exceptions.Timeout:
+            logger.warning(f"Wikidata query timeout for '{entity}'")
+            return None
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"Wikidata query failed for '{entity}': {e}")
+            return None
+        except Exception as e:
+            logger.warning(f"Wikidata parsing error for '{entity}': {e}")
+            return None
+    
+    def batch_resolve(self, entities: List[str], categories: List[str] = None) -> Dict[str, str]:
+        """
+        批量解析实体
+        
+        Args:
+            entities: 实体列表
+            categories: 类别列表（可选）
+        
+        Returns:
+            {原始名: 标准名} 映射字典
+        """
+        if categories is None:
+            categories = [None] * len(entities)
+        
+        mapping = {}
+        for entity, category in zip(entities, categories):
+            mapping[entity] = self.resolve(entity, category)
+        
+        return mapping
+    
+    def add_custom_mapping(self, original: str, canonical: str):
+        """
+        添加自定义映射（用于领域特定术语）
+        
+        Args:
+            original: 原始名称
+            canonical: 标准名称
+        """
+        self.canonical_map[original.lower().strip()] = canonical
+        logger.info(f"Added custom mapping: '{original}' → '{canonical}'")
+
+
 class ConceptDeduplicator:
-    """基于语义相似度的概念去重器
+    """基于语义相似度的概念去重器（增强版：支持实体标准化）
 
     主要职责:
     - 将文本中抽取出来的大量概念通过向量表示转换到同一语义空间;
-    - 计算任意两概念之间的相似度,识别“含义几乎相同”的概念组;
+    - 使用 CanonicalResolver 进行规则优先的实体标准化;
+    - 计算任意两概念之间的相似度,识别"含义几乎相同"的概念组;
     - 为每个相似概念簇选出一个代表概念(规范名),其余全部映射到该代表名上;
     - 聚合重要性、类别和来源块信息,生成去重后的概念表。
     """
     
     def __init__(self, embedding_provider: EmbeddingProvider = None, 
-                 similarity_threshold: float = 0.85):
-        """初始化概念去重器
+                 similarity_threshold: float = 0.85,
+                 use_canonical_resolver: bool = True,
+                 use_external_kb: bool = False):
+        """初始化概念去重器（增强版）
 
         参数:
         - `embedding_provider`: 具体的向量生成实现,如 `BGE_M3_Embedder`、`SentenceTransformerEmbedding` 等;
-        - `similarity_threshold`: 判定两个概念为“重复/同义”的相似度阈值,范围 0-1,越接近 1 表示越严格。
+        - `similarity_threshold`: 判定两个概念为"重复/同义"的相似度阈值,范围 0-1,越接近 1 表示越严格;
+        - `use_canonical_resolver`: 是否启用实体标准化解析器（推荐）;
+        - `use_external_kb`: 是否使用外部知识库（需要网络连接）。
         """
         if embedding_provider is None:
             # 默认优先使用 sentence-transformers；环境不满足时退回到轻量级 TF-IDF
@@ -421,23 +744,58 @@ class ConceptDeduplicator:
                 embedding_provider = TfidfEmbedding()
         
         self.embedding_provider = embedding_provider
-        # 相似度阈值控制“多严格才算重复”：越接近 1.0，合并得越保守
+        # 相似度阈值控制"多严格才算重复"：越接近 1.0，合并得越保守
         self.similarity_threshold = similarity_threshold
+        
+        # 实体标准化解析器
+        self.canonical_resolver = None
+        if use_canonical_resolver:
+            self.canonical_resolver = CanonicalResolver(
+                use_external_kb=use_external_kb
+            )
+            logger.info("CanonicalResolver enabled (rule-based entity linking)")
     
     def deduplicate_concepts(self, concepts_df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, str]]:
-        """基于语义相似度对概念做去重
+        """基于语义相似度对概念做去重（增强版：规则优先）
 
         参数:
         - `concepts_df`: 概念 DataFrame,通常包含 `entity`(概念名称)、`importance`(重要性)、`category`(类别)、`chunk_id` 等列。
 
         返回:
-        - `deduplicated_df`: 去重后的概念 DataFrame,每行是一个“规范概念”; 
+        - `deduplicated_df`: 去重后的概念 DataFrame,每行是一个"规范概念"; 
         - `mapping_dict`: 字典形式的映射关系,`原始概念名 -> 规范概念名`,便于后续更新关系表。
+        
+        改进:
+        - 优先使用 CanonicalResolver 进行规则匹配（如生物分类学拉丁名）
+        - 对无法规则匹配的实体，再使用 Embedding 相似度聚类
+        - 提高实体标准化的准确性和一致性
         """
         if concepts_df.empty:
             return concepts_df, {}
         
         logger.info(f"Deduplicating {len(concepts_df)} concepts...")
+        
+        # Step 1: 使用 CanonicalResolver 进行规则优先的标准化
+        if self.canonical_resolver:
+            logger.info("Applying rule-based entity linking...")
+            canonical_mapping = {}
+            
+            for _, row in concepts_df.iterrows():
+                entity = row['entity']
+                category = row.get('category', None)
+                canonical = self.canonical_resolver.resolve(entity, category)
+                
+                if canonical != entity:
+                    canonical_mapping[entity] = canonical
+            
+            if canonical_mapping:
+                logger.info(f"Rule-based linking: {len(canonical_mapping)} entities standardized")
+                # 应用规则映射
+                concepts_df['entity'] = concepts_df['entity'].map(
+                    lambda x: canonical_mapping.get(x, x)
+                )
+        
+        # Step 2: 对剩余实体使用 Embedding 相似度聚类
         
         # 以 entity 为单位做去重: 先在文本层面去重,再在向量空间里按语义聚类
         # Get unique concepts

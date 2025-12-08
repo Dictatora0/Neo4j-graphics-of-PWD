@@ -434,26 +434,306 @@ class CommunitySummarizer:
         return summaries_df
 
 
+class LocalSearchEngine:
+    """
+    Local Search 引擎 - 基于向量索引的精确检索
+    
+    功能:
+    1. 为每个节点生成 Embedding 索引
+    2. 根据用户查询检索 Top-K 相关节点
+    3. 扩展子图 (1-2跳)
+    4. 使用 LLM 基于子图生成答案
+    """
+    
+    def __init__(self, model: str, ollama_host: str = "http://localhost:11434",
+                 embedding_model: str = "BAAI/bge-m3"):
+        """
+        Args:
+            model: LLM 模型名称
+            ollama_host: Ollama 服务地址
+            embedding_model: Embedding 模型名称
+        """
+        self.model = model
+        self.ollama_host = ollama_host
+        self.api_endpoint = f"{ollama_host}/api/generate"
+        
+        # 初始化 Embedding 模型
+        try:
+            from FlagEmbedding import BGEM3FlagModel
+            logger.info(f"Loading embedding model: {embedding_model}")
+            self.embedder = BGEM3FlagModel(
+                embedding_model,
+                use_fp16=True,
+                normalize_embeddings=True
+            )
+            logger.info("✓ Embedding model loaded")
+        except Exception as e:
+            logger.error(f"Failed to load embedding model: {e}")
+            raise
+        
+        # 节点索引：{entity: embedding}
+        self.node_index = {}
+    
+    def build_node_index(self, concepts_df: pd.DataFrame) -> None:
+        """
+        为所有节点构建 Embedding 索引
+        
+        Args:
+            concepts_df: 概念 DataFrame
+        """
+        logger.info(f"Building node index for {len(concepts_df)} concepts...")
+        
+        entities = concepts_df['entity'].tolist()
+        
+        # 批量生成 Embedding
+        embeddings = self.embedder.encode(
+            entities,
+            batch_size=32,
+            max_length=512,
+            return_dense=True,
+            return_sparse=False,
+            return_colbert_vecs=False
+        )['dense_vecs']
+        
+        # 构建索引
+        for entity, embedding in zip(entities, embeddings):
+            self.node_index[entity] = embedding
+        
+        logger.info(f"✓ Node index built: {len(self.node_index)} nodes")
+    
+    def search_relevant_nodes(self, query: str, top_k: int = 5) -> List[Tuple[str, float]]:
+        """
+        检索与查询最相关的 Top-K 节点
+        
+        Args:
+            query: 用户查询
+            top_k: 返回节点数量
+        
+        Returns:
+            [(entity, similarity_score), ...]
+        """
+        if not self.node_index:
+            logger.error("Node index not built. Call build_node_index() first.")
+            return []
+        
+        # 生成查询 Embedding
+        query_embedding = self.embedder.encode(
+            [query],
+            batch_size=1,
+            max_length=512,
+            return_dense=True,
+            return_sparse=False,
+            return_colbert_vecs=False
+        )['dense_vecs'][0]
+        
+        # 计算相似度
+        similarities = []
+        for entity, node_embedding in self.node_index.items():
+            # 余弦相似度
+            similarity = np.dot(query_embedding, node_embedding) / (
+                np.linalg.norm(query_embedding) * np.linalg.norm(node_embedding)
+            )
+            similarities.append((entity, float(similarity)))
+        
+        # 按相似度排序
+        similarities.sort(key=lambda x: x[1], reverse=True)
+        
+        return similarities[:top_k]
+    
+    def expand_subgraph(self, seed_nodes: List[str], 
+                       relationships_df: pd.DataFrame,
+                       max_hops: int = 2) -> Tuple[Set[str], pd.DataFrame]:
+        """
+        从种子节点扩展子图
+        
+        Args:
+            seed_nodes: 种子节点列表
+            relationships_df: 关系 DataFrame
+            max_hops: 最大跳数
+        
+        Returns:
+            (subgraph_nodes, subgraph_relationships)
+        """
+        subgraph_nodes = set(seed_nodes)
+        current_nodes = set(seed_nodes)
+        
+        # 多跳扩展
+        for hop in range(max_hops):
+            next_nodes = set()
+            
+            for node in current_nodes:
+                # 查找直接连接的节点
+                neighbors = relationships_df[
+                    (relationships_df['node_1'] == node) | 
+                    (relationships_df['node_2'] == node)
+                ]
+                
+                for _, row in neighbors.iterrows():
+                    next_nodes.add(row['node_1'])
+                    next_nodes.add(row['node_2'])
+            
+            subgraph_nodes.update(next_nodes)
+            current_nodes = next_nodes
+            
+            if not next_nodes:
+                break
+        
+        # 提取子图关系
+        subgraph_rels = relationships_df[
+            (relationships_df['node_1'].isin(subgraph_nodes)) &
+            (relationships_df['node_2'].isin(subgraph_nodes))
+        ]
+        
+        logger.debug(f"Expanded subgraph: {len(subgraph_nodes)} nodes, {len(subgraph_rels)} relationships")
+        
+        return subgraph_nodes, subgraph_rels
+    
+    def _call_ollama(self, prompt: str, system_prompt: str = "", temperature: float = 0.3) -> Optional[str]:
+        """调用 Ollama API"""
+        try:
+            payload = {
+                "model": self.model,
+                "prompt": prompt,
+                "system": system_prompt,
+                "stream": False,
+                "temperature": temperature,
+                "num_ctx": 8192,
+            }
+            
+            response = requests.post(self.api_endpoint, json=payload, timeout=180)
+            response.raise_for_status()
+            
+            result = response.json()
+            return result.get('response', '').strip()
+        except Exception as e:
+            logger.error(f"Local Search API error: {e}")
+            return None
+    
+    def answer_query(self, query: str, 
+                    concepts_df: pd.DataFrame,
+                    relationships_df: pd.DataFrame,
+                    top_k: int = 5,
+                    max_hops: int = 2) -> Dict:
+        """
+        基于 Local Search 回答用户查询
+        
+        Args:
+            query: 用户查询
+            concepts_df: 概念 DataFrame
+            relationships_df: 关系 DataFrame
+            top_k: 检索节点数
+            max_hops: 子图扩展跳数
+        
+        Returns:
+            {
+                'query': str,
+                'relevant_nodes': List[Tuple[str, float]],
+                'subgraph_size': int,
+                'answer': str
+            }
+        """
+        logger.info(f"Processing query: {query}")
+        
+        # 1. 检索相关节点
+        relevant_nodes = self.search_relevant_nodes(query, top_k)
+        
+        if not relevant_nodes:
+            return {
+                'query': query,
+                'relevant_nodes': [],
+                'subgraph_size': 0,
+                'answer': '未找到相关信息。'
+            }
+        
+        logger.info(f"Found {len(relevant_nodes)} relevant nodes")
+        for node, score in relevant_nodes:
+            logger.debug(f"  - {node}: {score:.3f}")
+        
+        # 2. 扩展子图
+        seed_nodes = [node for node, _ in relevant_nodes]
+        subgraph_nodes, subgraph_rels = self.expand_subgraph(
+            seed_nodes, relationships_df, max_hops
+        )
+        
+        # 3. 构建上下文
+        context_nodes = []
+        for node in list(subgraph_nodes)[:20]:  # 限制上下文大小
+            node_info = concepts_df[concepts_df['entity'] == node]
+            if not node_info.empty:
+                row = node_info.iloc[0]
+                context_nodes.append(
+                    f"- {row['entity']} ({row.get('category', 'unknown')}类, 重要性: {row.get('importance', 1)})"
+                )
+        
+        context_rels = []
+        for _, row in subgraph_rels.head(30).iterrows():  # 限制关系数量
+            context_rels.append(
+                f"- {row['node_1']} → {row['edge']} → {row['node_2']}"
+            )
+        
+        # 4. 生成答案
+        system_prompt = """你是松材线虫病知识图谱问答助手。你的任务是基于提供的知识子图回答用户问题。
+
+## 任务
+1. 仔细阅读提供的概念和关系
+2. 基于知识图谱中的信息回答问题
+3. 如果信息不足，请明确说明
+4. 回答要简洁、准确、有依据
+
+## 输出要求
+- 直接回答问题，不要添加额外的客套话
+- 引用具体的实体和关系来支持你的答案
+- 如果有多个相关实体，请列举说明"""
+        
+        user_prompt = f"""用户问题: {query}
+
+**相关概念**:
+{chr(10).join(context_nodes[:15])}
+
+**相关关系**:
+{chr(10).join(context_rels[:20])}
+
+请基于以上知识图谱信息回答问题。"""
+        
+        answer = self._call_ollama(user_prompt, system_prompt, temperature=0.2)
+        
+        if not answer:
+            answer = "抱歉，生成答案失败。请稍后重试。"
+        
+        return {
+            'query': query,
+            'relevant_nodes': relevant_nodes,
+            'subgraph_size': len(subgraph_nodes),
+            'answer': answer
+        }
+
+
 class GraphRAG:
     """
-    GraphRAG 主类 - 整合社区检测和摘要生成
+    GraphRAG 主类 - 整合社区检测、摘要生成和 Local Search
     
     使用方法:
     ```python
+    # Global Search (社区摘要)
     graph_rag = GraphRAG(model="qwen2.5-coder:14b", algorithm="louvain")
     communities_df = graph_rag.build_community_summaries(concepts_df, relationships_df)
+    
+    # Local Search (精确检索)
+    graph_rag.build_local_search_index(concepts_df)
+    result = graph_rag.local_search("阿维菌素对松褐天牛有什么作用？", concepts_df, relationships_df)
     ```
     """
     
     def __init__(self, model: str, ollama_host: str = "http://localhost:11434",
-                 algorithm: str = 'louvain'):
+                 algorithm: str = 'louvain', embedding_model: str = "BAAI/bge-m3"):
         self.detector = CommunityDetector(algorithm)
         self.summarizer = CommunitySummarizer(model, ollama_host)
+        self.local_search_engine = LocalSearchEngine(model, ollama_host, embedding_model)
     
     def build_community_summaries(self, concepts_df: pd.DataFrame,
                                   relationships_df: pd.DataFrame) -> pd.DataFrame:
         """
-        构建社区摘要
+        构建社区摘要 (Global Search)
         
         Args:
             concepts_df: 概念 DataFrame
@@ -471,6 +751,42 @@ class GraphRAG:
         )
         
         return summaries_df
+    
+    def build_local_search_index(self, concepts_df: pd.DataFrame) -> None:
+        """
+        为 Local Search 构建节点索引
+        
+        Args:
+            concepts_df: 概念 DataFrame
+        """
+        self.local_search_engine.build_node_index(concepts_df)
+    
+    def local_search(self, query: str,
+                    concepts_df: pd.DataFrame,
+                    relationships_df: pd.DataFrame,
+                    top_k: int = 5,
+                    max_hops: int = 2) -> Dict:
+        """
+        Local Search - 基于向量检索回答精确问题
+        
+        Args:
+            query: 用户查询
+            concepts_df: 概念 DataFrame
+            relationships_df: 关系 DataFrame
+            top_k: 检索节点数
+            max_hops: 子图扩展跳数
+        
+        Returns:
+            {
+                'query': str,
+                'relevant_nodes': List[Tuple[str, float]],
+                'subgraph_size': int,
+                'answer': str
+            }
+        """
+        return self.local_search_engine.answer_query(
+            query, concepts_df, relationships_df, top_k, max_hops
+        )
 
 
 if __name__ == "__main__":

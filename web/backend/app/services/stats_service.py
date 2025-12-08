@@ -41,13 +41,19 @@ class StatsService:
         if total_nodes > 1:
             density = round(total_edges / (total_nodes * (total_nodes - 1)), 4)
         
+        # 平均度数
+        average_degree = None
+        if total_nodes > 0:
+            average_degree = round(2 * total_edges / total_nodes, 2)
+        
         return StatsData(
             total_nodes=total_nodes,
             total_edges=total_edges,
             node_distribution=node_dist,
             edge_distribution=edge_dist,
             top_nodes=top_nodes,
-            density=density
+            density=density,
+            avg_degree=average_degree
         )
     
     def get_node_distribution(self) -> Dict[str, int]:
@@ -55,12 +61,13 @@ class StatsService:
         
         query = """
         MATCH (n)
-        RETURN n.category as category, count(n) as count
+        WITH COALESCE(labels(n)[0], 'Unknown') as category, count(n) as count
+        RETURN category, count
         ORDER BY count DESC
         """
         
         result = self.neo4j.execute_query(query)
-        return {r['category']: r['count'] for r in result}
+        return {r['category']: r['count'] for r in result if r['category']}
     
     def get_edge_distribution(self) -> Dict[str, int]:
         """获取关系类型分布"""
@@ -72,15 +79,18 @@ class StatsService:
         """
         
         result = self.neo4j.execute_query(query)
-        return {r['relationship']: r['count'] for r in result}
+        return {r['relationship']: r['count'] for r in result if r['relationship']}
     
     def get_top_nodes(self, limit: int = 10) -> List[Node]:
         """获取核心节点"""
         
         query = f"""
         MATCH (n)
-        RETURN id(n) as id, n.name as name, n.category as category,
-               n.importance as importance, n.total_degree as total_degree
+        RETURN toString(id(n)) as id, 
+               n.name as name, 
+               COALESCE(labels(n)[0], 'Unknown') as category,
+               n.importance as importance, 
+               n.total_degree as total_degree
         ORDER BY n.total_degree DESC
         LIMIT {limit}
         """

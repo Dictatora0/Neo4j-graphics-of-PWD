@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 
 from app.config import settings
 from app.database import neo4j_driver, close_neo4j_connection
-from app.routers import graph, nodes, stats, search
+from app.routers import graph, nodes, stats, search, rag, feedback, multimodal
 
 
 @asynccontextmanager
@@ -55,6 +55,9 @@ app.include_router(graph.router, prefix="/api/graph", tags=["图谱"])
 app.include_router(nodes.router, prefix="/api/nodes", tags=["节点"])
 app.include_router(stats.router, prefix="/api/stats", tags=["统计"])
 app.include_router(search.router, prefix="/api/search", tags=["搜索"])
+app.include_router(rag.router, tags=["GraphRAG"])  # prefix 已在 router 中定义
+app.include_router(feedback.router, tags=["反馈"])  # prefix 已在 router 中定义
+app.include_router(multimodal.router, tags=["多模态"])  # prefix 已在 router 中定义
 
 
 @app.get("/")

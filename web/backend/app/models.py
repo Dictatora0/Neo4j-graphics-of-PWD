@@ -61,6 +61,7 @@ class StatsData(BaseModel):
     edge_distribution: Dict[str, int] = Field(default_factory=dict, description="边类型分布")
     top_nodes: List[Node] = Field(default_factory=list, description="核心节点")
     density: Optional[float] = Field(None, description="图密度")
+    avg_degree: Optional[float] = Field(None, description="平均度数")
 
 
 class QueryParams(BaseModel):
