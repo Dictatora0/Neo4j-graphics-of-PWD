@@ -16,13 +16,13 @@ NC='\033[0m'
 
 echo ""
 echo "════════════════════════════════════════════════════════════════════════"
-echo " 📊 知识图谱构建状态"
+echo " 知识图谱构建状态"
 echo "════════════════════════════════════════════════════════════════════════"
 echo ""
 
 # 检查进度文件
 if [ -f "output/checkpoints/.progress.json" ]; then
-    echo -e "${GREEN}✓${NC} Checkpoint 进度:"
+    echo -e "${GREEN}Checkpoint 进度:${NC}"
     
     if command -v jq &> /dev/null; then
         processed=$(jq -r '.processed_chunks | length' output/checkpoints/.progress.json)
@@ -46,20 +46,20 @@ with open('output/checkpoints/.progress.json') as f:
 " 2>/dev/null || echo "  (无法读取详细信息)"
     fi
 else
-    echo -e "${YELLOW}⚠${NC} 未找到 checkpoint 文件"
+    echo -e "${YELLOW}未找到 checkpoint 文件${NC}"
 fi
 
 echo ""
 
 # 检查输出文件
-echo "📁 输出文件:"
+echo "输出文件:"
 for file in output/concepts.csv output/relationships.csv; do
     if [ -f "$file" ]; then
         size=$(du -h "$file" | awk '{print $1}')
         lines=$(wc -l < "$file")
-        echo -e "  ${GREEN}✓${NC} $(basename $file): $size ($lines 行)"
+        echo -e "  ${GREEN}$(basename $file): $size ($lines 行)${NC}"
     else
-        echo -e "  ${RED}✗${NC} $(basename $file): 不存在"
+        echo -e "  ${RED}$(basename $file): 不存在${NC}"
     fi
 done
 
@@ -67,10 +67,10 @@ echo ""
 
 # 检查进程
 if pgrep -f "enhanced_pipeline|test_safe" > /dev/null; then
-    echo -e "${GREEN}✓${NC} 管道进程: 运行中"
+    echo -e "${GREEN}管道进程: 运行中${NC}"
     ps aux | grep -E "enhanced_pipeline|test_safe" | grep -v grep | awk '{printf "  PID: %s, CPU: %s%%, 内存: %s%%\n", $2, $3, $4}' | head -1
 else
-    echo -e "${YELLOW}⚠${NC} 管道进程: 未运行"
+    echo -e "${YELLOW}管道进程: 未运行${NC}"
     echo ""
     echo "启动命令:"
     echo "  ./start.sh"
@@ -82,12 +82,12 @@ echo ""
 if [ -f "output/kg_builder.log" ]; then
     error_count=$(grep -c "ERROR" output/kg_builder.log 2>/dev/null || echo "0")
     if [ "$error_count" -gt 0 ]; then
-        echo -e "${RED}⚠${NC} 检测到 $error_count 个错误，最近的错误:"
+        echo -e "${RED}检测到 $error_count 个错误，最近的错误:${NC}"
         grep "ERROR" output/kg_builder.log | tail -3 | while IFS= read -r line; do
             echo "  ${line:0:100}"
         done
     else
-        echo -e "${GREEN}✓${NC} 没有错误"
+        echo -e "${GREEN}没有错误${NC}"
     fi
 fi
 

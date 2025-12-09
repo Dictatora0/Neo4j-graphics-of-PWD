@@ -20,10 +20,10 @@ test_feature() {
     echo "[$((PASSED + FAILED + 1))] 测试: $feature_name"
     
     if eval "$test_command"; then
-        echo "   ✓ 通过"
+        echo "   通过"
         ((PASSED++))
     else
-        echo "   ✗ 失败"
+        echo "   失败"
         ((FAILED++))
     fi
     echo
@@ -206,7 +206,7 @@ test_feature "Local Search 示例文件存在" \
     "test -f examples/local_search_demo.py"
 
 echo "=========================================="
-echo "  📊 验证结果汇总"
+echo "  验证结果汇总"
 echo "=========================================="
 echo
 echo "  通过: $PASSED"
@@ -216,11 +216,11 @@ echo
 echo "=========================================="
 
 if [ $FAILED -eq 0 ]; then
-    echo "  🎉 所有验证通过！"
+    echo "  所有验证通过"
     echo "=========================================="
     exit 0
 else
-    echo "  ⚠️  有 $FAILED 项验证失败"
+    echo "  有 $FAILED 项验证失败"
     echo "=========================================="
     exit 1
 fi

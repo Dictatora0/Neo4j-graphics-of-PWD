@@ -29,7 +29,7 @@ def _llm_decide(s: str, rel: str, t: str, s_type: str, t_type: str, weight: floa
                 model: str = "qwen2.5-coder:14b", host: str = "http://localhost:11434", 
                 timeout: int = 120) -> bool:
     """
-    v2.3 Agentic Workflow: LLM 审稿人 Agent
+    Agentic Workflow 模式：使用 LLM 作为审稿人 Agent
     对置信度在 0.6-0.8 之间的三元组进行二次判断
     
     Args:

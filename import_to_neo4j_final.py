@@ -451,6 +451,21 @@ with driver.session() as session:
     
     print("  已计算节点度数")
     
+    # 计算节点重要性（基于度数）
+    session.run("""
+        MATCH (n)
+        WITH n, n.total_degree as degree
+        SET n.importance = CASE
+            WHEN degree >= 30 THEN 5
+            WHEN degree >= 20 THEN 4
+            WHEN degree >= 10 THEN 3
+            WHEN degree >= 5 THEN 2
+            ELSE 1
+        END
+    """)
+    
+    print("  已计算节点重要性")
+    
     # 计算关系权重统计
     session.run("""
         MATCH ()-[r]->()
@@ -499,6 +514,20 @@ with driver.session() as session:
     print(f"\n  关系类型分布（前10）:")
     for record in result:
         print(f"    {record['rel_type']:25s}: {record['count']:3d}")
+    
+    # 显示重要性分布
+    result = session.run("""
+        MATCH (n)
+        WHERE n.importance IS NOT NULL
+        RETURN n.importance as importance, count(*) as count
+        ORDER BY importance DESC
+    """)
+    
+    print(f"\n  节点重要性分布:")
+    for record in result:
+        importance = record['importance']
+        count = record['count']
+        print(f"    {importance}星: {count:3d}")
     
     # 显示度数最高的节点
     result = session.run("""

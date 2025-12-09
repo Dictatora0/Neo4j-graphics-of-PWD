@@ -43,10 +43,10 @@ def test_canonical_resolver_basic():
         for original, expected in test_cases:
             result = resolver.resolve(original)
             if result == expected:
-                print(f"  ✓ '{original}' → '{result}'")
+                print(f"  匹配成功: '{original}' → '{result}'")
                 passed += 1
             else:
-                print(f"  ✗ '{original}' → '{result}' (期望: {expected})")
+                print(f"  匹配不一致: '{original}' → '{result}' (期望: {expected})")
         
         print(f"\n结果: {passed}/{len(test_cases)} 通过")
         
@@ -54,12 +54,12 @@ def test_canonical_resolver_basic():
         print("\n测试自定义映射...")
         resolver.add_custom_mapping("PWN", "Bursaphelenchus xylophilus")
         result = resolver.resolve("PWN")
-        print(f"  ✓ 'PWN' → '{result}'")
+        print(f"  自定义映射结果: 'PWN' → '{result}'")
         
         return passed == len(test_cases)
         
     except ImportError as e:
-        print(f"  ⚠️  跳过测试（缺少依赖: {e}）")
+        print(f"  跳过测试（缺少依赖: {e}）")
         return None
 
 def test_config_loading():
@@ -73,18 +73,18 @@ def test_config_loading():
         with open(config_path, 'r', encoding='utf-8') as f:
             config = yaml.safe_load(f)
         
-        print("  ✓ 配置文件加载成功")
+        print("  配置文件加载成功")
         
         # 检查第一阶段配置
         if 'improvements' in config:
-            print("  ✓ improvements 配置节存在")
+            print("  improvements 配置节存在")
             print(f"    - context_window.enable: {config['improvements']['context_window']['enable']}")
             print(f"    - hierarchical_ontology.enable: {config['improvements']['hierarchical_ontology']['enable']}")
             print(f"    - local_search.enable: {config['improvements']['local_search']['enable']}")
         
         # 检查第二阶段配置
         if 'improvements_phase2' in config:
-            print("  ✓ improvements_phase2 配置节存在")
+            print("  improvements_phase2 配置节存在")
             el_config = config['improvements_phase2']['entity_linking']
             print(f"    - entity_linking.use_canonical_resolver: {el_config['use_canonical_resolver']}")
             print(f"    - entity_linking.use_external_kb: {el_config['use_external_kb']}")
@@ -94,10 +94,10 @@ def test_config_loading():
         return True
         
     except ImportError:
-        print("  ⚠️  跳过测试（缺少 PyYAML）")
+        print("  跳过测试（缺少 PyYAML）")
         return None
     except Exception as e:
-        print(f"  ✗ 配置加载失败: {e}")
+        print(f"  配置加载失败: {e}")
         return False
 
 def test_file_structure():
@@ -133,9 +133,9 @@ def test_file_structure():
         for file in files:
             file_path = project_root / file
             if file_path.exists():
-                print(f"    ✓ {file}")
+                print(f"    存在: {file}")
             else:
-                print(f"    ✗ {file} (不存在)")
+                print(f"    不存在: {file}")
                 all_passed = False
     
     return all_passed
@@ -157,12 +157,12 @@ def test_class_imports():
         try:
             module = __import__(module_name)
             if hasattr(module, class_name):
-                print(f"  ✓ {module_name}.{class_name}")
+                print(f"  可导入: {module_name}.{class_name}")
                 passed += 1
             else:
-                print(f"  ✗ {module_name}.{class_name} (类不存在)")
+                print(f"  不存在: {module_name}.{class_name} (类不存在)")
         except ImportError as e:
-            print(f"  ⚠️  {module_name}.{class_name} (依赖缺失: {e})")
+            print(f"  跳过 {module_name}.{class_name}（依赖缺失: {e}）")
     
     return passed > 0
 
@@ -190,7 +190,7 @@ def test_web_api_routes():
             print("\n  Feedback API 端点:")
             for endpoint in endpoints:
                 if endpoint in content:
-                    print(f"    ✓ /api/feedback/{endpoint}")
+                    print(f"    存在端点: /api/feedback/{endpoint}")
                     tests_passed += 1
     
     # 检查 Multimodal API
@@ -206,15 +206,15 @@ def test_web_api_routes():
             print("\n  Multimodal API 端点:")
             for endpoint in endpoints:
                 if endpoint in content:
-                    print(f"    ✓ /api/multimodal/...{endpoint}")
+                    print(f"    存在端点: /api/multimodal/...{endpoint}")
                     tests_passed += 1
     
     return tests_passed > 0
 
 def main():
-    print("\n" + "🚀"*35)
+    print("\n" + "="*35)
     print("  知识图谱系统功能实际运行测试")
-    print("🚀"*35)
+    print("="*35)
     
     results = {}
     
@@ -227,7 +227,7 @@ def main():
     
     # 汇总结果
     print("\n" + "="*70)
-    print("  📊 测试结果汇总")
+    print("  测试结果汇总")
     print("="*70)
     
     passed = sum(1 for v in results.values() if v is True)
@@ -237,11 +237,11 @@ def main():
     
     for name, result in results.items():
         if result is True:
-            status = "✅ 通过"
+            status = "通过"
         elif result is None:
-            status = "⚠️  跳过"
+            status = "跳过"
         else:
-            status = "❌ 失败"
+            status = "失败"
         print(f"  {name:25s} {status}")
     
     print("\n" + "-"*70)
@@ -252,14 +252,14 @@ def main():
     
     if failed == 0:
         if skipped > 0:
-            print("\n✅ 所有可运行测试通过！")
-            print("💡 提示: 部分测试因缺少依赖而跳过")
+            print("\n所有可运行测试通过")
+            print("提示: 部分测试因缺少依赖而跳过")
             print("   安装依赖: pip install -r requirements.txt")
         else:
-            print("\n🎉 所有测试通过！")
+            print("\n所有测试通过")
         return 0
     else:
-        print(f"\n❌ {failed} 个测试失败")
+        print(f"\n有 {failed} 个测试失败")
         return 1
 
 if __name__ == "__main__":

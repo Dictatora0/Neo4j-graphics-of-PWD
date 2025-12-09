@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 print("\n" + "="*70)
-print(" 📊 运行状态检查")
+print(" 运行状态检查")
 print("="*70 + "\n")
 
 # 检查进度文件: 由 CheckpointManager 周期性写入,反映当前块号和累计统计
@@ -24,7 +24,7 @@ if progress_file.exists():
     started = progress['started_at']
     last_update = progress['last_update']
     
-    print(f"✓ Checkpoint 进度:")
+    print("Checkpoint 进度:")
     print(f"  - 已处理块数: {processed}")
     print(f"  - 概念总数: {concepts}")
     print(f"  - 关系总数: {relationships}")
@@ -40,7 +40,7 @@ if progress_file.exists():
         total_elapsed = (now - start_time).total_seconds() / 60
         since_update = (now - update_time).total_seconds() / 60
         
-        print(f"\n⏱️  时间统计:")
+        print("\n时间统计:")
         print(f"  - 总运行时间: {total_elapsed:.1f} 分钟")
         print(f"  - 距上次更新: {since_update:.1f} 分钟")
         
@@ -50,11 +50,11 @@ if progress_file.exists():
     except:
         pass
 else:
-    print("❌ 未找到进度文件")
+    print("未找到进度文件")
 
 # 检查日志中的错误
 print("\n" + "="*70)
-print(" 🔍 错误分析")
+print(" 错误分析")
 print("="*70 + "\n")
 
 log_file = Path("output/kg_builder.log")
@@ -80,16 +80,16 @@ if log_file.exists():
 
 # 问题诊断
 print("\n" + "="*70)
-print(" 💊 问题诊断和解决方案")
+print(" 问题诊断和解决方案")
 print("="*70 + "\n")
 
 print("检测到的问题:")
-print("  1. ❌ LLM 超时导致返回 None")
-print("  2. ❌ 代码未处理 None 情况")
-print("  3. ⚠️  实际速度比预期慢 (~180秒/块 vs 预期90秒)")
+print("  1. LLM 超时导致返回 None")
+print("  2. 代码未处理 None 情况")
+print("  3. 实际速度比预期慢 (~180秒/块 vs 预期90秒)")
 
 print("\n解决方案:")
-print("  ✓ 已调整配置:")
+print("  已调整配置:")
 print("     - timeout: 180 → 300 秒")
 print("     - max_chunks: 100 → 50 块")
 print()

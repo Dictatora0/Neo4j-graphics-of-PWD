@@ -70,40 +70,40 @@ def monitor_continuous(interval=5):
             print("="*70)
             
             # CPU
-            print(f"\n📊 CPU 使用率: {cpu_usage:.1f}%")
-            cpu_bar = '█' * int(cpu_usage / 2)
+            print(f"\nCPU 使用率: {cpu_usage:.1f}%")
+            cpu_bar = '#' * int(cpu_usage / 2)
             print(f"    [{cpu_bar:<50}]")
             
             # 内存
-            print(f"\n💾 系统内存:")
+            print(f"\n系统内存:")
             print(f"    总计: {sys_mem['total']:.2f} GB")
             print(f"    已用: {sys_mem['used']:.2f} GB ({sys_mem['percent']:.1f}%)")
             print(f"    可用: {sys_mem['available']:.2f} GB")
-            mem_bar = '█' * int(sys_mem['percent'] / 2)
+            mem_bar = '#' * int(sys_mem['percent'] / 2)
             print(f"    [{mem_bar:<50}]")
             
             # 进程内存
-            print(f"\n🔧 进程内存:")
+            print(f"\n进程内存:")
             print(f"    Ollama: {format_memory(ollama_mem)}")
             print(f"    Python: {format_memory(python_mem)}")
             
             # 健康状态
-            print(f"\n🏥 健康状态:")
+            print(f"\n健康状态:")
             if sys_mem['percent'] > 90:
-                print(f"    ⚠️  内存告急 ({sys_mem['percent']:.1f}%) - 建议停止处理")
+                print(f"    内存告急 ({sys_mem['percent']:.1f}%) - 建议停止处理")
             elif sys_mem['percent'] > 80:
-                print(f"    ⚠️  内存紧张 ({sys_mem['percent']:.1f}%) - 密切关注")
+                print(f"    内存紧张 ({sys_mem['percent']:.1f}%) - 密切关注")
             elif sys_mem['percent'] > 70:
-                print(f"    ⚡ 内存偏高 ({sys_mem['percent']:.1f}%) - 正常范围")
+                print(f"    内存偏高 ({sys_mem['percent']:.1f}%) - 正常范围")
             else:
-                print(f"    ✅ 内存健康 ({sys_mem['percent']:.1f}%)")
+                print(f"    内存健康 ({sys_mem['percent']:.1f}%)")
             
             if cpu_usage > 90:
-                print(f"    ⚠️  CPU 过载 ({cpu_usage:.1f}%)")
+                print(f"    CPU 过载 ({cpu_usage:.1f}%)")
             elif cpu_usage > 70:
-                print(f"    ⚡ CPU 繁忙 ({cpu_usage:.1f}%)")
+                print(f"    CPU 繁忙 ({cpu_usage:.1f}%)")
             else:
-                print(f"    ✅ CPU 正常 ({cpu_usage:.1f}%)")
+                print(f"    CPU 正常 ({cpu_usage:.1f}%)")
             
             print("\n" + "="*70)
             print(f"刷新间隔: {interval}秒 | 按 Ctrl+C 停止监控")
@@ -126,7 +126,7 @@ def monitor_once():
     print(f"可用内存: {sys_mem['available']:.2f} GB / {sys_mem['total']:.2f} GB")
     
     if sys_mem['percent'] > 85:
-        print("\n⚠️  警告: 内存使用率过高，建议:")
+        print("\n警告: 内存使用率过高，建议:")
         print("  1. 降低配置文件中的 max_chunks 值")
         print("  2. 减少 parallel_workers 数量")
         print("  3. 重启 Ollama 服务释放内存")

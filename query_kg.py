@@ -74,19 +74,19 @@ class KnowledgeGraphQuery:
     
     def print_success(self, message: str):
         """打印成功信息"""
-        print(f"{Fore.GREEN}✓ {message}{Style.RESET_ALL}")
+        print(f"{Fore.GREEN}[OK] {message}{Style.RESET_ALL}")
     
     def print_info(self, message: str):
         """打印提示信息"""
-        print(f"{Fore.BLUE}ℹ {message}{Style.RESET_ALL}")
+        print(f"{Fore.BLUE}[INFO] {message}{Style.RESET_ALL}")
     
     def print_warning(self, message: str):
         """打印警告信息"""
-        print(f"{Fore.YELLOW}⚠ {message}{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}[WARN] {message}{Style.RESET_ALL}")
     
     def print_error(self, message: str):
         """打印错误信息"""
-        print(f"{Fore.RED}✗ {message}{Style.RESET_ALL}")
+        print(f"{Fore.RED}[ERROR] {message}{Style.RESET_ALL}")
     
     # ========== 统计查询 ==========
     

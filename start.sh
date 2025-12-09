@@ -1,8 +1,8 @@
 #!/bin/bash
 # 知识图谱构建启动脚本 - 使用正确的 Python 环境
-# v2.8 - 集成六大改进功能 + 分批处理 + 自动负载监控
+# 集成六大改进功能 + 分批处理 + 自动负载监控
 #
-# 新功能 (v2.8):
+# 新功能：
 #   - 滑动窗口上下文机制
 #   - 层级本体 Label
 #   - Local Search 精确检索
@@ -71,7 +71,7 @@ batch_cleanup() {
         sleep 3
         nohup ollama serve > /dev/null 2>&1 &
         sleep 5
-        echo -e "${GREEN}  ✓ Ollama已重启${NC}"
+        echo -e "${GREEN}  Ollama已重启${NC}"
     fi
     
     # 2. Python垃圾回收提示
@@ -84,7 +84,7 @@ batch_cleanup() {
     # 4. 显示资源状态
     resources=$(check_system_resources)
     mem_usage=$(echo $resources | cut -d: -f1)
-    echo -e "${GREEN}  ✓ 当前内存: ${mem_usage}%${NC}"
+    echo -e "${GREEN}  当前内存: ${mem_usage}%${NC}"
     
     echo -e "${GREEN}[BATCH-CLEANUP] 清理完成${NC}\n"
 }
@@ -189,16 +189,16 @@ check_features() {
     done
     
     if [ ${#missing_deps[@]} -gt 0 ]; then
-        echo -e "  ${RED}✗ 缺少依赖: ${missing_deps[*]}${NC}"
+        echo -e "  ${RED}缺少依赖: ${missing_deps[*]}${NC}"
         echo -e "    安装命令: pip install ${missing_deps[*]}"
         return 1
     else
-        echo -e "  ${GREEN}✓ Python 依赖完整${NC}"
+        echo -e "  ${GREEN}Python 依赖完整${NC}"
     fi
     
     # 检查配置文件
     if [ ! -f "config/config.yaml" ]; then
-        echo -e "  ${RED}✗ 配置文件不存在${NC}"
+        echo -e "  ${RED}配置文件不存在${NC}"
         return 1
     fi
     
@@ -207,14 +207,14 @@ check_features() {
         context_window=$("$PYTHON_BIN" -c "import yaml; c=yaml.safe_load(open('config/config.yaml')); print(c.get('improvements', {}).get('context_window', {}).get('enable', False))" 2>/dev/null || echo "False")
         entity_linking=$("$PYTHON_BIN" -c "import yaml; c=yaml.safe_load(open('config/config.yaml')); print(c.get('improvements_phase2', {}).get('entity_linking', {}).get('use_external_kb', False))" 2>/dev/null || echo "False")
         
-        echo -e "  ${GREEN}✓ 配置文件加载成功${NC}"
+        echo -e "  ${GREEN}配置文件加载成功${NC}"
         echo -e "    - 滑动窗口: ${context_window}"
         echo -e "    - 外部知识库: ${entity_linking}"
     fi
     
     # 检查 Ollama
     if pgrep ollama > /dev/null; then
-        echo -e "  ${GREEN}✓ Ollama 服务运行中${NC}"
+        echo -e "  ${GREEN}Ollama 服务运行中${NC}"
         # 测试 API 连接
         if curl -s -f http://localhost:11434/api/tags > /dev/null 2>&1; then
             echo -e "    API 状态: 正常"
@@ -222,7 +222,7 @@ check_features() {
             echo -e "    ${YELLOW}API 状态: 启动中${NC}"
         fi
     else
-        echo -e "  ${YELLOW}⚠ Ollama 服务未运行${NC}"
+        echo -e "  ${YELLOW}Ollama 服务未运行${NC}"
         echo -e "    ${BLUE}提示: 运行 start.sh 时会自动启动 Ollama${NC}"
         echo -e "    或手动启动: ollama serve"
     fi
@@ -286,13 +286,13 @@ while [[ $# -gt 0 ]]; do
             echo "  manual - 每批完成后需手动确认"
             echo "  single - 只处理一批后停止"
             echo ""
-            echo "新功能 (v2.8):"
-            echo "  ✓ 滑动窗口上下文机制 - 解决跨块实体指代丢失"
-            echo "  ✓ 层级本体 Label - 支持高级语义查询"
-            echo "  ✓ Local Search - 精确问答能力"
-            echo "  ✓ 实体消歧与链接 - 生物分类学标准化"
-            echo "  ✓ 多模态深度融合 - 图片-概念关联"
-            echo "  ✓ 人机回环纠错 - 用户反馈机制"
+            echo "新功能："
+            echo "  - 滑动窗口上下文机制 - 解决跨块实体指代丢失"
+            echo "  - 层级本体 Label - 支持高级语义查询"
+            echo "  - Local Search - 精确问答能力"
+            echo "  - 实体消歧与链接 - 生物分类学标准化"
+            echo "  - 多模态深度融合 - 图片-概念关联"
+            echo "  - 人机回环纠错 - 用户反馈机制"
             echo ""
             echo "示例:"
             echo "  $0                                    # 使用默认配置运行"
@@ -318,12 +318,12 @@ echo "║        松材线虫病知识图谱构建系统                        
 echo "╚══════════════════════════════════════════════════════════════════════╝"
 echo ""
 echo -e "${GREEN}新功能状态:${NC}"
-echo -e "  ✓ 滑动窗口上下文机制 (解决跨块实体指代)"
-echo -e "  ✓ 层级本体 Label (支持语义查询)"
-echo -e "  ✓ Local Search (精确问答)"
-echo -e "  ✓ 实体消歧与链接 (标准化)"
-echo -e "  ✓ 多模态深度融合 (图片关联)"
-echo -e "  ✓ 人机回环纠错 (反馈收集)"
+echo -e "  - 滑动窗口上下文机制 (解决跨块实体指代)"
+echo -e "  - 层级本体 Label (支持语义查询)"
+echo -e "  - Local Search (精确问答)"
+echo -e "  - 实体消歧与链接 (标准化)"
+echo -e "  - 多模态深度融合 (图片关联)"
+echo -e "  - 人机回环纠错 (反馈收集)"
 echo ""
 echo -e "${BLUE}分批配置:${NC}"
 echo -e "  批次大小: ${BATCH_SIZE} chunks/batch"
@@ -401,16 +401,16 @@ fi
 # 检查并启动 Ollama 服务
 echo -e "${BLUE}[Ollama 服务] 检查 Ollama 状态...${NC}"
 if pgrep ollama > /dev/null; then
-    echo -e "${GREEN}  ✓ Ollama 服务已运行${NC}"
+    echo -e "${GREEN}  Ollama 服务已运行${NC}"
     # 测试 API 连接
     if curl -s -f http://localhost:11434/api/tags > /dev/null 2>&1; then
-        echo -e "${GREEN}  ✓ Ollama API 连接正常${NC}"
+        echo -e "${GREEN}  Ollama API 连接正常${NC}"
     else
-        echo -e "${YELLOW}  ⚠ Ollama 服务正在启动中，等待就绪...${NC}"
+        echo -e "${YELLOW}  Ollama 服务正在启动中，等待就绪...${NC}"
         sleep 3
     fi
 else
-    echo -e "${YELLOW}  ⚠ Ollama 服务未运行，正在启动...${NC}"
+    echo -e "${YELLOW}  Ollama 服务未运行，正在启动...${NC}"
     
     # 启动 Ollama 服务
     nohup ollama serve > /tmp/ollama.log 2>&1 &
@@ -421,11 +421,11 @@ else
     echo -e "${BLUE}  → 等待 Ollama 服务就绪...${NC}"
     for i in {1..15}; do
         if curl -s -f http://localhost:11434/api/tags > /dev/null 2>&1; then
-            echo -e "${GREEN}  ✓ Ollama 服务已就绪${NC}"
+            echo -e "${GREEN}  Ollama 服务已就绪${NC}"
             break
         fi
         if [ $i -eq 15 ]; then
-            echo -e "${RED}  ✗ Ollama 启动超时，请检查日志: /tmp/ollama.log${NC}"
+            echo -e "${RED}  Ollama 启动超时，请检查日志: /tmp/ollama.log${NC}"
             echo -e "${YELLOW}  提示: 您可以手动运行 'ollama serve' 然后重新启动本脚本${NC}"
             exit 1
         fi
@@ -447,7 +447,7 @@ echo ""
 
 # 运行管道（分批处理）
 echo -e "${BLUE}====================================================================${NC}"
-echo -e "${GREEN}启动分批处理模式 (v2.7)${NC}"
+echo -e "${GREEN}启动分批处理模式${NC}"
 echo -e "${BLUE}====================================================================${NC}"
 echo ""
 echo "提示:"
@@ -499,7 +499,7 @@ except:
         
         # 批次间处理
         if [ "$remaining" = "done" ]; then
-            echo -e "\n${GREEN}✓ 所有批次处理完成！${NC}"
+            echo -e "\n${GREEN}所有批次处理完成${NC}"
             echo "[$(date '+%Y-%m-%d %H:%M:%S')] All batches completed. Total processed: $total_processed chunks" >> "$BATCH_LOG"
             break
         fi

@@ -163,7 +163,7 @@
 
 - **多模态深度融合（图片 ↔ 概念）**（`multimodal_graph_builder.py`）
 
-  > **当前状态**：✅ 已完整实现（后端 API + 前端 UI）。节点详情面板会自动显示相关图片。
+  > 当前状态：已完整实现（后端 API + 前端 UI）。节点详情面板会自动显示相关图片。
 
   - **功能**：把 `image_captioner.py` 生成的图片描述接入图谱，为每张图片创建 `:Image` 节点，并通过 `(:Concept)-[:ILLUSTRATED_BY]->(:Image)` 关系将图片与概念关联，在查询和 GraphRAG 中同时返回文本与图片线索。
   - **核心类**：`MultimodalGraphBuilder`
@@ -180,7 +180,7 @@
 
 - **人机回环纠错（Human-in-the-loop）**（`human_feedback_manager.py` + Web API）
 
-  > **当前状态**：✅ 已完整实现（后端 API + 前端 UI）。节点详情面板提供"建议实体合并"和"报告缺失关系"按钮。
+  > 当前状态：已完整实现（后端 API + 前端 UI）。节点详情面板提供"建议实体合并"和"报告缺失关系"按钮。
 
   - **功能**：允许用户对错误的实体/关系进行标注和纠正，将这些反馈汇总为"错题集"，后续用于 Prompt 优化或小模型微调。
   - **前端入口**：在节点详情面板底部"反馈与纠错"区域，点击相应按钮即可提交反馈。
@@ -514,27 +514,27 @@ python import_to_neo4j_final.py
 ### 6.2 主要脚本一览
 
 | --------------------------- | ------------ | -------------------------------- |
-| `start.sh` | ✅ **推荐** | 主入口脚本，一键运行安全管道 |
-| `enhanced_pipeline_safe.py` | ✅ **推荐** | 安全版主流水线与 Checkpoint 管理 |
-| `pdf_extractor.py` | ✅ 核心模块 | PDF 文本提取 + OCR |
-| `concept_extractor.py` | ✅ 核心模块 | LLM 概念与关系抽取 |
-| `concept_deduplicator.py` | ✅ 核心模块 | 语义去重与实体对齐 |
-| `import_to_neo4j_final.py` | ✅ 核心模块 | 导入 Neo4j，创建索引与样式 |
-| `graph_rag.py` | ✅ 可选功能 | 基于 CSV 的社区检测与摘要 |
-| `graph_summarizer.py` | ✅ 可选功能 | 基于 Neo4j 的 GraphRAG |
-| `run_pipeline.py` | 🔄 旧版/示例 | 旧版管线入口（保留作参考） |
-| `enhanced_pipeline.py` | 🔄 旧版/示例 | 旧版管线（保留作参考） |
-| `simple_deduplicate.py` | 🔄 可选 | 不依赖 BGE-M3 的简单去重 |
-| `test_imports.sh` | 🧪 测试工具 | 测试模块导入 |
-| `test_neo4j.py` | 🧪 测试工具 | 测试 Neo4j 连接 |
+| `start.sh` | 推荐 | 主入口脚本，一键运行安全管道 |
+| `enhanced_pipeline_safe.py` | 推荐 | 安全版主流水线与 Checkpoint 管理 |
+| `pdf_extractor.py` | 核心模块 | PDF 文本提取 + OCR |
+| `concept_extractor.py` | 核心模块 | LLM 概念与关系抽取 |
+| `concept_deduplicator.py` | 核心模块 | 语义去重与实体对齐 |
+| `import_to_neo4j_final.py` | 核心模块 | 导入 Neo4j，创建索引与样式 |
+| `graph_rag.py` | 可选功能 | 基于 CSV 的社区检测与摘要 |
+| `graph_summarizer.py` | 可选功能 | 基于 Neo4j 的 GraphRAG |
+| `run_pipeline.py` | 旧版/示例 | 旧版管线入口（保留作参考） |
+| `enhanced_pipeline.py` | 旧版/示例 | 旧版管线（保留作参考） |
+| `simple_deduplicate.py` | 可选 | 不依赖 BGE-M3 的简单去重 |
+| `test_imports.sh` | 测试工具 | 测试模块导入 |
+| `test_neo4j.py` | 测试工具 | 测试 Neo4j 连接 |
 
 **状态说明**：
 
-- ✅ **推荐** - 日常使用的主入口
-- ✅ 核心模块 - 系统核心功能
-- ✅ 可选功能 - 根据需求选用
-- 🔄 旧版/示例 - 保留作参考，不推荐直接使用
-- 🧪 测试工具 - 开发和调试用
+- 推荐：日常使用的主入口
+- 核心模块：系统核心功能
+- 可选功能：根据需求选用
+- 旧版/示例：保留作参考，不推荐直接使用
+- 测试工具：开发和调试用
 
 ---
 
@@ -544,7 +544,7 @@ python import_to_neo4j_final.py
 
 - **交互式图谱浏览**：拖拽、缩放、选中高亮
 - **节点筛选**：按节点类型、重要性、连接度筛选
-- **智能问答（GraphRAG）**：✨ 新增
+- **智能问答（GraphRAG）**：新增功能
   - 自然语言提问
   - Local Search 精确检索
   - LLM 生成答案

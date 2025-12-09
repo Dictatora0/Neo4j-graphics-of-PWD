@@ -41,7 +41,7 @@ from config_loader import load_config
 from logger_config import get_logger
 from checkpoint_manager import CheckpointManager
 
-# v2.6.3: 多模态支持 - 图片提取和描述
+# 多模态支持：图片提取和描述
 try:
     from multimodal_extractor import ImageExtractor, VisionLanguageModel
     MULTIMODAL_AVAILABLE = True

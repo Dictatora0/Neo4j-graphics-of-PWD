@@ -56,7 +56,7 @@ class DomainConfigValidator:
     
     def _check_files_exist(self) -> bool:
         """检查配置文件是否存在"""
-        print("📁 检查配置文件...")
+        print("检查配置文件...")
         
         if not self.domain_dict_path.exists():
             self.errors.append(f"实体别名配置文件不存在: {self.domain_dict_path}")
@@ -66,20 +66,20 @@ class DomainConfigValidator:
             self.errors.append(f"类型层级配置文件不存在: {self.hierarchy_path}")
             return False
         
-        print(f"   ✓ {self.domain_dict_path.name}")
-        print(f"   ✓ {self.hierarchy_path.name}")
+        print(f"   文件存在: {self.domain_dict_path.name}")
+        print(f"   文件存在: {self.hierarchy_path.name}")
         print()
         return True
     
     def _validate_json_format(self) -> tuple:
         """验证 JSON 格式"""
-        print("🔍 验证 JSON 格式...")
+        print("验证 JSON 格式...")
         
         # 验证 domain_dict.json
         try:
             with open(self.domain_dict_path, 'r', encoding='utf-8') as f:
                 domain_dict = json.load(f)
-            print(f"   ✓ {self.domain_dict_path.name} 格式正确")
+            print(f"   {self.domain_dict_path.name} 格式正确")
         except json.JSONDecodeError as e:
             self.errors.append(f"domain_dict.json JSON 格式错误: {e}")
             domain_dict = None
@@ -88,7 +88,7 @@ class DomainConfigValidator:
         try:
             with open(self.hierarchy_path, 'r', encoding='utf-8') as f:
                 hierarchy = json.load(f)
-            print(f"   ✓ {self.hierarchy_path.name} 格式正确")
+            print(f"   {self.hierarchy_path.name} 格式正确")
         except json.JSONDecodeError as e:
             self.errors.append(f"type_hierarchy.json JSON 格式错误: {e}")
             hierarchy = None
@@ -98,7 +98,7 @@ class DomainConfigValidator:
     
     def _validate_domain_dict(self, domain_dict: Dict):
         """验证实体别名映射"""
-        print("🏷️  验证实体别名映射...")
+        print("验证实体别名映射...")
         
         if not isinstance(domain_dict, dict):
             self.errors.append("domain_dict 应该是字典类型")
@@ -125,7 +125,7 @@ class DomainConfigValidator:
                 )
             
             total_aliases += len(aliases)
-            print(f"   ✓ {category}: {len(aliases)} 个别名")
+            print(f"   {category}: {len(aliases)} 个别名")
         
         self.stats['categories'] = len(categories)
         self.stats['total_aliases'] = total_aliases
@@ -159,7 +159,7 @@ class DomainConfigValidator:
     
     def _validate_hierarchy(self, hierarchy: Dict):
         """验证类型层级"""
-        print("🌳 验证类型层级...")
+        print("验证类型层级...")
         
         if not isinstance(hierarchy, dict):
             self.errors.append("hierarchy 应该是字典类型")
@@ -173,9 +173,9 @@ class DomainConfigValidator:
         all_types = self._collect_all_types(hierarchy['hierarchy'])
         max_depth = self._calculate_max_depth(hierarchy['hierarchy'])
         
-        print(f"   ✓ 根类型数量: {len(root_types)}")
-        print(f"   ✓ 总类型数量: {len(all_types)}")
-        print(f"   ✓ 最大深度: {max_depth}")
+        print(f"   根类型数量: {len(root_types)}")
+        print(f"   总类型数量: {len(all_types)}")
+        print(f"   最大深度: {max_depth}")
         
         self.stats['root_types'] = len(root_types)
         self.stats['all_types'] = len(all_types)
@@ -233,7 +233,7 @@ class DomainConfigValidator:
     
     def _cross_validate(self, domain_dict: Dict, hierarchy: Dict):
         """交叉验证配置一致性"""
-        print("🔗 交叉验证...")
+        print("交叉验证...")
         
         # 收集所有类型
         hierarchy_types = self._collect_all_types(hierarchy['hierarchy'])
@@ -256,7 +256,7 @@ class DomainConfigValidator:
             )
         
         overlap = len(domain_categories & hierarchy_types)
-        print(f"   ✓ 类型重叠率: {overlap}/{len(domain_categories)} "
+        print(f"   类型重叠率: {overlap}/{len(domain_categories)} "
               f"({overlap/len(domain_categories)*100:.1f}%)")
         print()
     
@@ -269,24 +269,24 @@ class DomainConfigValidator:
         
         # 统计信息
         if self.stats:
-            print("📊 统计信息:")
+            print("统计信息:")
             for key, value in self.stats.items():
                 print(f"   - {key}: {value}")
             print()
         
         # 错误
         if self.errors:
-            print(f"❌ 发现 {len(self.errors)} 个错误:")
+            print(f"发现 {len(self.errors)} 个错误:")
             for error in self.errors:
                 print(f"   • {error}")
             print()
         else:
-            print("✅ 没有发现错误")
+            print("没有发现错误")
             print()
         
         # 警告
         if self.warnings:
-            print(f"⚠️  发现 {len(self.warnings)} 个警告:")
+            print(f"发现 {len(self.warnings)} 个警告:")
             for warning in self.warnings[:10]:  # 只显示前10个
                 print(f"   • {warning}")
             if len(self.warnings) > 10:
@@ -295,9 +295,9 @@ class DomainConfigValidator:
         
         # 总结
         if len(self.errors) == 0:
-            print("✅ 配置验证通过！")
+            print("配置验证通过")
         else:
-            print("❌ 配置验证失败，请修复错误后重试。")
+            print("配置验证失败，请修复错误后重试。")
         print()
 
 

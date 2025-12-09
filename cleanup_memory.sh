@@ -32,7 +32,7 @@ pkill ollama 2>/dev/null
 sleep 2
 nohup ollama serve > /dev/null 2>&1 &
 sleep 3
-echo -e "${GREEN}✓ Ollama 服务已重启${NC}"
+echo -e "${GREEN}Ollama 服务已重启${NC}"
 
 # 清理临时文件
 echo ""
@@ -44,7 +44,7 @@ if [ -d "output/checkpoints" ]; then
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         rm -rf output/checkpoints/*
-        echo -e "${GREEN}  ✓ Checkpoint 已清理${NC}"
+        echo -e "${GREEN}  Checkpoint 已清理${NC}"
     fi
 fi
 
@@ -53,7 +53,7 @@ echo ""
 echo -e "${YELLOW}[4/5] 清理系统缓存...${NC}"
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "  执行 purge 命令（需要 sudo）..."
-    sudo purge 2>/dev/null && echo -e "${GREEN}  ✓ 系统缓存已清理${NC}" || echo -e "${RED}  ✗ 清理失败${NC}"
+    sudo purge 2>/dev/null && echo -e "${GREEN}  系统缓存已清理${NC}" || echo -e "${RED}  清理失败${NC}"
 else
     echo "  跳过（非 macOS 系统）"
 fi

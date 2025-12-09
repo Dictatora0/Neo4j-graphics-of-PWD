@@ -7,7 +7,7 @@
 import os
 
 print("\n" + "="*70)
-print(" 📦 手动下载 BGE-M3 模型")
+print("手动下载 BGE-M3 模型")
 print("="*70 + "\n")
 
 print("方案 1: 使用 ModelScope（国内源，推荐）")
@@ -58,7 +58,7 @@ python scripts/utils/auto_disambiguate.py
 """)
 
 print("\n" + "="*70)
-print(" 💡 当前建议")
+print("当前建议")
 print("="*70)
 print("""
 由于网络问题（SSL 错误），建议：

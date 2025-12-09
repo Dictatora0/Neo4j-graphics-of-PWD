@@ -13,7 +13,7 @@ NC='\033[0m'
 print_header() {
     clear
     echo "════════════════════════════════════════════════════════════════════════"
-    echo " 📊 知识图谱构建进度监控"
+    echo " 知识图谱构建进度监控"
     echo " 更新时间: $(date '+%Y-%m-%d %H:%M:%S')"
     echo "════════════════════════════════════════════════════════════════════════"
     echo ""
@@ -22,11 +22,11 @@ print_header() {
 # 检查进程
 check_process() {
     if pgrep -f "enhanced_pipeline|run_pipeline|test_safe" > /dev/null; then
-        echo -e "${GREEN}✓${NC} 管道进程: 运行中"
+        echo -e "${GREEN}管道进程: 运行中${NC}"
         ps aux | grep -E "enhanced_pipeline|run_pipeline|test_safe" | grep -v grep | awk '{printf "  PID: %s, CPU: %s%%, 内存: %s%%\n", $2, $3, $4}'
         return 0
     else
-        echo -e "${RED}✗${NC} 管道进程: 未运行"
+        echo -e "${RED}管道进程: 未运行${NC}"
         return 1
     fi
 }
@@ -36,7 +36,7 @@ check_checkpoint() {
     local progress_file="output/checkpoints/.progress.json"
     
     if [ -f "$progress_file" ]; then
-        echo -e "\n${BLUE}📝 Checkpoint 进度:${NC}"
+        echo -e "\n${BLUE}Checkpoint 进度:${NC}"
         
         # 解析 JSON（需要 jq，如果没有则用 grep）
         if command -v jq &> /dev/null; then
@@ -54,7 +54,7 @@ check_checkpoint() {
             cat "$progress_file" | head -10
         fi
     else
-        echo -e "\n${YELLOW}⚠${NC} 尚无 checkpoint 数据"
+        echo -e "\n${YELLOW}尚无 checkpoint 数据${NC}"
     fi
 }
 
@@ -63,7 +63,7 @@ check_logs() {
     local log_file="output/kg_builder.log"
     
     if [ -f "$log_file" ]; then
-        echo -e "\n${CYAN}📋 最近日志:${NC}"
+        echo -e "\n${CYAN}最近的日志:${NC}"
         tail -n 5 "$log_file" | while IFS= read -r line; do
             if echo "$line" | grep -q "ERROR"; then
                 echo -e "  ${RED}$line${NC}"
@@ -76,13 +76,13 @@ check_logs() {
             fi
         done
     else
-        echo -e "\n${YELLOW}⚠${NC} 日志文件不存在"
+        echo -e "\n${YELLOW}日志文件不存在${NC}"
     fi
 }
 
 # 检查输出文件
 check_output() {
-    echo -e "\n${BLUE}📁 输出文件:${NC}"
+    echo -e "\n${BLUE}输出文件:${NC}"
     
     local files=(
         "output/concepts.csv"
@@ -94,9 +94,9 @@ check_output() {
         if [ -f "$file" ]; then
             local size=$(du -h "$file" | awk '{print $1}')
             local lines=$(wc -l < "$file" 2>/dev/null || echo "N/A")
-            echo -e "  ${GREEN}✓${NC} $(basename $file): $size ($lines 行)"
+            echo -e "  ${GREEN}存在${NC} $(basename $file): $size ($lines 行)"
         else
-            echo -e "  ${RED}✗${NC} $(basename $file): 不存在"
+            echo -e "  ${RED}不存在${NC} $(basename $file)"
         fi
     done
 }
@@ -110,7 +110,7 @@ estimate_completion() {
         local started=$(jq -r '.started_at' "$progress_file" 2>/dev/null)
         
         if [ "$processed" != "0" ] && [ "$processed" != "?" ] && [ -n "$started" ]; then
-            echo -e "\n${BLUE}⏱️  时间估算:${NC}"
+            echo -e "\n${BLUE}时间估算:${NC}"
             
             # 计算已运行时间
             local start_ts=$(date -j -f "%Y-%m-%dT%H:%M:%S" "${started:0:19}" "+%s" 2>/dev/null || echo "0")
