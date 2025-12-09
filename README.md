@@ -272,7 +272,7 @@ Web 应用: FastAPI 后端 + React 前端 (Docker / 本地)
 ```bash
 # 1. 克隆项目
 git clone https://github.com/Dictatora0/Neo4j-graphics-of-PWD.git
-cd PWD
+cd Neo4j-graphics-of-PWD
 
 # 2. 检查 Docker 环境
 ./check_docker_env.sh
